@@ -1,4 +1,6 @@
 #include "tokenize.h"
+#include "Parser.h"
+#include "Statement.h"
 
 #include <algorithm>
 #include <fstream>
@@ -14,9 +16,10 @@ int main(int argc, char** argv) try {
   if (argc != 1)
     throw runtime_error("Bad command line.");
   ifstream input(argv[0]);
-  auto tokens = hap::tokenize(input);
-  copy(tokens.begin(), tokens.end(),
-       ostream_iterator<hap::Token>(cout, "\n"));
+  vector<hap::Token> tokens = hap::tokenize(input);
+  hap::Parser parser(tokens);
+  hap::Statement* program = parser.accept_program();
+  delete program;
 } catch (const exception& error) {
   cerr << error.what() << '\n';
   return 1;

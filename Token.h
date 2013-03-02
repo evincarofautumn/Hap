@@ -8,6 +8,7 @@ namespace hap {
 
 struct Token {
   enum Type {
+    UNDEFINED,
     COMMA,
     IDENTIFIER,
     INTEGER,
@@ -21,12 +22,16 @@ struct Token {
     SEMICOLON,
     STRING,
   };
+  Token() : type(UNDEFINED) {}
   Token(Type type, const std::string& string)
     : type(type), string(string) {}
   Type type;
   std::string string;
   friend std::ostream& operator<<(std::ostream&, const Token&);
+  friend bool operator==(const Token&, const Token&);
 };
+
+std::ostream& operator<<(std::ostream&, const Token::Type&);
 
 }
 

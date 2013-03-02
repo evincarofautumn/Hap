@@ -26,7 +26,7 @@ vector<Token> tokenize(istream& stream) {
   const string operator_characters = "!$%&*+,-./:<=>?@\\^|~";
   map<char, Token::Type> single_character_tokens;
   {
-    auto& _ = single_character_tokens;
+    map<char, Token::Type>& _ = single_character_tokens;
     _['('] = Token::LEFT_PARENTHESIS;
     _[')'] = Token::RIGHT_PARENTHESIS;
     _['{'] = Token::LEFT_BRACE;
@@ -68,7 +68,8 @@ vector<Token> tokenize(istream& stream) {
           break;
         }
         {
-          const auto found = single_character_tokens.find(character);
+          const map<char, Token::Type>::const_iterator found
+            = single_character_tokens.find(character);
           if (found != single_character_tokens.end()) {
             tokens.push_back(Token(found->second, string(1, character)));
             break;
@@ -90,7 +91,7 @@ vector<Token> tokenize(istream& stream) {
       }
       break;
     case COMMENT:
-      if (character == '\n')
+      if (character == '\n' || character == EOF)
         state = NORMAL;
       break;
     case IDENTIFIER:
