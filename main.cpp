@@ -7,8 +7,11 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#include <tr1/memory>
 
+using namespace hap;
 using namespace std;
+using namespace std::tr1;
 
 int main(int argc, char** argv) try {
   --argc;
@@ -16,10 +19,9 @@ int main(int argc, char** argv) try {
   if (argc != 1)
     throw runtime_error("Bad command line.");
   ifstream input(argv[0]);
-  vector<hap::Token> tokens = hap::tokenize(input);
-  hap::Parser parser(tokens);
-  hap::Statement* program = parser.accept_program();
-  delete program;
+  vector<Token> tokens = tokenize(input);
+  Parser parser(tokens);
+  shared_ptr<Statement> program(parser.accept_program());
 } catch (const exception& error) {
   cerr << error.what() << '\n';
   return 1;

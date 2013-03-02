@@ -4,6 +4,7 @@
 #include "Expression.h"
 
 #include <string>
+#include <tr1/memory>
 #include <vector>
 
 namespace hap {
@@ -11,10 +12,8 @@ namespace hap {
 class Expression;
 
 class Statement {
-public:
-  virtual ~Statement();
 protected:
-  Statement();
+  Statement() {}
 private:
   Statement(const Statement&);
   Statement& operator=(const Statement&);
@@ -23,49 +22,37 @@ private:
 class BlockStatement : public Statement {
 public:
   BlockStatement() {}
-  virtual ~BlockStatement() {
-    for (std::vector<Statement*>::iterator i = statements.begin();
-         i != statements.end();
-         ++i) {
-      delete *i;
-    }
-  }
-  void push(Statement* const statement) {
+  void push(std::tr1::shared_ptr<Statement> const statement) {
     statements.push_back(statement);
   }
 private:
-  std::vector<Statement*> statements;
+  std::vector< std::tr1::shared_ptr<Statement> > statements;
 };
 
 class VarStatement : public Statement {
 public:
-  VarStatement(const std::string& identifier, Expression* const initializer)
+  VarStatement(const std::string& identifier,
+               std::tr1::shared_ptr<Expression> const initializer)
     : identifier(identifier), initializer(initializer) {}
-  virtual ~VarStatement() {
-    delete initializer;
-  }
 private:
   std::string identifier;
-  Expression* initializer;
+  std::tr1::shared_ptr<Expression> initializer;
 };
 
 class FlowStatement : public Statement {
 public:
-  FlowStatement(Expression* const expression, Statement* const statement)
+  FlowStatement(std::tr1::shared_ptr<Expression> const expression,
+                std::tr1::shared_ptr<Statement> const statement)
     : expression(expression), statement(statement) {}
-  virtual ~FlowStatement() {
-    delete expression;
-    delete statement;
-  }
 private:
-  Expression* expression;
-  Statement* statement;
+  std::tr1::shared_ptr<Expression> expression;
+  std::tr1::shared_ptr<Statement> statement;
 };
 
 #define FLOW_STATEMENT(NAME) \
 struct NAME##Statement : FlowStatement { \
-  NAME##Statement \
-    (Expression* const expression, Statement* const statement) \
+  NAME##Statement(std::tr1::shared_ptr<Expression> const expression, \
+                  std::tr1::shared_ptr<Statement> const statement)   \
     : FlowStatement(expression, statement) {} \
 };
 

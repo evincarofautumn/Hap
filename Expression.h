@@ -2,14 +2,12 @@
 #define HAP_EXPRESSION_H
 
 #include <string>
+#include <tr1/memory>
 #include <vector>
 
 namespace hap {
 
-class Expression {
-public:
-  virtual ~Expression();
-};
+class Expression {};
 
 class IntegerExpression : public Expression {
 public:
@@ -30,18 +28,11 @@ private:
 class ListExpression : public Expression {
 public:
   ListExpression() {}
-  virtual ~ListExpression() {
-    for (std::vector<Expression*>::iterator i = expressions.begin();
-         i != expressions.end();
-         ++i) {
-      delete *i;
-    }
-  }
-  void push(Expression* const expression) {
+  void push(std::tr1::shared_ptr<Expression> const expression) {
     expressions.push_back(expression);
   }
 private:
-  std::vector<Expression*> expressions;
+  std::vector< std::tr1::shared_ptr<Expression> > expressions;
 };
 
 }

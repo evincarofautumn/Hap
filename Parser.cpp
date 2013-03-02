@@ -7,30 +7,32 @@
 #include <stdexcept>
 #include <utility>
 
+#include <tr1/memory>
 #include <iostream>
 
 using namespace std;
 using namespace std::rel_ops;
+using namespace std::tr1;
 
 namespace hap {
 
-Statement* Parser::accept_program() {
-  Statement* statements = accept_statements();
+shared_ptr<Statement> Parser::accept_program() {
+  shared_ptr<Statement> statements(accept_statements());
   if (!at_end())
     expected("end of input");
   return statements;
 }
 
-Statement* Parser::accept_statements() {
-  BlockStatement* block = new BlockStatement();
-  Statement* statement = 0;
+shared_ptr<Statement> Parser::accept_statements() {
+  shared_ptr<BlockStatement> block(new BlockStatement());
+  shared_ptr<Statement> statement;
   while ((statement = accept_statement()))
     block->push(statement);
   return block;
 }
 
-Statement* Parser::accept_statement() {
-  Statement* statement = 0;
+shared_ptr<Statement> Parser::accept_statement() {
+  shared_ptr<Statement> statement;
   (statement = accept_empty_statement())
     || (statement = accept_block_statement())
     || (statement = accept_var_statement())
@@ -39,62 +41,63 @@ Statement* Parser::accept_statement() {
     || (statement = accept_whenever_statement())
     || (statement = accept_while_statement())
     || (statement = accept_repeat_when_statement())
-    || (statement = accept_repeat_whenever_statement())
-    ;
+    || (statement = accept_repeat_whenever_statement());
   return statement;
 }
 
-Statement* Parser::accept_empty_statement() {
-  return accept(Token::SEMICOLON) ? new BlockStatement() : 0;
+shared_ptr<Statement> Parser::accept_empty_statement() {
+  return accept(Token::SEMICOLON)
+    ? shared_ptr<Statement>(new BlockStatement())
+    : shared_ptr<Statement>();
 }
 
-Statement* Parser::accept_block_statement() {
+shared_ptr<Statement> Parser::accept_block_statement() {
   if (!accept(Token::LEFT_BRACE))
-    return 0;
-  Statement* block = accept_statements();
+    return shared_ptr<Statement>();
+  shared_ptr<Statement> block = accept_statements();
   expect(Token::RIGHT_BRACE);
   return block;
 }
 
-Statement* Parser::accept_var_statement() {
+shared_ptr<Statement> Parser::accept_var_statement() {
   if (!accept(Token(Token::IDENTIFIER, "var")))
-    return 0;
+    return shared_ptr<Statement>();
   Token identifier;
   expect(Token::IDENTIFIER, identifier);
-  Expression* initializer = 0;
+  shared_ptr<Expression> initializer;
   if (accept(Token(Token::OPERATOR, "="))
       && !(initializer = accept_expression()))
     expected("expression");
   expect(Token::SEMICOLON);
-  return new VarStatement(identifier.string, initializer);
+  return shared_ptr<Statement>(new VarStatement(identifier.string, initializer));
 }
 
-Statement* Parser::accept_if_statement() {
+shared_ptr<Statement> Parser::accept_if_statement() {
   return accept_flow_statement<IfStatement>("if");
 }
 
-Statement* Parser::accept_when_statement() {
+shared_ptr<Statement> Parser::accept_when_statement() {
   return accept_flow_statement<WhenStatement>("when");
 }
 
-Statement* Parser::accept_whenever_statement() {
+shared_ptr<Statement> Parser::accept_whenever_statement() {
   return accept_flow_statement<WheneverStatement>("whenever");
 }
 
-Statement* Parser::accept_while_statement() {
+shared_ptr<Statement> Parser::accept_while_statement() {
   return accept_flow_statement<WhileStatement>("while");
 }
 
-Statement* Parser::accept_repeat_when_statement() {
+shared_ptr<Statement> Parser::accept_repeat_when_statement() {
   return accept_flow_statement<RepeatWhenStatement>("repeat_when");
 }
 
-Statement* Parser::accept_repeat_whenever_statement() {
+shared_ptr<Statement> Parser::accept_repeat_whenever_statement() {
   return accept_flow_statement<RepeatWheneverStatement>("repeat_whenever");
 }
 
-Expression* Parser::accept_expression() {
-  Expression* expression = 0;
+shared_ptr<Expression> Parser::accept_expression() {
+  shared_ptr<Expression> expression;
   expression = accept_value_expression();
   if (!expression && accept(Token::LEFT_PARENTHESIS)) {
     expression = accept_expression();
@@ -103,39 +106,39 @@ Expression* Parser::accept_expression() {
   return expression;
 }
 
-Expression* Parser::accept_value_expression() {
-  Expression* value = 0;
+shared_ptr<Expression> Parser::accept_value_expression() {
+  shared_ptr<Expression> value;
   (value = accept_integer_expression())
     || (value = accept_identifier_expression())
     || (value = accept_list_expression());
   return value;
 }
 
-Expression* Parser::accept_integer_expression() {
+shared_ptr<Expression> Parser::accept_integer_expression() {
   Token token;
   if (!accept(Token::INTEGER, token))
-    return 0;
+    return shared_ptr<Expression>();
   istringstream stream(token.string);
   int value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid integer");
-  return new IntegerExpression(value);
+  return shared_ptr<Expression>(new IntegerExpression(value));
 }
 
-Expression* Parser::accept_identifier_expression() {
+shared_ptr<Expression> Parser::accept_identifier_expression() {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
-    return 0;
-  return new IdentifierExpression(token.string);
+    return shared_ptr<Expression>();
+  return shared_ptr<Expression>(new IdentifierExpression(token.string));
 }
 
-Expression* Parser::accept_list_expression() {
+shared_ptr<Expression> Parser::accept_list_expression() {
   if (!accept(Token::LEFT_BRACKET))
-    return 0;
-  ListExpression* list = new ListExpression();
-  Expression* expression = 0;
+    return shared_ptr<Expression>();
+  shared_ptr<ListExpression> list(new ListExpression());
+  shared_ptr<Expression> expression;
   while ((expression = accept_expression()))
-    list->push(expression);
+    list->push(static_pointer_cast<Expression>(expression));
   expect(Token::RIGHT_BRACKET);
   return list;
 }

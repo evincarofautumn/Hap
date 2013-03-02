@@ -3,6 +3,7 @@
 
 #include "Token.h"
 
+#include <tr1/memory>
 #include <vector>
 
 namespace hap {
@@ -12,8 +13,8 @@ class Statement;
 
 class Parser {
 private:
-  typedef Statement* AcceptStatement();
-  typedef Expression* AcceptExpression();
+  typedef std::tr1::shared_ptr<Statement> AcceptStatement();
+  typedef std::tr1::shared_ptr<Expression> AcceptExpression();
 public:
   Parser(const std::vector<Token>& input)
     : tokens(input), current(tokens.begin()) {}
@@ -51,22 +52,24 @@ private:
   void expected(const Token&) const;
   bool at_end() const;
   template<class FlowStatement>
-  Statement* accept_flow_statement(const std::string&);
+  std::tr1::shared_ptr<Statement> accept_flow_statement(const std::string&);
 };
 
 template<class StatementType>
-Statement* Parser::accept_flow_statement(const std::string& keyword) {
+std::tr1::shared_ptr<Statement>
+Parser::accept_flow_statement(const std::string& keyword) {
+  using namespace std::tr1;
   if (!accept(Token(Token::IDENTIFIER, keyword)))
-    return 0;
-  Expression* expression = 0;
+    return shared_ptr<Statement>();
+  shared_ptr<Expression> expression;
   expect(Token::LEFT_PARENTHESIS);
   if (!(expression = accept_expression()))
     expected("expression");
   expect(Token::RIGHT_PARENTHESIS);
-  Statement* statement = 0;
+  shared_ptr<Statement> statement;
   if (!(statement = accept_statement()))
     expected("statement");
-  return new StatementType(expression, statement);
+  return shared_ptr<Statement>(new StatementType(expression, statement));
 }
 
 }
