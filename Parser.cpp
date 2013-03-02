@@ -106,7 +106,8 @@ Expression* Parser::accept_expression() {
 Expression* Parser::accept_value_expression() {
   Expression* value = 0;
   (value = accept_integer_expression())
-    || (value = accept_identifier_expression());
+    || (value = accept_identifier_expression())
+    || (value = accept_list_expression());
   return value;
 }
 
@@ -126,6 +127,21 @@ Expression* Parser::accept_identifier_expression() {
   if (!accept(Token::IDENTIFIER, token))
     return 0;
   return new IdentifierExpression(token.string);
+}
+
+Expression* Parser::accept_list_expression() {
+  if (!accept(Token::LEFT_BRACKET))
+    return 0;
+  ListExpression* list = new ListExpression();
+  Expression* expression = 0;
+  while ((expression = accept_expression())) {
+    list->push(expression);
+    if (accept(Token::RIGHT_BRACKET))
+      return list;
+    accept(Token::COMMA);
+  }
+  expect(Token::RIGHT_BRACKET);
+  return list;
 }
 
 bool Parser::accept(Token::Type type) {
