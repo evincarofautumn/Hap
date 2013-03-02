@@ -134,12 +134,8 @@ Expression* Parser::accept_list_expression() {
     return 0;
   ListExpression* list = new ListExpression();
   Expression* expression = 0;
-  while ((expression = accept_expression())) {
+  while ((expression = accept_expression()))
     list->push(expression);
-    if (accept(Token::RIGHT_BRACKET))
-      return list;
-    accept(Token::COMMA);
-  }
   expect(Token::RIGHT_BRACKET);
   return list;
 }
