@@ -3,18 +3,21 @@
 
 #include "Token.h"
 
+#include <stack>
 #include <tr1/memory>
 #include <vector>
 
 namespace hap {
 
 class Expression;
+class Operator;
 class Statement;
 
 class Parser {
 private:
   typedef std::tr1::shared_ptr<Statement> AcceptStatement();
   typedef std::tr1::shared_ptr<Expression> AcceptExpression();
+  typedef bool AcceptOperator(Operator&);
 public:
   Parser(const std::vector<Token>& input)
     : tokens(input), current(tokens.begin()) {}
@@ -38,6 +41,24 @@ private:
     accept_integer_expression,
     accept_identifier_expression,
     accept_list_expression;
+  AcceptOperator
+    accept_binary_operator,
+    accept_unary_operator;
+
+  void E
+    (std::stack<Operator>&,
+     std::stack< std::tr1::shared_ptr<Expression> >&);
+  void P
+    (std::stack<Operator>&,
+     std::stack< std::tr1::shared_ptr<Expression> >&);
+  void pushOperator
+    (const Operator&,
+     std::stack<Operator>&,
+     std::stack< std::tr1::shared_ptr<Expression> >&);
+  void popOperator
+    (std::stack<Operator>&,
+     std::stack< std::tr1::shared_ptr<Expression> >&);
+
   typedef std::vector<Token> Tokens;
   const Tokens tokens;
   Tokens::const_iterator current;

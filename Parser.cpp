@@ -1,13 +1,16 @@
 #include "Parser.h"
 
 #include "Expression.h"
+#include "Operator.h"
 #include "Statement.h"
 
+#include <map>
 #include <sstream>
+#include <stack>
 #include <stdexcept>
+#include <tr1/memory>
 #include <utility>
 
-#include <tr1/memory>
 #include <iostream>
 
 using namespace std;
@@ -96,16 +99,6 @@ shared_ptr<Statement> Parser::accept_repeat_whenever_statement() {
   return accept_flow_statement<RepeatWheneverStatement>("repeat_whenever");
 }
 
-shared_ptr<Expression> Parser::accept_expression() {
-  shared_ptr<Expression> expression;
-  expression = accept_value_expression();
-  if (!expression && accept(Token::LEFT_PARENTHESIS)) {
-    expression = accept_expression();
-    expect(Token::RIGHT_PARENTHESIS);
-  }
-  return expression;
-}
-
 shared_ptr<Expression> Parser::accept_value_expression() {
   shared_ptr<Expression> value;
   (value = accept_integer_expression())
@@ -141,6 +134,155 @@ shared_ptr<Expression> Parser::accept_list_expression() {
     list->push(static_pointer_cast<Expression>(expression));
   expect(Token::RIGHT_BRACKET);
   return list;
+}
+
+map<string, Operator> binary_operators;
+map<string, Operator> unary_operators;
+
+bool Parser::accept_binary_operator(Operator& result) {
+  if (binary_operators.empty()) {
+    map<string, Operator>& _(binary_operators);
+    _["+"] = Operator(Operator::BINARY, "+", Operator::LEFT, 6);
+    _["-"] = Operator(Operator::BINARY, "-", Operator::LEFT, 6);
+    _["*"] = Operator(Operator::BINARY, "*", Operator::LEFT, 7);
+    _["/"] = Operator(Operator::BINARY, "/", Operator::LEFT, 7);
+  }
+  if (at_end() || current->type != Token::OPERATOR)
+    return false;
+  map<string, Operator>::const_iterator operator_
+    (binary_operators.find(current->string));
+  if (operator_ == binary_operators.end())
+    return false;
+  ++current;
+  result = operator_->second;
+  return true;
+}
+
+bool Parser::accept_unary_operator(Operator& result) {
+  if (unary_operators.empty()) {
+    map<string, Operator>& _(unary_operators);
+    _["+"] = Operator(Operator::UNARY, "+", Operator::RIGHT, 8);
+    _["-"] = Operator(Operator::UNARY, "-", Operator::RIGHT, 8);
+    _["*"] = Operator(Operator::UNARY, "*", Operator::RIGHT, 8);
+  }
+  if (at_end() || current->type != Token::OPERATOR)
+    return false;
+  map<string, Operator>::const_iterator operator_
+    (unary_operators.find(current->string));
+  if (operator_ == unary_operators.end())
+    return false;
+  ++current;
+  result = operator_->second;
+  return true;
+}
+
+shared_ptr<Expression> Parser::accept_expression() {
+  // var operators : Stack of Operator := empty
+  stack< Operator > operators;
+  // var operands : Stack of Tree := empty
+  stack< shared_ptr<Expression> > operands;
+  // push( operators, sentinel )
+  operators.push(Operator::SENTINEL);
+  // E( operators, operands )
+  E(operators, operands);
+  // expect( end )
+  // return top( operands )
+  return operands.top();
+}
+
+void Parser::E
+  (stack<Operator>& operators,
+   stack< shared_ptr<Expression> >& operands) {
+  // P( operators, operands )
+  P(operators, operands);
+  // while next is a binary operator
+  Operator operator_;
+  while (accept_binary_operator(operator_)) {
+  //    pushOperator( binary(next), operators, operands )
+    pushOperator(operator_, operators, operands);
+  //    consume
+  //    P( operators, operands )
+    P(operators, operands);
+  }
+  // while top(operators) not= sentinel
+  while (operators.top().arity != Operator::SENTINEL)
+  //    popOperator( operators, operands )
+    popOperator(operators, operands);
+}
+
+void Parser::P
+  (stack<Operator>& operators,
+   stack< shared_ptr<Expression> >& operands) {
+  Operator unary;
+  // if next is a v
+  shared_ptr<Expression> value;
+  if ((value = accept_value_expression())) {
+  //      push( operands, mkLeaf( v ) )
+    operands.push(value);
+  //      consume
+  // else if next = "("
+  } else if (accept(Token::LEFT_PARENTHESIS)) {
+  //      consume
+  //      push( operators, sentinel )
+    operators.push(Operator::SENTINEL);
+  //      E( operators, operands )
+    E(operators, operands);
+  //      expect( ")" )
+    expect(Token::RIGHT_PARENTHESIS);
+  //      pop( operators )
+    operators.pop();
+  // else if next is a unary operator
+  } else if (accept_unary_operator(unary)) {
+  //      pushOperator( unary(next), operators, operands )
+    pushOperator(unary, operators, operands);
+  //      consume
+  //      P( operators, operands )
+    P(operators, operands);
+  // else
+  } else {
+  //      error
+    expected("expression");
+  }
+}
+
+void Parser::popOperator
+  (stack<Operator>& operators,
+   stack< shared_ptr<Expression> >& operands) {
+  // if top(operators) is binary
+  if (operators.top().arity == Operator::BINARY) {
+    Operator operator_(operators.top());
+    operators.pop();
+  //      const t1 := pop( operands )
+    shared_ptr<Expression> const b(operands.top());
+    operands.pop();
+  //      const t0 := pop( operands )
+    shared_ptr<Expression> const a(operands.top());
+    operands.pop();
+  //      push( operands, mkNode( pop(operators), t0, t1 ) )
+    operands.push(shared_ptr<Expression>(new BinaryExpression(operator_, a, b)));
+  // else
+  } else if (operators.top().arity == Operator::UNARY) {
+    Operator operator_(operators.top());
+    operators.pop();
+  //      push( operands, mkNode( pop(operators), pop(operands) ) )
+    shared_ptr<Expression> const a(operands.top());
+    operands.pop();
+    operands.push(shared_ptr<Expression>(new UnaryExpression(operator_, a)));
+  } else {
+    throw runtime_error("error parsing expression");
+  }
+}
+
+void Parser::pushOperator
+  (const Operator& operator_,
+   stack<Operator>& operators,
+   stack< shared_ptr<Expression> >& operands) {
+  // while top(operators) > operator_
+  while (operator_ < operators.top())
+  //    popOperator( operators, operands )
+    popOperator(operators, operands);
+  // push( operator_, operators )
+  operators.push(operator_);
 }
 
 bool Parser::accept(Token::Type type) {
