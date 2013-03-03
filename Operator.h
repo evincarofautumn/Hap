@@ -1,6 +1,7 @@
 #ifndef HAP_OPERATOR_H
 #define HAP_OPERATOR_H
 
+#include <iosfwd>
 #include <string>
 
 namespace hap {
@@ -39,6 +40,8 @@ inline bool operator<(const Operator& a, const Operator& b) {
     ? !(b.precedence < a.precedence)
     : false;
 }
+
+std::ostream& operator<<(std::ostream&, const Operator&);
 
 }
 

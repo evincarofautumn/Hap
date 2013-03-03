@@ -12,6 +12,9 @@ namespace hap {
 class Expression;
 
 class Statement {
+public:
+  virtual ~Statement();
+  virtual void write(std::ostream&) const = 0;
 protected:
   Statement() {}
 private:
@@ -19,21 +22,26 @@ private:
   Statement& operator=(const Statement&);
 };
 
+std::ostream& operator<<(std::ostream&, const Statement&);
+
 class BlockStatement : public Statement {
 public:
   BlockStatement() {}
   void push(std::unique_ptr<Statement> statement) {
     statements.push_back(std::move(statement));
   }
+  virtual void write(std::ostream&) const override;
 private:
-  std::vector< std::unique_ptr<Statement> > statements;
+  std::vector<std::unique_ptr<Statement>> statements;
 };
 
 class VarStatement : public Statement {
 public:
-  VarStatement(const std::string& identifier,
-               std::unique_ptr<Expression> initializer)
+  VarStatement
+    (const std::string& identifier,
+     std::unique_ptr<Expression> initializer)
     : identifier(identifier), initializer(std::move(initializer)) {}
+  virtual void write(std::ostream&) const override;
 private:
   std::string identifier;
   std::unique_ptr<Expression> initializer;
@@ -41,28 +49,34 @@ private:
 
 class FlowStatement : public Statement {
 public:
-  FlowStatement(std::unique_ptr<Expression> expression,
-                std::unique_ptr<Statement> statement)
-    : expression(std::move(expression)),
+  FlowStatement
+    (const std::string& keyword,
+     std::unique_ptr<Expression> expression,
+     std::unique_ptr<Statement> statement)
+    : keyword(keyword),
+      expression(std::move(expression)),
       statement(std::move(statement)) {}
+  virtual void write(std::ostream&) const override;
 private:
+  std::string keyword;
   std::unique_ptr<Expression> expression;
   std::unique_ptr<Statement> statement;
 };
 
-#define FLOW_STATEMENT(NAME) \
+#define FLOW_STATEMENT(NAME, KEYWORD) \
 struct NAME##Statement : FlowStatement { \
-  NAME##Statement(std::unique_ptr<Expression> expression, \
-                  std::unique_ptr<Statement> statement) \
-    : FlowStatement(std::move(expression), std::move(statement)) {} \
+  NAME##Statement \
+    (std::unique_ptr<Expression> expression, \
+     std::unique_ptr<Statement> statement) \
+    : FlowStatement(KEYWORD, std::move(expression), std::move(statement)) {} \
 };
 
-FLOW_STATEMENT(If)
-FLOW_STATEMENT(When)
-FLOW_STATEMENT(Whenever)
-FLOW_STATEMENT(While)
-FLOW_STATEMENT(RepeatWhen)
-FLOW_STATEMENT(RepeatWhenever)
+FLOW_STATEMENT(If, "if")
+FLOW_STATEMENT(When, "when")
+FLOW_STATEMENT(Whenever, "whenever")
+FLOW_STATEMENT(While, "while")
+FLOW_STATEMENT(RepeatWhen, "repeat_when")
+FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 
 #undef FLOW_STATEMENT
 

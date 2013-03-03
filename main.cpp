@@ -21,6 +21,7 @@ int main(int argc, char** argv) try {
   vector<Token> tokens = tokenize(input);
   Parser parser(tokens);
   unique_ptr<Statement> program(parser.accept_program());
+  cout << *program << '\n';
 } catch (const exception& error) {
   cerr << error.what() << '\n';
   return 1;

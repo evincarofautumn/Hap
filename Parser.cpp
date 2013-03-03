@@ -69,7 +69,7 @@ unique_ptr<Statement> Parser::accept_var_statement() {
   unique_ptr<Expression> initializer;
   if (accept(Token(Token::OPERATOR, "="))
       && !(initializer = accept_expression()))
-    expected("expression");
+    expected("initializer");
   expect(Token::SEMICOLON);
   return unique_ptr<Statement>
     (new VarStatement(identifier.string, move(initializer)));
