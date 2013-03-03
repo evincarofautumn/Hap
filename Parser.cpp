@@ -102,8 +102,7 @@ unique_ptr<Statement> Parser::accept_repeat_whenever_statement() {
 unique_ptr<Expression> Parser::accept_value_expression() {
   unique_ptr<Expression> value;
   (value = accept_integer_expression())
-    || (value = accept_identifier_expression())
-    || (value = accept_list_expression());
+    || (value = accept_identifier_expression());
   return value;
 }
 
@@ -123,17 +122,6 @@ unique_ptr<Expression> Parser::accept_identifier_expression() {
   if (!accept(Token::IDENTIFIER, token))
     return unique_ptr<Expression>();
   return unique_ptr<Expression>(new IdentifierExpression(token.string));
-}
-
-unique_ptr<Expression> Parser::accept_list_expression() {
-  if (!accept(Token::LEFT_BRACKET))
-    return unique_ptr<Expression>();
-  unique_ptr<ListExpression> list(new ListExpression());
-  unique_ptr<Expression> expression;
-  while ((expression = accept_expression()))
-    list->push(move(expression));
-  expect(Token::RIGHT_BRACKET);
-  return static_unique_cast<Expression>(move(list));
 }
 
 map<string, Operator> binary_operators;
@@ -209,6 +197,19 @@ void Parser::P
     E(operators, operands);
     expect(Token::RIGHT_PARENTHESIS);
     operators.pop();
+  } else if (accept(Token::LEFT_BRACKET)) {
+    unique_ptr<ListExpression> list(new ListExpression());
+    unique_ptr<Expression> expression;
+    operators.push(Operator::SENTINEL);
+    while (!accept(Token::RIGHT_BRACKET)) {
+      E(operators, operands);
+      list->push(move(operands.top()));
+      operands.pop();
+      if (at_end())
+        expected("right bracket");
+    }
+    operators.pop();
+    operands.push(static_unique_cast<Expression>(move(list)));
   } else if (accept_unary_operator(unary)) {
     push_operator(unary, operators, operands);
     P(operators, operands);
