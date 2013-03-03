@@ -16,11 +16,23 @@ struct Operator {
     LEFT,
     RIGHT
   };
+  enum Precedence {
+    COMMA,
+    ASSIGNMENT,
+    OR,
+    XOR,
+    AND,
+    RELATIONAL,
+    SHIFTING,
+    ADDITIVE,
+    MULTIPLICATIVE,
+    TIGHTEST
+  };
   Operator
     (Arity arity = SENTINEL,
      const std::string& operator_ = std::string(),
      Associativity associativity = LEFT,
-     int precedence = 0)
+     Precedence precedence = TIGHTEST)
     : arity(arity),
       operator_(operator_),
       associativity(associativity),
@@ -28,7 +40,7 @@ struct Operator {
   Arity arity;
   std::string operator_;
   Associativity associativity;
-  int precedence;
+  Precedence precedence;
 };
 
 inline bool operator<(const Operator& a, const Operator& b) {

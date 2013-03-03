@@ -39,7 +39,7 @@ void BinaryExpression::write(ostream& stream) const {
 }
 
 void UnaryExpression::write(ostream& stream) const {
-  stream << '(' << operator_;
+  stream << '(' << operator_ << ' ';
   a->write(stream);
   stream << ')';
 }
