@@ -33,7 +33,7 @@ void ListExpression::write(ostream& stream) const {
 void BinaryExpression::write(ostream& stream) const {
   stream << '(';
   a->write(stream);
-  stream << ' ' << operator_;
+  stream << ' ' << operator_ << ' ';
   b->write(stream);
   stream << ')';
 }
