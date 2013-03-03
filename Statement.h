@@ -3,8 +3,8 @@
 
 #include "Expression.h"
 
+#include <memory>
 #include <string>
-#include <tr1/memory>
 #include <vector>
 
 namespace hap {
@@ -22,38 +22,39 @@ private:
 class BlockStatement : public Statement {
 public:
   BlockStatement() {}
-  void push(std::tr1::shared_ptr<Statement> const statement) {
-    statements.push_back(statement);
+  void push(std::unique_ptr<Statement> statement) {
+    statements.push_back(std::move(statement));
   }
 private:
-  std::vector< std::tr1::shared_ptr<Statement> > statements;
+  std::vector< std::unique_ptr<Statement> > statements;
 };
 
 class VarStatement : public Statement {
 public:
   VarStatement(const std::string& identifier,
-               std::tr1::shared_ptr<Expression> const initializer)
-    : identifier(identifier), initializer(initializer) {}
+               std::unique_ptr<Expression> initializer)
+    : identifier(identifier), initializer(std::move(initializer)) {}
 private:
   std::string identifier;
-  std::tr1::shared_ptr<Expression> initializer;
+  std::unique_ptr<Expression> initializer;
 };
 
 class FlowStatement : public Statement {
 public:
-  FlowStatement(std::tr1::shared_ptr<Expression> const expression,
-                std::tr1::shared_ptr<Statement> const statement)
-    : expression(expression), statement(statement) {}
+  FlowStatement(std::unique_ptr<Expression> expression,
+                std::unique_ptr<Statement> statement)
+    : expression(std::move(expression)),
+      statement(std::move(statement)) {}
 private:
-  std::tr1::shared_ptr<Expression> expression;
-  std::tr1::shared_ptr<Statement> statement;
+  std::unique_ptr<Expression> expression;
+  std::unique_ptr<Statement> statement;
 };
 
 #define FLOW_STATEMENT(NAME) \
 struct NAME##Statement : FlowStatement { \
-  NAME##Statement(std::tr1::shared_ptr<Expression> const expression, \
-                  std::tr1::shared_ptr<Statement> const statement)   \
-    : FlowStatement(expression, statement) {} \
+  NAME##Statement(std::unique_ptr<Expression> expression, \
+                  std::unique_ptr<Statement> statement) \
+    : FlowStatement(std::move(expression), std::move(statement)) {} \
 };
 
 FLOW_STATEMENT(If)

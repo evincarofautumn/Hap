@@ -4,38 +4,37 @@
 #include "Operator.h"
 #include "Statement.h"
 
+#include "unique_cast.h"
+
 #include <map>
 #include <sstream>
 #include <stack>
 #include <stdexcept>
-#include <tr1/memory>
+#include <memory>
 #include <utility>
-
-#include <iostream>
 
 using namespace std;
 using namespace std::rel_ops;
-using namespace std::tr1;
 
 namespace hap {
 
-shared_ptr<Statement> Parser::accept_program() {
-  shared_ptr<Statement> statements(accept_statements());
+unique_ptr<Statement> Parser::accept_program() {
+  unique_ptr<Statement> statements(accept_statements());
   if (!at_end())
     expected("end of input");
   return statements;
 }
 
-shared_ptr<Statement> Parser::accept_statements() {
-  shared_ptr<BlockStatement> block(new BlockStatement());
-  shared_ptr<Statement> statement;
+unique_ptr<Statement> Parser::accept_statements() {
+  unique_ptr<BlockStatement> block(new BlockStatement());
+  unique_ptr<Statement> statement;
   while ((statement = accept_statement()))
-    block->push(statement);
-  return block;
+    block->push(move(statement));
+  return static_unique_cast<Statement>(move(block));
 }
 
-shared_ptr<Statement> Parser::accept_statement() {
-  shared_ptr<Statement> statement;
+unique_ptr<Statement> Parser::accept_statement() {
+  unique_ptr<Statement> statement;
   (statement = accept_empty_statement())
     || (statement = accept_block_statement())
     || (statement = accept_var_statement())
@@ -48,92 +47,93 @@ shared_ptr<Statement> Parser::accept_statement() {
   return statement;
 }
 
-shared_ptr<Statement> Parser::accept_empty_statement() {
+unique_ptr<Statement> Parser::accept_empty_statement() {
   return accept(Token::SEMICOLON)
-    ? shared_ptr<Statement>(new BlockStatement())
-    : shared_ptr<Statement>();
+    ? unique_ptr<Statement>(new BlockStatement())
+    : unique_ptr<Statement>();
 }
 
-shared_ptr<Statement> Parser::accept_block_statement() {
+unique_ptr<Statement> Parser::accept_block_statement() {
   if (!accept(Token::LEFT_BRACE))
-    return shared_ptr<Statement>();
-  shared_ptr<Statement> block = accept_statements();
+    return unique_ptr<Statement>();
+  unique_ptr<Statement> block(accept_statements());
   expect(Token::RIGHT_BRACE);
   return block;
 }
 
-shared_ptr<Statement> Parser::accept_var_statement() {
+unique_ptr<Statement> Parser::accept_var_statement() {
   if (!accept(Token(Token::IDENTIFIER, "var")))
-    return shared_ptr<Statement>();
+    return unique_ptr<Statement>();
   Token identifier;
   expect(Token::IDENTIFIER, identifier);
-  shared_ptr<Expression> initializer;
+  unique_ptr<Expression> initializer;
   if (accept(Token(Token::OPERATOR, "="))
       && !(initializer = accept_expression()))
     expected("expression");
   expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new VarStatement(identifier.string, initializer));
+  return unique_ptr<Statement>
+    (new VarStatement(identifier.string, move(initializer)));
 }
 
-shared_ptr<Statement> Parser::accept_if_statement() {
+unique_ptr<Statement> Parser::accept_if_statement() {
   return accept_flow_statement<IfStatement>("if");
 }
 
-shared_ptr<Statement> Parser::accept_when_statement() {
+unique_ptr<Statement> Parser::accept_when_statement() {
   return accept_flow_statement<WhenStatement>("when");
 }
 
-shared_ptr<Statement> Parser::accept_whenever_statement() {
+unique_ptr<Statement> Parser::accept_whenever_statement() {
   return accept_flow_statement<WheneverStatement>("whenever");
 }
 
-shared_ptr<Statement> Parser::accept_while_statement() {
+unique_ptr<Statement> Parser::accept_while_statement() {
   return accept_flow_statement<WhileStatement>("while");
 }
 
-shared_ptr<Statement> Parser::accept_repeat_when_statement() {
+unique_ptr<Statement> Parser::accept_repeat_when_statement() {
   return accept_flow_statement<RepeatWhenStatement>("repeat_when");
 }
 
-shared_ptr<Statement> Parser::accept_repeat_whenever_statement() {
+unique_ptr<Statement> Parser::accept_repeat_whenever_statement() {
   return accept_flow_statement<RepeatWheneverStatement>("repeat_whenever");
 }
 
-shared_ptr<Expression> Parser::accept_value_expression() {
-  shared_ptr<Expression> value;
+unique_ptr<Expression> Parser::accept_value_expression() {
+  unique_ptr<Expression> value;
   (value = accept_integer_expression())
     || (value = accept_identifier_expression())
     || (value = accept_list_expression());
   return value;
 }
 
-shared_ptr<Expression> Parser::accept_integer_expression() {
+unique_ptr<Expression> Parser::accept_integer_expression() {
   Token token;
   if (!accept(Token::INTEGER, token))
-    return shared_ptr<Expression>();
+    return unique_ptr<Expression>();
   istringstream stream(token.string);
   int value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid integer");
-  return shared_ptr<Expression>(new IntegerExpression(value));
+  return unique_ptr<Expression>(new IntegerExpression(value));
 }
 
-shared_ptr<Expression> Parser::accept_identifier_expression() {
+unique_ptr<Expression> Parser::accept_identifier_expression() {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
-    return shared_ptr<Expression>();
-  return shared_ptr<Expression>(new IdentifierExpression(token.string));
+    return unique_ptr<Expression>();
+  return unique_ptr<Expression>(new IdentifierExpression(token.string));
 }
 
-shared_ptr<Expression> Parser::accept_list_expression() {
+unique_ptr<Expression> Parser::accept_list_expression() {
   if (!accept(Token::LEFT_BRACKET))
-    return shared_ptr<Expression>();
-  shared_ptr<ListExpression> list(new ListExpression());
-  shared_ptr<Expression> expression;
+    return unique_ptr<Expression>();
+  unique_ptr<ListExpression> list(new ListExpression());
+  unique_ptr<Expression> expression;
   while ((expression = accept_expression()))
-    list->push(static_pointer_cast<Expression>(expression));
+    list->push(move(expression));
   expect(Token::RIGHT_BRACKET);
-  return list;
+  return static_unique_cast<Expression>(move(list));
 }
 
 map<string, Operator> binary_operators;
@@ -176,112 +176,77 @@ bool Parser::accept_unary_operator(Operator& result) {
   return true;
 }
 
-shared_ptr<Expression> Parser::accept_expression() {
-  // var operators : Stack of Operator := empty
-  stack< Operator > operators;
-  // var operands : Stack of Tree := empty
-  stack< shared_ptr<Expression> > operands;
-  // push( operators, sentinel )
+unique_ptr<Expression> Parser::accept_expression() {
+  stack<Operator> operators;
+  stack<unique_ptr<Expression>> operands;
   operators.push(Operator::SENTINEL);
-  // E( operators, operands )
   E(operators, operands);
-  // expect( end )
-  // return top( operands )
-  return operands.top();
+  return move(operands.top());
 }
 
 void Parser::E
   (stack<Operator>& operators,
-   stack< shared_ptr<Expression> >& operands) {
-  // P( operators, operands )
+   stack<unique_ptr<Expression>>& operands) {
   P(operators, operands);
-  // while next is a binary operator
   Operator operator_;
   while (accept_binary_operator(operator_)) {
-  //    pushOperator( binary(next), operators, operands )
-    pushOperator(operator_, operators, operands);
-  //    consume
-  //    P( operators, operands )
+    push_operator(operator_, operators, operands);
     P(operators, operands);
   }
-  // while top(operators) not= sentinel
   while (operators.top().arity != Operator::SENTINEL)
-  //    popOperator( operators, operands )
-    popOperator(operators, operands);
+    pop_operator(operators, operands);
 }
 
 void Parser::P
   (stack<Operator>& operators,
-   stack< shared_ptr<Expression> >& operands) {
+   stack<unique_ptr<Expression>>& operands) {
   Operator unary;
-  // if next is a v
-  shared_ptr<Expression> value;
+  unique_ptr<Expression> value;
   if ((value = accept_value_expression())) {
-  //      push( operands, mkLeaf( v ) )
-    operands.push(value);
-  //      consume
-  // else if next = "("
+    operands.push(move(value));
   } else if (accept(Token::LEFT_PARENTHESIS)) {
-  //      consume
-  //      push( operators, sentinel )
     operators.push(Operator::SENTINEL);
-  //      E( operators, operands )
     E(operators, operands);
-  //      expect( ")" )
     expect(Token::RIGHT_PARENTHESIS);
-  //      pop( operators )
     operators.pop();
-  // else if next is a unary operator
   } else if (accept_unary_operator(unary)) {
-  //      pushOperator( unary(next), operators, operands )
-    pushOperator(unary, operators, operands);
-  //      consume
-  //      P( operators, operands )
+    push_operator(unary, operators, operands);
     P(operators, operands);
-  // else
   } else {
-  //      error
     expected("expression");
   }
 }
 
-void Parser::popOperator
+void Parser::pop_operator
   (stack<Operator>& operators,
-   stack< shared_ptr<Expression> >& operands) {
-  // if top(operators) is binary
+   stack<unique_ptr<Expression>>& operands) {
   if (operators.top().arity == Operator::BINARY) {
     Operator operator_(operators.top());
     operators.pop();
-  //      const t1 := pop( operands )
-    shared_ptr<Expression> const b(operands.top());
+    unique_ptr<Expression> b(move(operands.top()));
     operands.pop();
-  //      const t0 := pop( operands )
-    shared_ptr<Expression> const a(operands.top());
+    unique_ptr<Expression> a(move(operands.top()));
     operands.pop();
-  //      push( operands, mkNode( pop(operators), t0, t1 ) )
-    operands.push(shared_ptr<Expression>(new BinaryExpression(operator_, a, b)));
-  // else
+    operands.push(unique_ptr<Expression>
+      (new BinaryExpression(operator_, move(a), move(b))));
   } else if (operators.top().arity == Operator::UNARY) {
     Operator operator_(operators.top());
     operators.pop();
-  //      push( operands, mkNode( pop(operators), pop(operands) ) )
-    shared_ptr<Expression> const a(operands.top());
+    unique_ptr<Expression> a(move(operands.top()));
     operands.pop();
-    operands.push(shared_ptr<Expression>(new UnaryExpression(operator_, a)));
+    operands.push(unique_ptr<Expression>
+      (new UnaryExpression(operator_, move(a))));
   } else {
     throw runtime_error("error parsing expression");
   }
 }
 
-void Parser::pushOperator
+void Parser::push_operator
   (const Operator& operator_,
    stack<Operator>& operators,
-   stack< shared_ptr<Expression> >& operands) {
-  // while top(operators) > operator_
+   stack<unique_ptr<Expression>>& operands) {
   while (operator_ < operators.top())
-  //    popOperator( operators, operands )
-    popOperator(operators, operands);
-  // push( operator_, operators )
+    pop_operator(operators, operands);
   operators.push(operator_);
 }
 

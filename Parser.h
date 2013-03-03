@@ -3,8 +3,8 @@
 
 #include "Token.h"
 
+#include <memory>
 #include <stack>
-#include <tr1/memory>
 #include <vector>
 
 namespace hap {
@@ -15,8 +15,8 @@ class Statement;
 
 class Parser {
 private:
-  typedef std::tr1::shared_ptr<Statement> AcceptStatement();
-  typedef std::tr1::shared_ptr<Expression> AcceptExpression();
+  typedef std::unique_ptr<Statement> AcceptStatement();
+  typedef std::unique_ptr<Expression> AcceptExpression();
   typedef bool AcceptOperator(Operator&);
 public:
   Parser(const std::vector<Token>& input)
@@ -44,21 +44,19 @@ private:
   AcceptOperator
     accept_binary_operator,
     accept_unary_operator;
-
   void E
     (std::stack<Operator>&,
-     std::stack< std::tr1::shared_ptr<Expression> >&);
+     std::stack<std::unique_ptr<Expression>>&);
   void P
     (std::stack<Operator>&,
-     std::stack< std::tr1::shared_ptr<Expression> >&);
-  void pushOperator
+     std::stack<std::unique_ptr<Expression>>&);
+  void push_operator
     (const Operator&,
      std::stack<Operator>&,
-     std::stack< std::tr1::shared_ptr<Expression> >&);
-  void popOperator
+     std::stack<std::unique_ptr<Expression>>&);
+  void pop_operator
     (std::stack<Operator>&,
-     std::stack< std::tr1::shared_ptr<Expression> >&);
-
+     std::stack<std::unique_ptr<Expression>>&);
   typedef std::vector<Token> Tokens;
   const Tokens tokens;
   Tokens::const_iterator current;
@@ -73,24 +71,25 @@ private:
   void expected(const Token&) const;
   bool at_end() const;
   template<class FlowStatement>
-  std::tr1::shared_ptr<Statement> accept_flow_statement(const std::string&);
+  std::unique_ptr<Statement> accept_flow_statement(const std::string&);
 };
 
 template<class StatementType>
-std::tr1::shared_ptr<Statement>
+std::unique_ptr<Statement>
 Parser::accept_flow_statement(const std::string& keyword) {
-  using namespace std::tr1;
+  using namespace std;
   if (!accept(Token(Token::IDENTIFIER, keyword)))
-    return shared_ptr<Statement>();
-  shared_ptr<Expression> expression;
+    return unique_ptr<Statement>();
+  unique_ptr<Expression> expression;
   expect(Token::LEFT_PARENTHESIS);
   if (!(expression = accept_expression()))
     expected("expression");
   expect(Token::RIGHT_PARENTHESIS);
-  shared_ptr<Statement> statement;
+  unique_ptr<Statement> statement;
   if (!(statement = accept_statement()))
     expected("statement");
-  return shared_ptr<Statement>(new StatementType(expression, statement));
+  return unique_ptr<Statement>
+    (new StatementType(move(expression), move(statement)));
 }
 
 }

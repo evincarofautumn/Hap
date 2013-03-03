@@ -3,8 +3,8 @@
 
 #include "Operator.h"
 
+#include <memory>
 #include <string>
-#include <tr1/memory>
 #include <vector>
 
 namespace hap {
@@ -33,35 +33,35 @@ private:
 class ListExpression : public Expression {
 public:
   ListExpression() {}
-  void push(std::tr1::shared_ptr<Expression> const expression) {
-    expressions.push_back(expression);
+  void push(std::unique_ptr<Expression> expression) {
+    expressions.push_back(std::move(expression));
   }
 private:
-  std::vector< std::tr1::shared_ptr<Expression> > expressions;
+  std::vector< std::unique_ptr<Expression> > expressions;
 };
 
 class BinaryExpression : public Expression {
 public:
   BinaryExpression
     (const Operator& operator_,
-     const std::tr1::shared_ptr<Expression> a,
-     const std::tr1::shared_ptr<Expression> b)
-    : operator_(operator_), a(a), b(b) {}
+     std::unique_ptr<Expression> a,
+     std::unique_ptr<Expression> b)
+    : operator_(operator_), a(std::move(a)), b(std::move(b)) {}
 private:
   Operator operator_;
-  std::tr1::shared_ptr<Expression> a;
-  std::tr1::shared_ptr<Expression> b;
+  std::unique_ptr<Expression> a;
+  std::unique_ptr<Expression> b;
 };
 
 class UnaryExpression : public Expression {
 public:
   UnaryExpression
     (const Operator& operator_,
-     const std::tr1::shared_ptr<Expression> a)
-    : operator_(operator_), a(a) {}
+     std::unique_ptr<Expression> a)
+    : operator_(operator_), a(std::move(a)) {}
 private:
   Operator operator_;
-  std::tr1::shared_ptr<Expression> a;
+  std::unique_ptr<Expression> a;
 };
 
 }

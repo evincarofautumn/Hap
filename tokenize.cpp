@@ -3,8 +3,8 @@
 #include <cctype>
 #include <istream>
 #include <map>
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
