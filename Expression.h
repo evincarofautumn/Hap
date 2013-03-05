@@ -16,9 +16,18 @@ class UnaryOperator;
 
 class Value {
 public:
+  enum Type {
+    UNDEFINED,
+    INTEGER,
+    LIST,
+  };
+  void assert_type(Type) const;
   virtual ~Value();
   virtual Value* copy() const = 0;
+  virtual Type type() const = 0;
 };
+
+std::ostream& operator<<(std::ostream&, const Value::Type&);
 
 class Expression {
 public:
@@ -33,10 +42,12 @@ class IntegerExpression : public Expression, public Value {
 public:
   IntegerExpression(int value)
     : value(value) {}
+  virtual Value::Type type() const override {
+    return Type::INTEGER;
+  }
   virtual IntegerExpression* copy() const override;
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
-private:
   int value;
 };
 
@@ -68,6 +79,9 @@ public:
   void push(std::unique_ptr<Value> value) {
     values.push_back(std::move(value));
   }
+  virtual Value::Type type() const override {
+    return Type::LIST;
+  }
   virtual ListValue* copy() const override;
 private:
   ListValue(const ListValue&);
@@ -93,17 +107,20 @@ class UnaryExpression : public Expression {
 public:
   UnaryExpression
     (const Operator& operator_,
-     std::unique_ptr<Expression> a)
+     std::unique_ptr<const Expression> a)
     : operator_(operator_), a(std::move(a)) {}
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   Operator operator_;
-  std::unique_ptr<Expression> a;
+  std::unique_ptr<const Expression> a;
 };
 
 class UndefinedExpression : public Expression, public Value {
 public:
+  virtual Value::Type type() const override {
+    return Type::UNDEFINED;
+  }
   virtual UndefinedExpression* copy() const override;
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;

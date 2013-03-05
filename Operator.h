@@ -6,7 +6,18 @@
 
 namespace hap {
 
-struct Operator {
+class Environment;
+class Expression;
+class Value;
+
+class Operator {
+private:
+  typedef std::unique_ptr<Value> ValuePointer;
+  typedef std::unique_ptr<const Expression> ExpressionPointer;
+public:
+  typedef ValuePointer Unary(Environment&, const ExpressionPointer&);
+  typedef ValuePointer Binary
+    (Environment&, const ExpressionPointer&, const ExpressionPointer&);
   enum Arity {
     SENTINEL,
     UNARY,
@@ -28,19 +39,37 @@ struct Operator {
     MULTIPLICATIVE,
     TIGHTEST
   };
+  Operator() : arity(SENTINEL) {}
   Operator
-    (Arity arity = SENTINEL,
-     const std::string& operator_ = std::string(),
-     Associativity associativity = LEFT,
-     Precedence precedence = TIGHTEST)
+    (Arity arity,
+     const std::string& operator_,
+     Associativity associativity,
+     Precedence precedence,
+     Binary* binary)
     : arity(arity),
       operator_(operator_),
       associativity(associativity),
-      precedence(precedence) {}
+      precedence(precedence),
+      unary(0),
+      binary(binary) {}
+  Operator
+    (Arity arity,
+     const std::string& operator_,
+     Associativity associativity,
+     Precedence precedence,
+     Unary* unary)
+    : arity(arity),
+      operator_(operator_),
+      associativity(associativity),
+      precedence(precedence),
+      unary(unary),
+      binary(0) {}
   Arity arity;
   std::string operator_;
   Associativity associativity;
   Precedence precedence;
+  Unary* unary;
+  Binary* binary;
 };
 
 inline bool operator<(const Operator& a, const Operator& b) {

@@ -3,6 +3,8 @@
 #include "Expression.h"
 #include "Operator.h"
 #include "Statement.h"
+#include "binary.h"
+#include "unary.h"
 
 #include "unique_cast.h"
 
@@ -127,31 +129,32 @@ unique_ptr<Expression> Parser::accept_identifier_expression() {
 map<string, Operator> binary_operators;
 map<string, Operator> unary_operators;
 
-#define BINARY_OPERATOR(NAME, ASSOCIATIVITY, PRECEDENCE) \
+#define BINARY_OPERATOR(NAME, ASSOCIATIVITY, PRECEDENCE, IMPLEMENTATION) \
   binary_operators.insert(make_pair(NAME, \
     Operator(Operator::BINARY, NAME, \
-      Operator::ASSOCIATIVITY, Operator::PRECEDENCE)))
+      Operator::ASSOCIATIVITY, Operator::PRECEDENCE, IMPLEMENTATION)))
 
 bool Parser::accept_binary_operator(Operator& result) {
   if (binary_operators.empty()) {
-    BINARY_OPERATOR("*", LEFT, MULTIPLICATIVE);
-    BINARY_OPERATOR("/", LEFT, MULTIPLICATIVE);
-    BINARY_OPERATOR("mod", LEFT, MULTIPLICATIVE);
-    BINARY_OPERATOR("+", LEFT, ADDITIVE);
-    BINARY_OPERATOR("-", LEFT, ADDITIVE);
-    BINARY_OPERATOR("<<", LEFT, SHIFTING);
-    BINARY_OPERATOR(">>", LEFT, SHIFTING);
-    BINARY_OPERATOR("<", LEFT, RELATIONAL);
-    BINARY_OPERATOR(">=", LEFT, RELATIONAL);
-    BINARY_OPERATOR(">", LEFT, RELATIONAL);
-    BINARY_OPERATOR("<=", LEFT, RELATIONAL);
-    BINARY_OPERATOR("==", LEFT, RELATIONAL);
-    BINARY_OPERATOR("<>", LEFT, RELATIONAL);
-    BINARY_OPERATOR("and", LEFT, AND);
-    BINARY_OPERATOR("xor", LEFT, XOR);
-    BINARY_OPERATOR("or", LEFT, OR);
-    BINARY_OPERATOR("=", RIGHT, ASSIGNMENT);
-    BINARY_OPERATOR(",", RIGHT, COMMA);
+    using namespace binary;
+    BINARY_OPERATOR("*", LEFT, MULTIPLICATIVE, multiply);
+    BINARY_OPERATOR("/", LEFT, MULTIPLICATIVE, divide);
+    BINARY_OPERATOR("mod", LEFT, MULTIPLICATIVE, modulate);
+    BINARY_OPERATOR("+", LEFT, ADDITIVE, add);
+    BINARY_OPERATOR("-", LEFT, ADDITIVE, subtract);
+    BINARY_OPERATOR("<<", LEFT, SHIFTING, shift_left);
+    BINARY_OPERATOR(">>", LEFT, SHIFTING, shift_right);
+    BINARY_OPERATOR("<", LEFT, RELATIONAL, lt);
+    BINARY_OPERATOR(">=", LEFT, RELATIONAL, ge);
+    BINARY_OPERATOR(">", LEFT, RELATIONAL, gt);
+    BINARY_OPERATOR("<=", LEFT, RELATIONAL, le);
+    BINARY_OPERATOR("==", LEFT, RELATIONAL, eq);
+    BINARY_OPERATOR("<>", LEFT, RELATIONAL, ne);
+    BINARY_OPERATOR("and", LEFT, AND, and_);
+    BINARY_OPERATOR("xor", LEFT, XOR, xor_);
+    BINARY_OPERATOR("or", LEFT, OR, or_);
+    BINARY_OPERATOR("=", RIGHT, ASSIGNMENT, assign);
+    BINARY_OPERATOR(",", RIGHT, COMMA, comma);
   }
   if (at_end() || !(current->type == Token::OPERATOR
       || current->type == Token::IDENTIFIER))
@@ -167,23 +170,25 @@ bool Parser::accept_binary_operator(Operator& result) {
 
 #undef BINARY_OPERATOR
 
-#define UNARY_OPERATOR(NAME) \
+#define UNARY_OPERATOR(NAME, IMPLEMENTATION) \
   unary_operators.insert(make_pair(NAME, \
-    Operator(Operator::UNARY, NAME, Operator::RIGHT, Operator::TIGHTEST)))
+    Operator(Operator::UNARY, NAME, Operator::RIGHT, Operator::TIGHTEST, \
+      IMPLEMENTATION)))
 
 bool Parser::accept_unary_operator(Operator& result) {
   if (unary_operators.empty()) {
-    UNARY_OPERATOR("+");
-    UNARY_OPERATOR("-");
-    UNARY_OPERATOR("val");
-    UNARY_OPERATOR("ref");
-    UNARY_OPERATOR("not");
-    UNARY_OPERATOR("<");
-    UNARY_OPERATOR(">=");
-    UNARY_OPERATOR(">");
-    UNARY_OPERATOR("<=");
-    UNARY_OPERATOR("==");
-    UNARY_OPERATOR("<>");
+    using namespace unary;
+    UNARY_OPERATOR("+", identity);
+    UNARY_OPERATOR("-", negate);
+    UNARY_OPERATOR("val", val);
+    UNARY_OPERATOR("ref", ref);
+    UNARY_OPERATOR("not", not_);
+    UNARY_OPERATOR("<", lt);
+    UNARY_OPERATOR(">=", ge);
+    UNARY_OPERATOR(">", gt);
+    UNARY_OPERATOR("<=", le);
+    UNARY_OPERATOR("==", eq);
+    UNARY_OPERATOR("<>", ne);
   }
   if (at_end() || !(current->type == Token::OPERATOR
       || current->type == Token::IDENTIFIER))
@@ -202,7 +207,7 @@ bool Parser::accept_unary_operator(Operator& result) {
 unique_ptr<Expression> Parser::accept_expression() {
   stack<Operator> operators;
   stack<unique_ptr<Expression>> operands;
-  operators.push(Operator::SENTINEL);
+  operators.push(Operator());
   E(operators, operands);
   return move(operands.top());
 }
@@ -226,14 +231,14 @@ void Parser::P
   Operator unary;
   unique_ptr<Expression> value;
   if (accept(Token::LEFT_PARENTHESIS)) {
-    operators.push(Operator::SENTINEL);
+    operators.push(Operator());
     E(operators, operands);
     expect(Token::RIGHT_PARENTHESIS);
     operators.pop();
   } else if (accept(Token::LEFT_BRACKET)) {
     unique_ptr<ListExpression> list(new ListExpression());
     unique_ptr<Expression> expression;
-    operators.push(Operator::SENTINEL);
+    operators.push(Operator());
     while (!accept(Token::RIGHT_BRACKET)) {
       E(operators, operands);
       list->push(move(operands.top()));

@@ -9,6 +9,23 @@ using namespace std;
 
 namespace hap {
 
+void Value::assert_type(Type expected) const {
+  auto actual(type());
+  if (actual == expected)
+    return;
+  ostringstream message;
+  message << "expected " << expected << " but got " << actual;
+  throw runtime_error(message.str());
+}
+
+ostream& operator<<(ostream& stream, const Value::Type& type) {
+  switch (type) {
+  case Value::UNDEFINED: return stream << "undefined";
+  case Value::INTEGER: return stream << "integer";
+  case Value::LIST: return stream << "list";
+  }
+}
+
 Expression::~Expression() {}
 
 ostream& operator<<(ostream& stream, const Expression& expression) {
@@ -64,8 +81,10 @@ ListValue* ListValue::copy() const {
 }
 
 unique_ptr<Value> BinaryExpression::eval(Environment& environment) const {
+  if (operator_.binary)
+    return operator_.binary(environment, a, b);
   ostringstream message;
-  message << "unimplemented evaluation of binary " << operator_;
+  message << "unimplemented binary operator " << operator_;
   throw runtime_error(message.str());
 }
 
@@ -78,8 +97,10 @@ void BinaryExpression::write(ostream& stream) const {
 }
 
 unique_ptr<Value> UnaryExpression::eval(Environment& environment) const {
+  if (operator_.unary)
+    return operator_.unary(environment, a);
   ostringstream message;
-  message << "unimplemented evaluation of unary " << operator_;
+  message << "unimplemented unary operator " << operator_;
   throw runtime_error(message.str());
 }
 
