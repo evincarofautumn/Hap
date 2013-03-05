@@ -1,7 +1,7 @@
-#include "tokenize.h"
+#include "Interpreter.h"
 #include "Parser.h"
 #include "Statement.h"
-
+#include "tokenize.h"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -21,7 +21,8 @@ int main(int argc, char** argv) try {
   vector<Token> tokens = tokenize(input);
   Parser parser(tokens);
   unique_ptr<Statement> program(parser.accept_program());
-  cout << *program << '\n';
+  Interpreter interpreter;
+  interpreter.run(move(program));
 } catch (const exception& error) {
   cerr << error.what() << '\n';
   return 1;

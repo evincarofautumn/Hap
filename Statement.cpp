@@ -1,4 +1,5 @@
 #include "Statement.h"
+#include "Environment.h"
 
 #include <ostream>
 
@@ -13,11 +14,23 @@ ostream& operator<<(ostream& stream, const Statement& statement) {
   return stream;
 }
 
+void BlockStatement::exec(Environment& environment) const {
+  for (const auto& statement : statements)
+    statement->exec(environment);
+}
+
 void BlockStatement::write(ostream& stream) const {
   stream << "{\n";
   for (const auto& statement : statements)
     statement->write(stream);
   stream << "}\n";
+}
+
+void VarStatement::exec(Environment& environment) const {
+  auto value = initializer
+    ? initializer->eval(environment)
+    : unique_ptr<Value>(new UndefinedExpression());
+  environment.define(identifier, move(value));
 }
 
 void VarStatement::write(ostream& stream) const {
@@ -27,6 +40,9 @@ void VarStatement::write(ostream& stream) const {
     initializer->write(stream);
   }
   stream << ";\n";
+}
+
+void FlowStatement::exec(Environment& environment) const {
 }
 
 void FlowStatement::write(ostream& stream) const {

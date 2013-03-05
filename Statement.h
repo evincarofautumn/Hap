@@ -9,11 +9,13 @@
 
 namespace hap {
 
+class Environment;
 class Expression;
 
 class Statement {
 public:
   virtual ~Statement();
+  virtual void exec(Environment&) const = 0;
   virtual void write(std::ostream&) const = 0;
 protected:
   Statement() {}
@@ -30,6 +32,7 @@ public:
   void push(std::unique_ptr<Statement> statement) {
     statements.push_back(std::move(statement));
   }
+  virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::vector<std::unique_ptr<Statement>> statements;
@@ -41,6 +44,7 @@ public:
     (const std::string& identifier,
      std::unique_ptr<Expression> initializer)
     : identifier(identifier), initializer(std::move(initializer)) {}
+  virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::string identifier;
@@ -56,6 +60,7 @@ public:
     : keyword(keyword),
       expression(std::move(expression)),
       statement(std::move(statement)) {}
+  virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::string keyword;
