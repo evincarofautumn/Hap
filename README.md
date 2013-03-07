@@ -77,6 +77,8 @@ true</code></pre></td>
 
 # Statements
 
+## General
+
 <table>
 <tr><th>Statement</th><th>Description</th></tr>
 <tr>
@@ -89,35 +91,58 @@ var NAME = EXPR;</code></pre></td>
 <td>Creates a lexically scoped function named <code>NAME</code> with a body given by <code>STAT</code> using the given parameters.</td>
 </tr>
 <tr>
-<td><pre><code>if EXPR STAT</code></pre></td>
-<td>Synchronous. Executes <code>STAT</code> if <code>EXPR</code> is true when the statement is reached.</td>
-</tr>
-<tr>
-<td><pre><code>when EXPR STAT</code></pre></td>
-<td>Asynchronous. Executes <code>STAT</code> once the first time <code>EXPR</code> becomes true. If <code>EXPR</code> is true when the statement is reached, executes <code>STAT</code> immediately.</td>
-</tr>
-<tr>
-<td><pre><code>whenever EXPR STAT</code></pre></td>
-<td>Asynchronous. Executes <code>STAT</code> once every time <code>EXPR</code> becomes true. If <code>EXPR</code> is true when the statement is reached, executes <code>STAT</code> immediately.</td>
-</tr>
-<tr>
-<td><pre><code>while EXPR STAT</code></pre></td>
-<td>Synchronous. Executes <code>STAT</code> repeatedly as long as <code>EXPR</code> remains true. If <code>EXPR</code> is false when the statement is reached, does nothing.</td>
-</tr>
-<tr>
-<td><pre><code>repeat_when EXPR STAT</code></pre></td>
-<td>Asynchronous. The first time <code>EXPR</code> becomes true, executes <code>STAT</code> repeatedly. Stops when <code>EXPR</code> becomes false.</td>
-</tr>
-<tr>
-<td><pre><code>repeat_whenever EXPR STAT</code></pre></td>
-<td>Asynchronous. Every time <code>EXPR</code> becomes true, executes <code>STAT</code> repeatedly. Pauses whenever <code>EXPR</code> becomes false and resumes whenever it becomes true.</td>
-</tr>
-<tr>
 <td><pre><code>EXPR;</code></pre></td>
 <td>Synchronous. Evaluates <code>EXPR</code> and discards the result.</td>
 </tr>
 <tr>
 <td><pre><code>{ STAT... }</code></pre></td>
 <td>Synchronous. Evaluates a block of statements as a unit. Introduces a new lexical scope.</td>
+</tr>
+</table>
+
+## Flow Control
+
+<table>
+<tr>
+<th>Statement</th>
+<th>Synchronicity</th>
+<th>When <code>STAT</code> is evaluated</th>
+<th>How many times <code>STAT</code> is evaluated</th>
+</tr>
+<tr>
+<td><pre><code>if EXPR STAT</code></pre></td>
+<td>Synchronous</td>
+<td>If <code>EXPR</code> is true when the statement is reached.</td>
+<td>Once</td>
+</tr>
+<tr>
+<td><pre><code>when EXPR STAT</code></pre></td>
+<td>Asynchronous</td>
+<td>The first time <code>EXPR</code> becomes true; immediately if <code>EXPR</code> is already true.</td>
+<td>Once</td>
+</tr>
+<tr>
+<td><pre><code>whenever EXPR STAT</code></pre></td>
+<td>Asynchronous</td>
+<td>Every time <code>EXPR</code> becomes true; immediately if <code>EXPR</code> is already true.</td>
+<td>Once</td>
+</tr>
+<tr>
+<td><pre><code>while EXPR STAT</code></pre></td>
+<td>Synchronous</td>
+<td>As long as <code>EXPR</code> remains true; never if <code>EXPR</code> is already false.</td>
+<td>Repeatedly</td>
+</tr>
+<tr>
+<td><pre><code>repeat_when EXPR STAT</code></pre></td>
+<td>Asynchronous</td>
+<td>The first time <code>EXPR</code> becomes true. Stops when <code>EXPR</code> becomes false.</td>
+<td>Repeatedly</td>
+</tr>
+<tr>
+<td><pre><code>repeat_whenever EXPR STAT</code></pre></td>
+<td>Asynchronous</td>
+<td>Every time <code>EXPR</code> becomes true. Pauses whenever <code>EXPR</code> becomes false; resumes whenever it becomes true.</td>
+<td>Repeatedly</td>
 </tr>
 </table>
