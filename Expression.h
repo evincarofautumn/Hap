@@ -49,7 +49,9 @@ public:
   virtual Value::Type type() const override {
     return Type::BOOLEAN;
   }
-  virtual BooleanExpression* copy() const override;
+  virtual BooleanExpression* copy() const override {
+    return new BooleanExpression(*this);
+  }
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
   bool value;
@@ -62,7 +64,9 @@ public:
   virtual Value::Type type() const override {
     return Type::INTEGER;
   }
-  virtual IntegerExpression* copy() const override;
+  virtual IntegerExpression* copy() const override {
+    return new IntegerExpression(*this);
+  }
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
   int value;
@@ -75,7 +79,9 @@ public:
   virtual Value::Type type() const override {
     return Type::STRING;
   }
-  virtual StringExpression* copy() const override;
+  virtual StringExpression* copy() const override {
+    return new StringExpression(*this);
+  }
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
   std::string value;
@@ -112,7 +118,9 @@ public:
   virtual Value::Type type() const override {
     return Type::LIST;
   }
-  virtual ListValue* copy() const override;
+  virtual ListValue* copy() const override {
+    return new ListValue(*this);
+  }
 private:
   ListValue(const ListValue&);
   std::vector<std::unique_ptr<Value>> values;
@@ -141,7 +149,9 @@ public:
   virtual Value::Type type() const override {
     return Type::MAP;
   }
-  virtual MapValue* copy() const override;
+  virtual MapValue* copy() const override {
+    return new MapValue(*this);
+  }
 private:
   MapValue(const MapValue&);
   std::map<std::unique_ptr<Value>, std::unique_ptr<Value>> pairs;
@@ -177,12 +187,17 @@ private:
 
 class UndefinedExpression : public Expression, public Value {
 public:
+  UndefinedExpression() = default;
   virtual Value::Type type() const override {
     return Type::UNDEFINED;
   }
-  virtual UndefinedExpression* copy() const override;
+  virtual UndefinedExpression* copy() const override {
+    return new UndefinedExpression(*this);
+  }
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
+private:
+  UndefinedExpression(const UndefinedExpression&) = default;
 };
 
 }

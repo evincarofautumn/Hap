@@ -38,10 +38,6 @@ ostream& operator<<(ostream& stream, const Expression& expression) {
 
 Value::~Value() {}
 
-BooleanExpression* BooleanExpression::copy() const {
-  return new BooleanExpression(*this);
-}
-
 unique_ptr<Value> BooleanExpression::eval(Environment&) const {
   return unique_ptr<Value>(new BooleanExpression(*this));
 }
@@ -50,20 +46,12 @@ void BooleanExpression::write(ostream& stream) const {
   stream << (value ? "true" : "false");
 }
 
-IntegerExpression* IntegerExpression::copy() const {
-  return new IntegerExpression(*this);
-}
-
 unique_ptr<Value> IntegerExpression::eval(Environment&) const {
   return unique_ptr<Value>(new IntegerExpression(*this));
 }
 
 void IntegerExpression::write(ostream& stream) const {
   stream << value;
-}
-
-StringExpression* StringExpression::copy() const {
-  return new StringExpression(*this);
 }
 
 unique_ptr<Value> StringExpression::eval(Environment&) const {
@@ -103,10 +91,6 @@ ListValue::ListValue(const ListValue& other) {
     values.push_back(unique_ptr<Value>(value->copy()));
 }
 
-ListValue* ListValue::copy() const {
-  return new ListValue(*this);
-}
-
 unique_ptr<Value> MapExpression::eval(Environment& environment) const {
   unique_ptr<MapValue> map(new MapValue());
   for (const auto& pair : pairs) {
@@ -132,10 +116,6 @@ MapValue::MapValue(const MapValue& other) {
   for (const auto& pair : other.pairs)
     pairs.insert(make_pair(unique_ptr<Value>(pair.first->copy()),
                            unique_ptr<Value>(pair.second->copy())));
-}
-
-MapValue* MapValue::copy() const {
-  return new MapValue(*this);
 }
 
 unique_ptr<Value> BinaryExpression::eval(Environment& environment) const {
@@ -166,10 +146,6 @@ void UnaryExpression::write(ostream& stream) const {
   stream << '(' << operator_ << ' ';
   a->write(stream);
   stream << ')';
-}
-
-UndefinedExpression* UndefinedExpression::copy() const {
-  return new UndefinedExpression();
 }
 
 unique_ptr<Value> UndefinedExpression::eval(Environment& environment) const {
