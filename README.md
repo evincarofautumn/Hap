@@ -89,35 +89,35 @@ var NAME = EXPR;</code></pre></td>
 <td>Creates a lexically scoped function named <code>NAME</code> with a body given by <code>STAT</code> using the given parameters.</td>
 </tr>
 <tr>
-<td><code>if EXPR STAT</code></td>
+<td><pre><code>if EXPR STAT</code></pre></td>
 <td>Synchronous. Executes <code>STAT</code> if <code>EXPR</code> is true when the statement is reached.</td>
 </tr>
 <tr>
-<td><code>when EXPR STAT</code></td>
+<td><pre><code>when EXPR STAT</code></pre></td>
 <td>Asynchronous. Executes <code>STAT</code> once the first time <code>EXPR</code> becomes true. If <code>EXPR</code> is true when the statement is reached, executes <code>STAT</code> immediately.</td>
 </tr>
 <tr>
-<td><code>whenever EXPR STAT</code></td>
+<td><pre><code>whenever EXPR STAT</code></pre></td>
 <td>Asynchronous. Executes <code>STAT</code> once every time <code>EXPR</code> becomes true. If <code>EXPR</code> is true when the statement is reached, executes <code>STAT</code> immediately.</td>
 </tr>
 <tr>
-<td><code>while EXPR STAT</code></td>
+<td><pre><code>while EXPR STAT</code></pre></td>
 <td>Synchronous. Executes <code>STAT</code> repeatedly as long as <code>EXPR</code> remains true. If <code>EXPR</code> is false when the statement is reached, does nothing.</td>
 </tr>
 <tr>
-<td><code>repeat_when EXPR STAT</code></td>
+<td><pre><code>repeat_when EXPR STAT</code></pre></td>
 <td>Asynchronous. The first time <code>EXPR</code> becomes true, executes <code>STAT</code> repeatedly. Stops when <code>EXPR</code> becomes false.</td>
 </tr>
 <tr>
-<td><code>repeat_whenever EXPR STAT</code></td>
+<td><pre><code>repeat_whenever EXPR STAT</code></pre></td>
 <td>Asynchronous. Every time <code>EXPR</code> becomes true, executes <code>STAT</code> repeatedly. Pauses whenever <code>EXPR</code> becomes false and resumes whenever it becomes true.</td>
 </tr>
 <tr>
-<td><code>EXPR;</code></td>
+<td><pre><code>EXPR;</code></pre></td>
 <td>Synchronous. Evaluates <code>EXPR</code> and discards the result.</td>
 </tr>
 <tr>
-<td><code>{ STAT... }</code></td>
+<td><pre><code>{ STAT... }</code></pre></td>
 <td>Synchronous. Evaluates a block of statements as a unit. Introduces a new lexical scope.</td>
 </tr>
 </table>
