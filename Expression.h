@@ -11,9 +11,7 @@
 
 namespace hap {
 
-class BinaryOperator;
 class Environment;
-class UnaryOperator;
 
 class Value {
 public:
