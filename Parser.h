@@ -43,6 +43,7 @@ private:
     accept_boolean_expression,
     accept_integer_expression,
     accept_identifier_expression,
+    accept_lambda_expression,
     accept_list_expression,
     accept_string_expression;
   AcceptOperator

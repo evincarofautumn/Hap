@@ -59,14 +59,10 @@ public:
 class FunExpression : public Expression, public Value {
 public:
   FunExpression
-    (const std::string& identifier,
-     const std::vector<std::string>& parameters,
-     std::unique_ptr<Statement> body,
-     const Environment& environment)
-    : identifier(identifier),
-      parameters(parameters),
-      body(std::move(body)),
-      environment(environment) {}
+    (const std::string&,
+     const std::vector<std::string>&,
+     std::unique_ptr<Statement>,
+     const Environment&);
   virtual Value::Type type() const override {
     return Type::FUNCTION;
   }

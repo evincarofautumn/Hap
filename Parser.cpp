@@ -142,7 +142,8 @@ unique_ptr<Expression> Parser::accept_value_expression() {
     (&Parser::accept_integer_expression,
      &Parser::accept_boolean_expression,
      &Parser::accept_identifier_expression,
-     &Parser::accept_string_expression);
+     &Parser::accept_string_expression,
+     &Parser::accept_lambda_expression);
 }
 
 unique_ptr<Expression> Parser::accept_integer_expression() {
@@ -179,6 +180,46 @@ unique_ptr<Expression> Parser::accept_string_expression() {
     return unique_ptr<Expression>();
   token.string.pop_back();
   return unique_ptr<Expression>(new StringExpression(token.string.substr(1)));
+}
+
+unique_ptr<Expression> Parser::accept_lambda_expression() {
+  if (!accept(Token(Token::OPERATOR, "\\")))
+    return unique_ptr<Expression>();
+  Token identifier(Token::IDENTIFIER, "lambda");
+  accept(Token::IDENTIFIER, identifier);
+  vector<string> parameters;
+  expect(Token::LEFT_PARENTHESIS);
+  if (!peek(Token::RIGHT_PARENTHESIS)) {
+    while (true) {
+      if (peek(Token::RIGHT_PARENTHESIS))
+        break;
+      Token parameter;
+      expect(Token::IDENTIFIER, parameter);
+      parameters.push_back(move(parameter.string));
+      if (!accept(Token::COMMA))
+        break;
+    }
+  }
+  expect(Token::RIGHT_PARENTHESIS);
+  unique_ptr<Statement> body;
+  if (accept(Token::COLON)) {
+    auto expression(accept_expression());
+    if (!expression)
+      expected("expression");
+    body.reset(new RetStatement(move(expression)));
+  } else if (accept(Token::LEFT_BRACE)) {
+    body = accept_statements();
+    expect(Token::RIGHT_BRACE);
+  } else {
+    expected("colon or block");
+  }
+  Environment environment;
+  return unique_ptr<Expression>
+    (new FunExpression
+     (identifier.string,
+      parameters,
+      move(body),
+      environment));
 }
 
 map<string, Operator> binary_operators;

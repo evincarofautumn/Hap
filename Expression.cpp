@@ -47,6 +47,28 @@ void BooleanExpression::write(ostream& stream) const {
   stream << (value ? "true" : "false");
 }
 
+FunExpression::FunExpression
+  (const std::string& identifier,
+   const std::vector<std::string>& parameters,
+   std::unique_ptr<Statement> body,
+   const Environment& environment)
+  : identifier(identifier),
+    parameters(parameters),
+    body(std::move(body)),
+    environment(environment) {}
+
+unique_ptr<Value> FunExpression::eval(Environment& environment) const {
+  throw runtime_error("unimplemented fun");
+}
+
+void FunExpression::write(ostream& stream) const {
+  stream << "\\" << identifier << "(";
+  for (const auto& parameter : parameters)
+    stream << parameter << ", ";
+  stream << ") ";
+  body->write(stream);
+}
+
 unique_ptr<Value> IntegerExpression::eval(Environment&) const {
   return unique_ptr<Value>(new IntegerExpression(*this));
 }
