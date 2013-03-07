@@ -67,7 +67,7 @@ true</code></pre></td>
 <td><code>map</code></td>
 <td><pre><code>{}
 
-{ "one": 1  "two": 2  "three": 3 }
+{ "one": 1, "two": 2, "three": 3 }
 
 [ { en: "one",   fr: "un"    },
   { en: "two",   fr: "deux"  },
