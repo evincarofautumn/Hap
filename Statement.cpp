@@ -65,6 +65,7 @@ void RetStatement::write(ostream& stream) const {
 }
 
 void FlowStatement::exec(Environment& environment) const {
+  throw runtime_error("unimplemented flow");
 }
 
 void FlowStatement::write(ostream& stream) const {
