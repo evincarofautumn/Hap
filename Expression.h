@@ -1,7 +1,9 @@
 #ifndef HAP_EXPRESSION_H
 #define HAP_EXPRESSION_H
 
+#include "Environment.h"
 #include "Operator.h"
+#include "Statement.h"
 
 #include <iosfwd>
 #include <map>
@@ -11,13 +13,12 @@
 
 namespace hap {
 
-class Environment;
-
 class Value {
 public:
   enum Type {
     UNDEFINED,
     BOOLEAN,
+    FUNCTION,
     INTEGER,
     LIST,
     MAP,
@@ -53,6 +54,33 @@ public:
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
   bool value;
+};
+
+class FunExpression : public Expression, public Value {
+public:
+  FunExpression
+    (const std::string& identifier,
+     const std::vector<std::string>& parameters,
+     std::unique_ptr<Statement> body,
+     const Environment& environment)
+    : identifier(identifier),
+      parameters(parameters),
+      body(std::move(body)),
+      environment(environment) {}
+  virtual Value::Type type() const override {
+    return Type::FUNCTION;
+  }
+  virtual FunExpression* copy() const override {
+    return new FunExpression(*this);
+  }
+  virtual std::unique_ptr<Value> eval(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+private:
+  FunExpression(const FunExpression&) = default;
+  std::string identifier;
+  std::vector<std::string> parameters;
+  std::shared_ptr<Statement> body;
+  Environment environment;
 };
 
 class IntegerExpression : public Expression, public Value {

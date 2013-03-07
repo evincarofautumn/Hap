@@ -1,8 +1,6 @@
 #ifndef HAP_STATEMENT_H
 #define HAP_STATEMENT_H
 
-#include "Expression.h"
-
 #include <memory>
 #include <string>
 #include <vector>
@@ -40,10 +38,7 @@ private:
 
 class VarStatement : public Statement {
 public:
-  VarStatement
-    (const std::string& identifier,
-     std::unique_ptr<Expression> initializer)
-    : identifier(identifier), initializer(std::move(initializer)) {}
+  VarStatement(const std::string&, std::unique_ptr<Expression>);
   virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
@@ -53,13 +48,9 @@ private:
 
 class FunStatement : public Statement {
 public:
-  FunStatement
-    (const std::string& identifier,
-     const std::vector<std::string>& parameters,
-     std::unique_ptr<Statement> body)
-    : identifier(identifier),
-      parameters(parameters),
-      body(std::move(body)) {}
+  FunStatement(const std::string&,
+               const std::vector<std::string>&,
+               std::unique_ptr<Statement>);
   virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
@@ -70,8 +61,7 @@ private:
 
 class RetStatement : public Statement {
 public:
-  RetStatement(std::unique_ptr<Expression> expression)
-    : expression(std::move(expression)) {}
+  RetStatement(std::unique_ptr<Expression>);
   virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
@@ -81,12 +71,9 @@ private:
 class FlowStatement : public Statement {
 public:
   FlowStatement
-    (const std::string& keyword,
-     std::unique_ptr<Expression> expression,
-     std::unique_ptr<Statement> statement)
-    : keyword(keyword),
-      expression(std::move(expression)),
-      statement(std::move(statement)) {}
+    (const std::string&,
+     std::unique_ptr<Expression>,
+     std::unique_ptr<Statement>);
   virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
@@ -98,9 +85,8 @@ private:
 #define FLOW_STATEMENT(NAME, KEYWORD) \
 struct NAME##Statement : FlowStatement { \
   NAME##Statement \
-    (std::unique_ptr<Expression> expression, \
-     std::unique_ptr<Statement> statement) \
-    : FlowStatement(KEYWORD, std::move(expression), std::move(statement)) {} \
+    (std::unique_ptr<Expression>, \
+     std::unique_ptr<Statement>); \
 };
 
 FLOW_STATEMENT(If, "if")

@@ -15,7 +15,7 @@ public:
   const Value& operator[](const std::string&) const;
   Value& operator[](const std::string&);
 private:
-  std::unordered_map<std::string, std::unique_ptr<Value>> variables;
+  std::unordered_map<std::string, std::shared_ptr<Value>> variables;
 };
 
 }
