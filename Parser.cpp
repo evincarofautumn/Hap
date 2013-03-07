@@ -239,13 +239,18 @@ void Parser::P
     unique_ptr<ListExpression> list(new ListExpression());
     unique_ptr<Expression> expression;
     operators.push(Operator());
-    while (!accept(Token::RIGHT_BRACKET)) {
-      E(operators, operands);
-      list->push(move(operands.top()));
-      operands.pop();
-      if (at_end())
-        expected("right bracket");
+    if (!peek(Token::RIGHT_BRACKET)) {
+      while (true) {
+        if (peek(Token::RIGHT_BRACKET))
+          break;
+        E(operators, operands);
+        list->push(move(operands.top()));
+        operands.pop();
+        if (!accept(Token::COMMA))
+          break;
+      }
     }
+    expect(Token::RIGHT_BRACKET);
     operators.pop();
     operands.push(static_unique_cast<Expression>(move(list)));
   } else if (accept_unary_operator(unary)) {
@@ -291,22 +296,30 @@ void Parser::push_operator
   operators.push(operator_);
 }
 
+bool Parser::peek(Token::Type type) const {
+  return !at_end() && current->type == type;
+}
+
+bool Parser::peek(const Token& token) const {
+  return !at_end() && *current == token;
+}
+
 bool Parser::accept(Token::Type type) {
-  if (at_end() || current->type != type)
+  if (!peek(type))
     return false;
   ++current;
   return true;
 }
 
 bool Parser::accept(Token::Type type, Token& result) {
-  if (at_end() || current->type != type)
+  if (!peek(type))
     return false;
   result = *current++;
   return true;
 }
 
 bool Parser::accept(const Token& token) {
-  if (at_end() || *current != token)
+  if (!peek(token))
     return false;
   ++current;
   return true;

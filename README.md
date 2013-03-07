@@ -54,14 +54,14 @@ true</code></pre></td>
 <td><code>list</code></td>
 <td><pre><code>[]
 
-[1 2 3 4 5]
+[1, 2, 3, 4, 5]
 
-["this" "that" "and" "the" "other" "thing"]
+["this", "that", "and", "the", "other", "thing"]
 
-[ [ +cos(x) -sin(x) ]
-  [ +sin(x) +cos(x) ] ]
+[ [ +cos(x), -sin(x) ],
+  [ +sin(x), +cos(x) ] ]
 
-[0 false ""]</code></pre></td>
+[0, false, ""]</code></pre></td>
 </tr>
 <tr>
 <td><code>map</code></td>

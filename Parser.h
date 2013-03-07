@@ -60,6 +60,8 @@ private:
   typedef std::vector<Token> Tokens;
   const Tokens tokens;
   Tokens::const_iterator current;
+  bool peek(Token::Type) const;
+  bool peek(const Token&) const;
   bool accept(Token::Type);
   bool accept(Token::Type, Token&);
   bool accept(const Token&);
