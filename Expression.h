@@ -19,6 +19,7 @@ class Value {
 public:
   enum Type {
     UNDEFINED,
+    BOOLEAN,
     INTEGER,
     LIST,
     MAP,
@@ -40,6 +41,19 @@ public:
 };
 
 std::ostream& operator<<(std::ostream&, const Expression&);
+
+class BooleanExpression : public Expression, public Value {
+public:
+  BooleanExpression(bool value)
+    : value(value) {}
+  virtual Value::Type type() const override {
+    return Type::BOOLEAN;
+  }
+  virtual BooleanExpression* copy() const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+  bool value;
+};
 
 class IntegerExpression : public Expression, public Value {
 public:

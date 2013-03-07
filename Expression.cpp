@@ -21,6 +21,7 @@ void Value::assert_type(Type expected) const {
 ostream& operator<<(ostream& stream, const Value::Type& type) {
   switch (type) {
   case Value::UNDEFINED: return stream << "undefined";
+  case Value::BOOLEAN: return stream << "boolean";
   case Value::INTEGER: return stream << "integer";
   case Value::LIST: return stream << "list";
   case Value::MAP: return stream << "map";
@@ -36,6 +37,18 @@ ostream& operator<<(ostream& stream, const Expression& expression) {
 }
 
 Value::~Value() {}
+
+BooleanExpression* BooleanExpression::copy() const {
+  return new BooleanExpression(*this);
+}
+
+unique_ptr<Value> BooleanExpression::eval(Environment&) const {
+  return unique_ptr<Value>(new BooleanExpression(*this));
+}
+
+void BooleanExpression::write(ostream& stream) const {
+  stream << (value ? "true" : "false");
+}
 
 IntegerExpression* IntegerExpression::copy() const {
   return new IntegerExpression(*this);

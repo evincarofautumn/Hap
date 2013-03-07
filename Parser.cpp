@@ -104,7 +104,9 @@ unique_ptr<Statement> Parser::accept_repeat_whenever_statement() {
 unique_ptr<Expression> Parser::accept_value_expression() {
   unique_ptr<Expression> value;
   (value = accept_integer_expression())
-    || (value = accept_identifier_expression());
+    || (value = accept_boolean_expression())
+    || (value = accept_identifier_expression())
+    || (value = accept_string_expression());
   return value;
 }
 
@@ -119,11 +121,29 @@ unique_ptr<Expression> Parser::accept_integer_expression() {
   return unique_ptr<Expression>(new IntegerExpression(value));
 }
 
+unique_ptr<Expression> Parser::accept_boolean_expression() {
+  if (accept(Token(Token::IDENTIFIER, "true"))) {
+    return unique_ptr<Expression>(new BooleanExpression(true));
+  } else if (accept(Token(Token::IDENTIFIER, "false"))) {
+    return unique_ptr<Expression>(new BooleanExpression(false));
+  } else {
+    return unique_ptr<Expression>();
+  }
+}
+
 unique_ptr<Expression> Parser::accept_identifier_expression() {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
     return unique_ptr<Expression>();
   return unique_ptr<Expression>(new IdentifierExpression(token.string));
+}
+
+unique_ptr<Expression> Parser::accept_string_expression() {
+  Token token;
+  if (!accept(Token::STRING, token))
+    return unique_ptr<Expression>();
+  token.string.pop_back();
+  return unique_ptr<Expression>(new StringExpression(token.string.substr(1)));
 }
 
 map<string, Operator> binary_operators;
