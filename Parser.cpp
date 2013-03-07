@@ -263,31 +263,31 @@ unique_ptr<Expression> Parser::accept_expression() {
   stack<Operator> operators;
   stack<unique_ptr<Expression>> operands;
   operators.push(Operator());
-  E(operators, operands);
+  infix_expression(operators, operands);
   return move(operands.top());
 }
 
-void Parser::E
+void Parser::infix_expression
   (stack<Operator>& operators,
    stack<unique_ptr<Expression>>& operands) {
-  P(operators, operands);
+  infix_subexpression(operators, operands);
   Operator operator_;
   while (accept_binary_operator(operator_)) {
     push_operator(operator_, operators, operands);
-    P(operators, operands);
+    infix_subexpression(operators, operands);
   }
   while (operators.top().arity != Operator::SENTINEL)
     pop_operator(operators, operands);
 }
 
-void Parser::P
+void Parser::infix_subexpression
   (stack<Operator>& operators,
    stack<unique_ptr<Expression>>& operands) {
   Operator unary;
   unique_ptr<Expression> value;
   if (accept(Token::LEFT_PARENTHESIS)) {
     operators.push(Operator());
-    E(operators, operands);
+    infix_expression(operators, operands);
     expect(Token::RIGHT_PARENTHESIS);
     operators.pop();
   } else if (accept(Token::LEFT_BRACKET)) {
@@ -297,7 +297,7 @@ void Parser::P
       while (true) {
         if (peek(Token::RIGHT_BRACKET))
           break;
-        E(operators, operands);
+        infix_expression(operators, operands);
         list->push(move(operands.top()));
         operands.pop();
         if (!accept(Token::COMMA))
@@ -319,12 +319,12 @@ void Parser::P
         if (accept(Token::IDENTIFIER, bareword)) {
           key.reset(new StringExpression(bareword.string));
         } else {
-          E(operators, operands);
+          infix_expression(operators, operands);
           key = move(operands.top());
           operands.pop();
         }
         expect(Token::COLON);
-        E(operators, operands);
+        infix_expression(operators, operands);
         unique_ptr<const Expression> value(move(operands.top()));
         operands.pop();
         map->insert(move(key), move(value));
@@ -337,7 +337,7 @@ void Parser::P
     operands.push(static_unique_cast<Expression>(move(map)));
   } else if (accept_unary_operator(unary)) {
     push_operator(unary, operators, operands);
-    P(operators, operands);
+    infix_subexpression(operators, operands);
   } else if ((value = accept_value_expression())) {
     operands.push(move(value));
   } else {

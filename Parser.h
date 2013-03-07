@@ -59,10 +59,10 @@ private:
   typename std::unique_ptr<T> first(Only function) {
     return (this->*function)();
   }
-  void E
+  void infix_expression
     (std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
-  void P
+  void infix_subexpression
     (std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
   void push_operator
