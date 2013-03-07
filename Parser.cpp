@@ -36,17 +36,16 @@ unique_ptr<Statement> Parser::accept_statements() {
 }
 
 unique_ptr<Statement> Parser::accept_statement() {
-  unique_ptr<Statement> statement;
-  (statement = accept_empty_statement())
-    || (statement = accept_block_statement())
-    || (statement = accept_var_statement())
-    || (statement = accept_if_statement())
-    || (statement = accept_when_statement())
-    || (statement = accept_whenever_statement())
-    || (statement = accept_while_statement())
-    || (statement = accept_repeat_when_statement())
-    || (statement = accept_repeat_whenever_statement());
-  return statement;
+  return first<Statement>
+    (&Parser::accept_empty_statement,
+     &Parser::accept_block_statement,
+     &Parser::accept_var_statement,
+     &Parser::accept_if_statement,
+     &Parser::accept_when_statement,
+     &Parser::accept_whenever_statement,
+     &Parser::accept_while_statement,
+     &Parser::accept_repeat_when_statement,
+     &Parser::accept_repeat_whenever_statement);
 }
 
 unique_ptr<Statement> Parser::accept_empty_statement() {
@@ -102,12 +101,11 @@ unique_ptr<Statement> Parser::accept_repeat_whenever_statement() {
 }
 
 unique_ptr<Expression> Parser::accept_value_expression() {
-  unique_ptr<Expression> value;
-  (value = accept_integer_expression())
-    || (value = accept_boolean_expression())
-    || (value = accept_identifier_expression())
-    || (value = accept_string_expression());
-  return value;
+  return first<Expression>
+    (&Parser::accept_integer_expression,
+     &Parser::accept_boolean_expression,
+     &Parser::accept_identifier_expression,
+     &Parser::accept_string_expression);
 }
 
 unique_ptr<Expression> Parser::accept_integer_expression() {

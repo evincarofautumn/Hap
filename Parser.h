@@ -46,6 +46,17 @@ private:
   AcceptOperator
     accept_binary_operator,
     accept_unary_operator;
+  template<class T, class First, class... Rest>
+  typename std::unique_ptr<T> first(First function, Rest&&... rest) {
+    auto result((this->*function)());
+    if (result)
+      return std::move(result);
+    return first<T, Rest...>(std::forward<Rest>(rest)...);
+  }
+  template<class T, class Only>
+  typename std::unique_ptr<T> first(Only function) {
+    return (this->*function)();
+  }
   void E
     (std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
