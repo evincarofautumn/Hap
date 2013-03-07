@@ -29,6 +29,8 @@ private:
     accept_empty_statement,
     accept_block_statement,
     accept_var_statement,
+    accept_fun_statement,
+    accept_ret_statement,
     accept_if_statement,
     accept_when_statement,
     accept_whenever_statement,

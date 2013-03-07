@@ -42,6 +42,28 @@ void VarStatement::write(ostream& stream) const {
   stream << ";\n";
 }
 
+void FunStatement::exec(Environment& environment) const {
+  throw runtime_error("unimplemented fun");
+}
+
+void FunStatement::write(ostream& stream) const {
+  stream << "fun " << identifier << "(";
+  for (const auto& parameter : parameters)
+    stream << parameter << ", ";
+  stream << ") ";
+  body->write(stream);
+}
+
+void RetStatement::exec(Environment& environment) const {
+  throw runtime_error("unimplemented ret");
+}
+
+void RetStatement::write(ostream& stream) const {
+  stream << "ret ";
+  expression->write(stream);
+  stream << ";\n";
+}
+
 void FlowStatement::exec(Environment& environment) const {
 }
 

@@ -51,6 +51,33 @@ private:
   std::unique_ptr<Expression> initializer;
 };
 
+class FunStatement : public Statement {
+public:
+  FunStatement
+    (const std::string& identifier,
+     const std::vector<std::string>& parameters,
+     std::unique_ptr<Statement> body)
+    : identifier(identifier),
+      parameters(parameters),
+      body(std::move(body)) {}
+  virtual void exec(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+private:
+  std::string identifier;
+  std::vector<std::string> parameters;
+  std::unique_ptr<Statement> body;
+};
+
+class RetStatement : public Statement {
+public:
+  RetStatement(std::unique_ptr<Expression> expression)
+    : expression(std::move(expression)) {}
+  virtual void exec(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+private:
+  std::unique_ptr<Expression> expression;
+};
+
 class FlowStatement : public Statement {
 public:
   FlowStatement

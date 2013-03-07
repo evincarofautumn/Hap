@@ -40,6 +40,8 @@ unique_ptr<Statement> Parser::accept_statement() {
     (&Parser::accept_empty_statement,
      &Parser::accept_block_statement,
      &Parser::accept_var_statement,
+     &Parser::accept_fun_statement,
+     &Parser::accept_ret_statement,
      &Parser::accept_if_statement,
      &Parser::accept_when_statement,
      &Parser::accept_whenever_statement,
@@ -74,6 +76,41 @@ unique_ptr<Statement> Parser::accept_var_statement() {
   expect(Token::SEMICOLON);
   return unique_ptr<Statement>
     (new VarStatement(identifier.string, move(initializer)));
+}
+
+unique_ptr<Statement> Parser::accept_fun_statement() {
+  if (!accept(Token(Token::IDENTIFIER, "fun")))
+    return unique_ptr<Statement>();
+  Token identifier;
+  expect(Token::IDENTIFIER, identifier);
+  vector<string> parameters;
+  expect(Token::LEFT_PARENTHESIS);
+  if (!peek(Token::RIGHT_PARENTHESIS)) {
+    while (true) {
+      if (peek(Token::RIGHT_PARENTHESIS))
+        break;
+      Token parameter;
+      expect(Token::IDENTIFIER, parameter);
+      parameters.push_back(move(parameter.string));
+      if (!accept(Token::COMMA))
+        break;
+    }
+  }
+  expect(Token::RIGHT_PARENTHESIS);
+  unique_ptr<Statement> body(accept_statement());
+  if (!body)
+    expected("statement");
+  return unique_ptr<Statement>
+    (new FunStatement(identifier.string, parameters, move(body)));
+}
+
+unique_ptr<Statement> Parser::accept_ret_statement() {
+  if (!accept(Token(Token::IDENTIFIER, "ret")))
+    return unique_ptr<Statement>();
+  auto expression(accept_expression());
+  return expression
+    ? unique_ptr<Statement>(new RetStatement(move(expression)))
+    : unique_ptr<Statement>();
 }
 
 unique_ptr<Statement> Parser::accept_if_statement() {
