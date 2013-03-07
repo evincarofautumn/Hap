@@ -161,28 +161,31 @@ class BinaryExpression : public Expression {
 public:
   BinaryExpression
     (const Operator& operator_,
-     std::unique_ptr<Expression> a,
-     std::unique_ptr<Expression> b)
-    : operator_(operator_), a(std::move(a)), b(std::move(b)) {}
+     std::unique_ptr<Expression> left,
+     std::unique_ptr<Expression> right)
+    : operator_(operator_),
+      left(std::move(left)),
+      right(std::move(right)) {}
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   Operator operator_;
-  std::unique_ptr<const Expression> a;
-  std::unique_ptr<const Expression> b;
+  std::unique_ptr<const Expression> left;
+  std::unique_ptr<const Expression> right;
 };
 
 class UnaryExpression : public Expression {
 public:
   UnaryExpression
     (const Operator& operator_,
-     std::unique_ptr<const Expression> a)
-    : operator_(operator_), a(std::move(a)) {}
+     std::unique_ptr<const Expression> expression)
+    : operator_(operator_),
+      expression(std::move(expression)) {}
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   Operator operator_;
-  std::unique_ptr<const Expression> a;
+  std::unique_ptr<const Expression> expression;
 };
 
 class UndefinedExpression : public Expression, public Value {

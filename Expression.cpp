@@ -120,7 +120,7 @@ MapValue::MapValue(const MapValue& other) {
 
 unique_ptr<Value> BinaryExpression::eval(Environment& environment) const {
   if (operator_.binary)
-    return operator_.binary(environment, a, b);
+    return operator_.binary(environment, left, right);
   ostringstream message;
   message << "unimplemented binary operator " << operator_;
   throw runtime_error(message.str());
@@ -128,15 +128,15 @@ unique_ptr<Value> BinaryExpression::eval(Environment& environment) const {
 
 void BinaryExpression::write(ostream& stream) const {
   stream << '(';
-  a->write(stream);
+  left->write(stream);
   stream << ' ' << operator_ << ' ';
-  b->write(stream);
+  right->write(stream);
   stream << ')';
 }
 
 unique_ptr<Value> UnaryExpression::eval(Environment& environment) const {
   if (operator_.unary)
-    return operator_.unary(environment, a);
+    return operator_.unary(environment, expression);
   ostringstream message;
   message << "unimplemented unary operator " << operator_;
   throw runtime_error(message.str());
@@ -144,7 +144,7 @@ unique_ptr<Value> UnaryExpression::eval(Environment& environment) const {
 
 void UnaryExpression::write(ostream& stream) const {
   stream << '(' << operator_ << ' ';
-  a->write(stream);
+  expression->write(stream);
   stream << ')';
 }
 
