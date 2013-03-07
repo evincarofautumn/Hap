@@ -106,43 +106,43 @@ var NAME = EXPR;</code></pre></td>
 <tr>
 <th>Statement</th>
 <th>Synchronicity</th>
-<th>When <code>STAT</code> is evaluated</th>
 <th>How many times <code>STAT</code> is evaluated</th>
+<th>When <code>STAT</code> is evaluated</th>
 </tr>
 <tr>
 <td><pre><code>if EXPR STAT</code></pre></td>
 <td>Synchronous</td>
-<td>If <code>EXPR</code> is true when the statement is reached.</td>
 <td>Once</td>
+<td>If <code>EXPR</code> is true when the statement is reached.</td>
 </tr>
 <tr>
 <td><pre><code>when EXPR STAT</code></pre></td>
 <td>Asynchronous</td>
-<td>The first time <code>EXPR</code> becomes true; immediately if <code>EXPR</code> is already true.</td>
 <td>Once</td>
+<td>The first time <code>EXPR</code> becomes true; immediately if <code>EXPR</code> is already true.</td>
 </tr>
 <tr>
 <td><pre><code>whenever EXPR STAT</code></pre></td>
 <td>Asynchronous</td>
-<td>Every time <code>EXPR</code> becomes true; immediately if <code>EXPR</code> is already true.</td>
 <td>Once</td>
+<td>Every time <code>EXPR</code> becomes true; immediately if <code>EXPR</code> is already true.</td>
 </tr>
 <tr>
 <td><pre><code>while EXPR STAT</code></pre></td>
 <td>Synchronous</td>
-<td>As long as <code>EXPR</code> remains true; never if <code>EXPR</code> is already false.</td>
 <td>Repeatedly</td>
+<td>As long as <code>EXPR</code> remains true; never if <code>EXPR</code> is already false.</td>
 </tr>
 <tr>
 <td><pre><code>repeat_when EXPR STAT</code></pre></td>
 <td>Asynchronous</td>
-<td>The first time <code>EXPR</code> becomes true. Stops when <code>EXPR</code> becomes false.</td>
 <td>Repeatedly</td>
+<td>The first time <code>EXPR</code> becomes true. Stops when <code>EXPR</code> becomes false.</td>
 </tr>
 <tr>
 <td><pre><code>repeat_whenever EXPR STAT</code></pre></td>
 <td>Asynchronous</td>
-<td>Every time <code>EXPR</code> becomes true. Pauses whenever <code>EXPR</code> becomes false; resumes whenever it becomes true.</td>
 <td>Repeatedly</td>
+<td>Every time <code>EXPR</code> becomes true. Pauses whenever <code>EXPR</code> becomes false; resumes whenever it becomes true.</td>
 </tr>
 </table>
