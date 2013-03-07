@@ -85,6 +85,10 @@ var NAME = EXPR;</code></pre></td>
 <td>Creates a lexically scoped variable named <code>NAME</code>. Initializes it to <code>EXPR</code>, or gives it an initial value of <code>undef</code> if <code>EXPR</code> is not specified.</td>
 </tr>
 <tr>
+<td><pre><code>fun NAME(PARAM, PARAM, ...) STAT</code></pre></td>
+<td>Creates a lexically scoped function named <code>NAME</code> with a body given by <code>STAT</code> using the given parameters.</td>
+</tr>
+<tr>
 <td><code>if EXPR STAT</code></td>
 <td>Synchronous. Executes <code>STAT</code> if <code>EXPR</code> is true when the statement is reached.</td>
 </tr>
