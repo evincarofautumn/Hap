@@ -23,6 +23,8 @@ ostream& operator<<(ostream& stream, const Value::Type& type) {
   case Value::UNDEFINED: return stream << "undefined";
   case Value::INTEGER: return stream << "integer";
   case Value::LIST: return stream << "list";
+  case Value::MAP: return stream << "map";
+  case Value::STRING: return stream << "string";
   }
 }
 
@@ -47,6 +49,18 @@ void IntegerExpression::write(ostream& stream) const {
   stream << value;
 }
 
+StringExpression* StringExpression::copy() const {
+  return new StringExpression(*this);
+}
+
+unique_ptr<Value> StringExpression::eval(Environment&) const {
+  return unique_ptr<Value>(new StringExpression(*this));
+}
+
+void StringExpression::write(ostream& stream) const {
+  stream << '"' << value << '"';
+}
+
 unique_ptr<Value> IdentifierExpression::eval(Environment& environment) const {
   return unique_ptr<Value>(environment[identifier].copy());
 }
@@ -66,7 +80,7 @@ void ListExpression::write(ostream& stream) const {
   stream << "[ ";
   for (const auto& expression : expressions) {
     expression->write(stream);
-    stream << ' ';
+    stream << ", ";
   }
   stream << ']';
 }
@@ -78,6 +92,37 @@ ListValue::ListValue(const ListValue& other) {
 
 ListValue* ListValue::copy() const {
   return new ListValue(*this);
+}
+
+unique_ptr<Value> MapExpression::eval(Environment& environment) const {
+  unique_ptr<MapValue> map(new MapValue());
+  for (const auto& pair : pairs) {
+    auto key(pair.first->eval(environment));
+    auto value(pair.second->eval(environment));
+    map->insert(move(key), move(value));
+  }
+  return static_unique_cast<Value>(move(map));
+}
+
+void MapExpression::write(ostream& stream) const {
+  stream << "{ ";
+  for (const auto& pair : pairs) {
+    pair.first->write(stream);
+    stream << ": ";
+    pair.second->write(stream);
+    stream << ", ";
+  }
+  stream << '}';
+}
+
+MapValue::MapValue(const MapValue& other) {
+  for (const auto& pair : other.pairs)
+    pairs.insert(make_pair(unique_ptr<Value>(pair.first->copy()),
+                           unique_ptr<Value>(pair.second->copy())));
+}
+
+MapValue* MapValue::copy() const {
+  return new MapValue(*this);
 }
 
 unique_ptr<Value> BinaryExpression::eval(Environment& environment) const {

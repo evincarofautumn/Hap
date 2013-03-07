@@ -35,6 +35,7 @@ vector<Token> tokenize(istream& stream) {
     _[']'] = Token::RIGHT_BRACKET;
     _[','] = Token::COMMA;
     _[';'] = Token::SEMICOLON;
+    _[':'] = Token::COLON;
   }
   State state = NORMAL;
   bool need = true;

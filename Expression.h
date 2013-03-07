@@ -4,6 +4,7 @@
 #include "Operator.h"
 
 #include <iosfwd>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -20,6 +21,8 @@ public:
     UNDEFINED,
     INTEGER,
     LIST,
+    MAP,
+    STRING,
   };
   void assert_type(Type) const;
   virtual ~Value();
@@ -49,6 +52,19 @@ public:
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
   int value;
+};
+
+class StringExpression : public Expression, public Value {
+public:
+  StringExpression(const std::string& value)
+    : value(value) {}
+  virtual Value::Type type() const override {
+    return Type::STRING;
+  }
+  virtual StringExpression* copy() const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+  std::string value;
 };
 
 class IdentifierExpression : public Expression {
@@ -86,6 +102,35 @@ public:
 private:
   ListValue(const ListValue&);
   std::vector<std::unique_ptr<Value>> values;
+};
+
+class MapExpression : public Expression {
+public:
+  MapExpression() {}
+  void insert(std::unique_ptr<const Expression> key,
+              std::unique_ptr<const Expression> value) {
+    pairs.insert(std::make_pair(std::move(key), std::move(value)));
+  }
+  virtual std::unique_ptr<Value> eval(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+private:
+  std::map<std::unique_ptr<const Expression>,
+           std::unique_ptr<const Expression>> pairs;
+};
+
+class MapValue : public Value {
+public:
+  MapValue() {}
+  void insert(std::unique_ptr<Value> key, std::unique_ptr<Value> value) {
+    pairs.insert(std::make_pair(std::move(key), std::move(value)));
+  }
+  virtual Value::Type type() const override {
+    return Type::MAP;
+  }
+  virtual MapValue* copy() const override;
+private:
+  MapValue(const MapValue&);
+  std::map<std::unique_ptr<Value>, std::unique_ptr<Value>> pairs;
 };
 
 class BinaryExpression : public Expression {

@@ -14,6 +14,7 @@ ostream& operator<<(ostream& stream, const Token& token) {
 ostream& operator<<(ostream& stream, const Token::Type& type) {
   switch (type) {
   case Token::UNDEFINED: throw runtime_error("undefined token");
+  case Token::COLON: return stream << "colon";
   case Token::COMMA: return stream << "comma";
   case Token::IDENTIFIER: return stream << "identifier";
   case Token::INTEGER: return stream << "integer";

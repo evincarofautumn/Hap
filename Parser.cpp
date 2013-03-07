@@ -237,7 +237,6 @@ void Parser::P
     operators.pop();
   } else if (accept(Token::LEFT_BRACKET)) {
     unique_ptr<ListExpression> list(new ListExpression());
-    unique_ptr<Expression> expression;
     operators.push(Operator());
     if (!peek(Token::RIGHT_BRACKET)) {
       while (true) {
@@ -253,6 +252,34 @@ void Parser::P
     expect(Token::RIGHT_BRACKET);
     operators.pop();
     operands.push(static_unique_cast<Expression>(move(list)));
+  } else if (accept(Token::LEFT_BRACE)) {
+    unique_ptr<MapExpression> map(new MapExpression());
+    operators.push(Operator());
+    if (!peek(Token::RIGHT_BRACE)) {
+      while (true) {
+        if (peek(Token::RIGHT_BRACE))
+          break;
+        unique_ptr<const Expression> key;
+        Token bareword;
+        if (accept(Token::IDENTIFIER, bareword)) {
+          key.reset(new StringExpression(bareword.string));
+        } else {
+          E(operators, operands);
+          key = move(operands.top());
+          operands.pop();
+        }
+        expect(Token::COLON);
+        E(operators, operands);
+        unique_ptr<const Expression> value(move(operands.top()));
+        operands.pop();
+        map->insert(move(key), move(value));
+        if (!accept(Token::COMMA))
+          break;
+      }
+    }
+    expect(Token::RIGHT_BRACE);
+    operators.pop();
+    operands.push(static_unique_cast<Expression>(move(map)));
   } else if (accept_unary_operator(unary)) {
     push_operator(unary, operators, operands);
     P(operators, operands);
