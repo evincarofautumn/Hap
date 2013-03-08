@@ -22,7 +22,8 @@ unique_ptr<Value> arithmetic
   b->assert_type(Value::INTEGER);
   auto c(static_unique_cast<IntegerExpression>(move(a)));
   auto d(static_unique_cast<IntegerExpression>(move(b)));
-  return unique_ptr<Value>(new IntegerExpression(function(c->value, d->value)));
+  return unique_ptr<Value>
+    (new IntegerExpression(function(c->value, d->value)));
 }
 
 unique_ptr<Value> multiply
