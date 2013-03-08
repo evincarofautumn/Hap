@@ -29,6 +29,7 @@ private:
     accept_statements,
     accept_empty_statement,
     accept_block_statement,
+    accept_expression_statement,
     accept_var_statement,
     accept_fun_statement,
     accept_ret_statement,
@@ -42,6 +43,7 @@ private:
     accept_expression,
     accept_value_expression,
     accept_boolean_expression,
+    accept_call_expression,
     accept_integer_expression,
     accept_identifier_expression,
     accept_lambda_expression,
@@ -81,6 +83,7 @@ private:
   typedef std::vector<Token> Tokens;
   const Tokens tokens;
   Tokens::const_iterator current;
+  void backtrack();
   bool peek(Token::Type) const;
   bool peek(const Token&) const;
   bool accept(Token::Type);

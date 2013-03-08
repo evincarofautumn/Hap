@@ -86,6 +86,19 @@ void RetStatement::write(ostream& stream) const {
   stream << ";\n";
 }
 
+ExpressionStatement::ExpressionStatement
+  (std::unique_ptr<Expression> expression)
+  : expression(move(expression)) {}
+
+void ExpressionStatement::exec(Environment& environment) const {
+  expression->eval(environment);
+}
+
+void ExpressionStatement::write(std::ostream& stream) const {
+  expression->write(stream);
+  stream << ";\n";
+}
+
 FlowStatement::FlowStatement
   (const std::string& keyword,
    std::unique_ptr<Expression> expression,

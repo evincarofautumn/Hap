@@ -52,7 +52,8 @@ Parser::accept_statement(Environment& environment) {
      &Parser::accept_whenever_statement,
      &Parser::accept_while_statement,
      &Parser::accept_repeat_when_statement,
-     &Parser::accept_repeat_whenever_statement);
+     &Parser::accept_repeat_whenever_statement,
+     &Parser::accept_expression_statement);
 }
 
 unique_ptr<Statement>
@@ -69,6 +70,15 @@ Parser::accept_block_statement(Environment& environment) {
   unique_ptr<Statement> block(accept_statements(environment));
   expect(Token::RIGHT_BRACE);
   return block;
+}
+
+unique_ptr<Statement>
+Parser::accept_expression_statement(Environment& environment) {
+  auto expression(accept_expression(environment));
+  if (!expression)
+    return unique_ptr<Statement>();
+  expect(Token::SEMICOLON);
+  return unique_ptr<Statement>(new ExpressionStatement(move(expression)));
 }
 
 unique_ptr<Statement>
@@ -165,6 +175,7 @@ Parser::accept_value_expression(Environment& environment) {
     (environment,
      &Parser::accept_integer_expression,
      &Parser::accept_boolean_expression,
+     &Parser::accept_call_expression,
      &Parser::accept_identifier_expression,
      &Parser::accept_string_expression,
      &Parser::accept_lambda_expression);
@@ -191,6 +202,33 @@ Parser::accept_boolean_expression(Environment&) {
   } else {
     return unique_ptr<Expression>();
   }
+}
+
+unique_ptr<Expression>
+Parser::accept_call_expression(Environment& environment) {
+  Token function;
+  if (!accept(Token::IDENTIFIER, function))
+    return unique_ptr<Expression>();
+  if (!accept(Token::LEFT_PARENTHESIS)) {
+    backtrack();
+    return unique_ptr<Expression>();
+  }
+  vector<unique_ptr<Expression>> arguments;
+  if (!peek(Token::RIGHT_PARENTHESIS)) {
+    while (true) {
+      if (peek(Token::RIGHT_PARENTHESIS))
+        break;
+      auto argument(accept_expression(environment));
+      if (!argument)
+        expected("expression");
+      arguments.push_back(move(argument));
+      if (!accept(Token::COMMA))
+        break;
+    }
+  }
+  expect(Token::RIGHT_PARENTHESIS);
+  return unique_ptr<Expression>
+    (new CallExpression(move(function.string), move(arguments)));
 }
 
 unique_ptr<Expression>
@@ -328,12 +366,20 @@ bool Parser::accept_unary_operator(Operator& result) {
 
 #undef UNARY_OPERATOR
 
+struct not_an_expression : public runtime_error {
+  not_an_expression() : runtime_error("not an expression") {}
+};
+
 unique_ptr<Expression> Parser::accept_expression(Environment& environment) {
-  stack<Operator> operators;
-  stack<unique_ptr<Expression>> operands;
-  operators.push(Operator());
-  infix_expression(environment, operators, operands);
-  return move(operands.top());
+  try {
+    stack<Operator> operators;
+    stack<unique_ptr<Expression>> operands;
+    operators.push(Operator());
+    infix_expression(environment, operators, operands);
+    return move(operands.top());
+  } catch (const not_an_expression&) {
+    return unique_ptr<Expression>();
+  }
 }
 
 void Parser::infix_expression
@@ -412,7 +458,7 @@ void Parser::infix_subexpression
   } else if ((value = accept_value_expression(environment))) {
     operands.push(move(value));
   } else {
-    expected("expression");
+    throw not_an_expression();
   }
 }
 
@@ -447,6 +493,10 @@ void Parser::push_operator
   while (operator_ < operators.top())
     pop_operator(operators, operands);
   operators.push(operator_);
+}
+
+void Parser::backtrack() {
+  --current;
 }
 
 bool Parser::peek(Token::Type type) const {

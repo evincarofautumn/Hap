@@ -47,6 +47,25 @@ void BooleanExpression::write(ostream& stream) const {
   stream << (value ? "true" : "false");
 }
 
+CallExpression::CallExpression
+  (std::string&& identifier,
+   std::vector<std::unique_ptr<Expression>>&& expressions)
+  : identifier(move(identifier)),
+    expressions(move(expressions)) {}
+
+std::unique_ptr<Value> CallExpression::eval(Environment&) const {
+  throw runtime_error("unimplemented call");
+}
+
+void CallExpression::write(std::ostream& stream) const {
+  stream << identifier << "(";
+  for (const auto& expression : expressions) {
+    expression->write(stream);
+    stream << ", ";
+  }
+  stream << ")";
+}
+
 FunExpression::FunExpression
   (const std::string& identifier,
    const std::vector<std::string>& parameters,

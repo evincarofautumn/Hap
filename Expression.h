@@ -56,6 +56,18 @@ public:
   bool value;
 };
 
+class CallExpression : public Expression {
+public:
+  CallExpression
+    (std::string&&,
+     std::vector<std::unique_ptr<Expression>>&&);
+  virtual std::unique_ptr<Value> eval(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+private:
+  std::string identifier;
+  std::vector<std::unique_ptr<Expression>> expressions;
+};
+
 class FunExpression : public Expression, public Value {
 public:
   FunExpression

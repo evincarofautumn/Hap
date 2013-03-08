@@ -72,6 +72,15 @@ private:
   std::unique_ptr<Expression> expression;
 };
 
+class ExpressionStatement : public Statement {
+public:
+  ExpressionStatement(std::unique_ptr<Expression>);
+  virtual void exec(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+private:
+  std::unique_ptr<Expression> expression;
+};
+
 class FlowStatement : public Statement {
 public:
   FlowStatement
