@@ -50,11 +50,11 @@ void BooleanExpression::write(ostream& stream) const {
 FunExpression::FunExpression
   (const std::string& identifier,
    const std::vector<std::string>& parameters,
-   std::unique_ptr<Statement> body,
+   std::shared_ptr<Statement> body,
    const Environment& environment)
   : identifier(identifier),
     parameters(parameters),
-    body(std::move(body)),
+    body(body),
     environment(environment) {}
 
 unique_ptr<Value> FunExpression::eval(Environment& environment) const {

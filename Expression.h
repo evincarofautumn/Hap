@@ -61,7 +61,7 @@ public:
   FunExpression
     (const std::string&,
      const std::vector<std::string>&,
-     std::unique_ptr<Statement>,
+     std::shared_ptr<Statement>,
      const Environment&);
   virtual Value::Type type() const override {
     return Type::FUNCTION;

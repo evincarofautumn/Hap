@@ -52,13 +52,17 @@ void VarStatement::write(ostream& stream) const {
 FunStatement::FunStatement
   (const std::string& identifier,
    const std::vector<std::string>& parameters,
-   std::unique_ptr<Statement> body)
+   std::shared_ptr<Statement> body,
+   const Environment& environment)
   : identifier(identifier),
     parameters(parameters),
-    body(std::move(body)) {}
+    body(body),
+    local(environment) {}
 
 void FunStatement::exec(Environment& environment) const {
-  throw runtime_error("unimplemented fun");
+  unique_ptr<Value> value
+    (new FunExpression(identifier, parameters, body, local));
+  environment.define(identifier, move(value));
 }
 
 void FunStatement::write(ostream& stream) const {

@@ -1,13 +1,14 @@
 #ifndef HAP_STATEMENT_H
 #define HAP_STATEMENT_H
 
+#include "Environment.h"
+
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace hap {
 
-class Environment;
 class Expression;
 
 class Statement {
@@ -48,15 +49,18 @@ private:
 
 class FunStatement : public Statement {
 public:
-  FunStatement(const std::string&,
-               const std::vector<std::string>&,
-               std::unique_ptr<Statement>);
+  FunStatement
+    (const std::string&,
+     const std::vector<std::string>&,
+     std::shared_ptr<Statement>,
+     const Environment&);
   virtual void exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::string identifier;
   std::vector<std::string> parameters;
-  std::unique_ptr<Statement> body;
+  std::shared_ptr<Statement> body;
+  Environment local;
 };
 
 class RetStatement : public Statement {

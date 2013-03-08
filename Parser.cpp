@@ -110,7 +110,7 @@ Parser::accept_fun_statement(Environment& environment) {
   if (!body)
     expected("statement");
   return unique_ptr<Statement>
-    (new FunStatement(identifier.string, parameters, move(body)));
+    (new FunStatement(identifier.string, parameters, move(body), environment));
 }
 
 unique_ptr<Statement>
