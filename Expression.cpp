@@ -53,8 +53,11 @@ CallExpression::CallExpression
   : identifier(move(identifier)),
     expressions(move(expressions)) {}
 
-std::unique_ptr<Value> CallExpression::eval(Environment&) const {
-  throw runtime_error("unimplemented call");
+std::unique_ptr<Value>CallExpression::eval(Environment& environment) const {
+  const auto& value(environment[identifier]);
+  value.assert_type(Value::FUNCTION);
+  const auto& function(static_cast<const FunExpression&>(value));
+  return function.call(expressions);
 }
 
 void CallExpression::write(std::ostream& stream) const {
@@ -70,7 +73,7 @@ FunExpression::FunExpression
   (const std::string& identifier,
    const std::vector<std::string>& parameters,
    std::shared_ptr<Statement> body,
-   const Environment& environment)
+   Environment& environment)
   : identifier(identifier),
     parameters(parameters),
     body(body),
@@ -86,6 +89,17 @@ void FunExpression::write(ostream& stream) const {
     stream << parameter << ", ";
   stream << ") ";
   body->write(stream);
+}
+
+unique_ptr<Value> FunExpression::call
+  (const std::vector<std::unique_ptr<Expression>>& arguments) const {
+  Environment local(environment);
+  auto parameter = parameters.cbegin();
+  for (const auto& argument : arguments) {
+    auto value(argument->eval(environment));
+    local.define(*parameter++, move(value));
+  }
+  return body->exec(local);
 }
 
 unique_ptr<Value> IntegerExpression::eval(Environment&) const {

@@ -74,7 +74,7 @@ public:
     (const std::string&,
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
-     const Environment&);
+     Environment&);
   virtual Value::Type type() const override {
     return Type::FUNCTION;
   }
@@ -83,12 +83,14 @@ public:
   }
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
+  std::unique_ptr<Value> call
+    (const std::vector<std::unique_ptr<Expression>>&) const;
 private:
   FunExpression(const FunExpression&) = default;
   std::string identifier;
   std::vector<std::string> parameters;
   std::shared_ptr<Statement> body;
-  Environment environment;
+  mutable Environment environment;
 };
 
 class IntegerExpression : public Expression, public Value {

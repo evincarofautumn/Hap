@@ -14,7 +14,7 @@ class Expression;
 class Statement {
 public:
   virtual ~Statement();
-  virtual void exec(Environment&) const = 0;
+  virtual std::unique_ptr<Value> exec(Environment&) const = 0;
   virtual void write(std::ostream&) const = 0;
 protected:
   Statement() {}
@@ -31,7 +31,7 @@ public:
   void push(std::unique_ptr<Statement> statement) {
     statements.push_back(std::move(statement));
   }
-  virtual void exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::vector<std::unique_ptr<Statement>> statements;
@@ -40,7 +40,7 @@ private:
 class VarStatement : public Statement {
 public:
   VarStatement(const std::string&, std::unique_ptr<Expression>);
-  virtual void exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::string identifier;
@@ -54,19 +54,19 @@ public:
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
      const Environment&);
-  virtual void exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::string identifier;
   std::vector<std::string> parameters;
   std::shared_ptr<Statement> body;
-  Environment local;
+  mutable Environment local;
 };
 
 class RetStatement : public Statement {
 public:
   RetStatement(std::unique_ptr<Expression>);
-  virtual void exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::unique_ptr<Expression> expression;
@@ -75,7 +75,7 @@ private:
 class ExpressionStatement : public Statement {
 public:
   ExpressionStatement(std::unique_ptr<Expression>);
-  virtual void exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::unique_ptr<Expression> expression;
@@ -87,7 +87,7 @@ public:
     (const std::string&,
      std::unique_ptr<Expression>,
      std::unique_ptr<Statement>);
-  virtual void exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
   std::string keyword;

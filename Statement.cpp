@@ -15,9 +15,11 @@ ostream& operator<<(ostream& stream, const Statement& statement) {
   return stream;
 }
 
-void BlockStatement::exec(Environment& environment) const {
+unique_ptr<Value> BlockStatement::exec(Environment& environment) const {
+  unique_ptr<Value> result;
   for (const auto& statement : statements)
-    statement->exec(environment);
+    result = statement->exec(environment);
+  return move(result);
 }
 
 void BlockStatement::write(ostream& stream) const {
@@ -33,11 +35,12 @@ VarStatement::VarStatement
   : identifier(identifier),
     initializer(std::move(initializer)) {}
 
-void VarStatement::exec(Environment& environment) const {
+unique_ptr<Value> VarStatement::exec(Environment& environment) const {
   auto value = initializer
     ? initializer->eval(environment)
     : unique_ptr<Value>(new UndefinedExpression());
   environment.define(identifier, move(value));
+  return unique_ptr<Value>(new UndefinedExpression());
 }
 
 void VarStatement::write(ostream& stream) const {
@@ -59,10 +62,11 @@ FunStatement::FunStatement
     body(body),
     local(environment) {}
 
-void FunStatement::exec(Environment& environment) const {
+unique_ptr<Value> FunStatement::exec(Environment& environment) const {
   unique_ptr<Value> value
     (new FunExpression(identifier, parameters, body, local));
   environment.define(identifier, move(value));
+  return unique_ptr<Value>(new UndefinedExpression());
 }
 
 void FunStatement::write(ostream& stream) const {
@@ -76,7 +80,7 @@ void FunStatement::write(ostream& stream) const {
 RetStatement::RetStatement(std::unique_ptr<Expression> expression)
   : expression(std::move(expression)) {}
 
-void RetStatement::exec(Environment& environment) const {
+unique_ptr<Value> RetStatement::exec(Environment& environment) const {
   throw runtime_error("unimplemented ret");
 }
 
@@ -90,8 +94,8 @@ ExpressionStatement::ExpressionStatement
   (std::unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
-void ExpressionStatement::exec(Environment& environment) const {
-  expression->eval(environment);
+unique_ptr<Value> ExpressionStatement::exec(Environment& environment) const {
+  return expression->eval(environment);
 }
 
 void ExpressionStatement::write(std::ostream& stream) const {
@@ -107,7 +111,7 @@ FlowStatement::FlowStatement
     expression(std::move(expression)),
     statement(std::move(statement)) {}
 
-void FlowStatement::exec(Environment& environment) const {
+unique_ptr<Value> FlowStatement::exec(Environment& environment) const {
   throw runtime_error("unimplemented flow");
 }
 

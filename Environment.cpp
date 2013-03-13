@@ -12,12 +12,13 @@ void Environment::define(const string& name, unique_ptr<Value> value) {
   variables.insert(make_pair(name, move(value)));
 }
 
-const Value& Environment::operator[](const string& name) const {
-  return *variables.find(name)->second;
-}
-
 Value& Environment::operator[](const string& name) {
-  return *variables[name];
+  const auto existing(variables.find(name));
+  if (existing == variables.end())
+    return *variables.insert
+      (make_pair(name, shared_ptr<Value>(new UndefinedExpression())))
+      .first->second;
+  return *existing->second;
 }
 
 }
