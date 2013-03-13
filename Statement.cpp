@@ -1,6 +1,7 @@
 #include "Statement.h"
 #include "Environment.h"
 #include "Expression.h"
+#include "flow.h"
 #include "unique_cast.h"
 
 #include <ostream>
@@ -79,7 +80,7 @@ void FunStatement::write(ostream& stream) const {
 }
 
 unique_ptr<Value> LastStatement::exec(Environment&) const {
-  throw runtime_error("unimplemented last");
+  throw flow::Last();
 }
 
 void LastStatement::write(ostream& stream) const {
@@ -87,7 +88,7 @@ void LastStatement::write(ostream& stream) const {
 }
 
 unique_ptr<Value> NextStatement::exec(Environment&) const {
-  throw runtime_error("unimplemented next");
+  throw flow::Next();
 }
 
 void NextStatement::write(ostream& stream) const {
@@ -174,7 +175,13 @@ unique_ptr<Value> WhileStatement::exec(Environment& environment) const {
     auto condition(static_unique_cast<BooleanExpression>(move(value)));
     if (!condition->value)
       break;
-    statement->exec(environment);
+    try {
+      statement->exec(environment);
+    } catch (const flow::Last&) {
+      break;
+    } catch (const flow::Next&) {
+      continue;
+    }
   }
   return unique_ptr<Value>(new UndefinedExpression());
 }
