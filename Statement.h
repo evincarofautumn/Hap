@@ -87,19 +87,21 @@ public:
     (const std::string&,
      std::unique_ptr<Expression>,
      std::unique_ptr<Statement>);
-  virtual std::unique_ptr<Value> exec(Environment&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const = 0;
   virtual void write(std::ostream&) const override;
-private:
+protected:
   std::string keyword;
   std::unique_ptr<Expression> expression;
   std::unique_ptr<Statement> statement;
 };
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
-struct NAME##Statement : FlowStatement { \
+class NAME##Statement : public FlowStatement { \
+public: \
   NAME##Statement \
     (std::unique_ptr<Expression>, \
      std::unique_ptr<Statement>); \
+  virtual std::unique_ptr<Value> exec(Environment&) const override; \
 };
 
 FLOW_STATEMENT(If, "if")
