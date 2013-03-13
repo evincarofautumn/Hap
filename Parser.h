@@ -27,27 +27,29 @@ private:
   AcceptStatement
     accept_statement,
     accept_statements,
-    accept_empty_statement,
+    // ----
     accept_block_statement,
-    accept_expression_statement,
-    accept_var_statement,
+    accept_empty_statement,
     accept_fun_statement,
-    accept_ret_statement,
     accept_if_statement,
+    accept_repeat_when_statement,
+    accept_repeat_whenever_statement,
+    accept_ret_statement,
+    accept_var_statement,
     accept_when_statement,
     accept_whenever_statement,
     accept_while_statement,
-    accept_repeat_when_statement,
-    accept_repeat_whenever_statement;
+    // ----
+    accept_expression_statement;
   AcceptExpression
     accept_expression,
     accept_value_expression,
+    // ----
     accept_boolean_expression,
     accept_call_expression,
-    accept_integer_expression,
     accept_identifier_expression,
+    accept_integer_expression,
     accept_lambda_expression,
-    accept_list_expression,
     accept_string_expression;
   AcceptOperator
     accept_binary_operator,
@@ -73,12 +75,12 @@ private:
     (Environment&,
      std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
+  void pop_operator
+    (std::stack<Operator>&,
+     std::stack<std::unique_ptr<Expression>>&);
   void push_operator
     (const Operator&,
      std::stack<Operator>&,
-     std::stack<std::unique_ptr<Expression>>&);
-  void pop_operator
-    (std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
   typedef std::vector<Token> Tokens;
   const Tokens tokens;

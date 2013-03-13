@@ -42,25 +42,19 @@ unique_ptr<Statement>
 Parser::accept_statement(Environment& environment) {
   return first<Statement>
     (environment,
-     &Parser::accept_empty_statement,
      &Parser::accept_block_statement,
-     &Parser::accept_var_statement,
+     &Parser::accept_empty_statement,
      &Parser::accept_fun_statement,
-     &Parser::accept_ret_statement,
      &Parser::accept_if_statement,
+     &Parser::accept_repeat_when_statement,
+     &Parser::accept_repeat_whenever_statement,
+     &Parser::accept_ret_statement,
+     &Parser::accept_var_statement,
      &Parser::accept_when_statement,
      &Parser::accept_whenever_statement,
      &Parser::accept_while_statement,
-     &Parser::accept_repeat_when_statement,
-     &Parser::accept_repeat_whenever_statement,
+     // ----
      &Parser::accept_expression_statement);
-}
-
-unique_ptr<Statement>
-Parser::accept_empty_statement(Environment&) {
-  return accept(Token::SEMICOLON)
-    ? unique_ptr<Statement>(new BlockStatement())
-    : unique_ptr<Statement>();
 }
 
 unique_ptr<Statement>
@@ -73,27 +67,19 @@ Parser::accept_block_statement(Environment& environment) {
 }
 
 unique_ptr<Statement>
+Parser::accept_empty_statement(Environment&) {
+  return accept(Token::SEMICOLON)
+    ? unique_ptr<Statement>(new BlockStatement())
+    : unique_ptr<Statement>();
+}
+
+unique_ptr<Statement>
 Parser::accept_expression_statement(Environment& environment) {
   auto expression(accept_expression(environment));
   if (!expression)
     return unique_ptr<Statement>();
   expect(Token::SEMICOLON);
   return unique_ptr<Statement>(new ExpressionStatement(move(expression)));
-}
-
-unique_ptr<Statement>
-Parser::accept_var_statement(Environment& environment) {
-  if (!accept(Token(Token::IDENTIFIER, "var")))
-    return unique_ptr<Statement>();
-  Token identifier;
-  expect(Token::IDENTIFIER, identifier);
-  unique_ptr<Expression> initializer;
-  if (accept(Token(Token::OPERATOR, "="))
-      && !(initializer = accept_expression(environment)))
-    expected("initializer");
-  expect(Token::SEMICOLON);
-  return unique_ptr<Statement>
-    (new VarStatement(identifier.string, move(initializer)));
 }
 
 unique_ptr<Statement>
@@ -124,6 +110,24 @@ Parser::accept_fun_statement(Environment& environment) {
 }
 
 unique_ptr<Statement>
+Parser::accept_if_statement(Environment& environment) {
+  return accept_flow_statement<IfStatement>
+    (environment, "if");
+}
+
+unique_ptr<Statement>
+Parser::accept_repeat_when_statement(Environment& environment) {
+  return accept_flow_statement<RepeatWhenStatement>
+    (environment, "repeat_when");
+}
+
+unique_ptr<Statement>
+Parser::accept_repeat_whenever_statement(Environment& environment) {
+  return accept_flow_statement<RepeatWheneverStatement>
+    (environment, "repeat_whenever");
+}
+
+unique_ptr<Statement>
 Parser::accept_ret_statement(Environment& environment) {
   if (!accept(Token(Token::IDENTIFIER, "ret")))
     return unique_ptr<Statement>();
@@ -134,9 +138,18 @@ Parser::accept_ret_statement(Environment& environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_if_statement(Environment& environment) {
-  return accept_flow_statement<IfStatement>
-    (environment, "if");
+Parser::accept_var_statement(Environment& environment) {
+  if (!accept(Token(Token::IDENTIFIER, "var")))
+    return unique_ptr<Statement>();
+  Token identifier;
+  expect(Token::IDENTIFIER, identifier);
+  unique_ptr<Expression> initializer;
+  if (accept(Token(Token::OPERATOR, "="))
+      && !(initializer = accept_expression(environment)))
+    expected("initializer");
+  expect(Token::SEMICOLON);
+  return unique_ptr<Statement>
+    (new VarStatement(identifier.string, move(initializer)));
 }
 
 unique_ptr<Statement>
@@ -157,40 +170,32 @@ Parser::accept_while_statement(Environment& environment) {
     (environment, "while");
 }
 
-unique_ptr<Statement>
-Parser::accept_repeat_when_statement(Environment& environment) {
-  return accept_flow_statement<RepeatWhenStatement>
-    (environment, "repeat_when");
-}
+struct not_an_expression : public runtime_error {
+  not_an_expression() : runtime_error("not an expression") {}
+};
 
-unique_ptr<Statement>
-Parser::accept_repeat_whenever_statement(Environment& environment) {
-  return accept_flow_statement<RepeatWheneverStatement>
-    (environment, "repeat_whenever");
+unique_ptr<Expression> Parser::accept_expression(Environment& environment) {
+  try {
+    stack<Operator> operators;
+    stack<unique_ptr<Expression>> operands;
+    operators.push(Operator());
+    infix_expression(environment, operators, operands);
+    return move(operands.top());
+  } catch (const not_an_expression&) {
+    return unique_ptr<Expression>();
+  }
 }
 
 unique_ptr<Expression>
 Parser::accept_value_expression(Environment& environment) {
   return first<Expression>
     (environment,
-     &Parser::accept_integer_expression,
      &Parser::accept_boolean_expression,
      &Parser::accept_call_expression,
      &Parser::accept_identifier_expression,
-     &Parser::accept_string_expression,
-     &Parser::accept_lambda_expression);
-}
-
-unique_ptr<Expression>
-Parser::accept_integer_expression(Environment& environment) {
-  Token token;
-  if (!accept(Token::INTEGER, token))
-    return unique_ptr<Expression>();
-  istringstream stream(token.string);
-  int value = 0;
-  if (!(stream >> value))
-    throw runtime_error("invalid integer");
-  return unique_ptr<Expression>(new IntegerExpression(value));
+     &Parser::accept_integer_expression,
+     &Parser::accept_lambda_expression,
+     &Parser::accept_string_expression);
 }
 
 unique_ptr<Expression>
@@ -240,12 +245,15 @@ Parser::accept_identifier_expression(Environment&) {
 }
 
 unique_ptr<Expression>
-Parser::accept_string_expression(Environment&) {
+Parser::accept_integer_expression(Environment& environment) {
   Token token;
-  if (!accept(Token::STRING, token))
+  if (!accept(Token::INTEGER, token))
     return unique_ptr<Expression>();
-  token.string.pop_back();
-  return unique_ptr<Expression>(new StringExpression(token.string.substr(1)));
+  istringstream stream(token.string);
+  int value = 0;
+  if (!(stream >> value))
+    throw runtime_error("invalid integer");
+  return unique_ptr<Expression>(new IntegerExpression(value));
 }
 
 unique_ptr<Expression>
@@ -286,6 +294,15 @@ Parser::accept_lambda_expression(Environment& environment) {
       parameters,
       move(body),
       environment));
+}
+
+unique_ptr<Expression>
+Parser::accept_string_expression(Environment&) {
+  Token token;
+  if (!accept(Token::STRING, token))
+    return unique_ptr<Expression>();
+  token.string.pop_back();
+  return unique_ptr<Expression>(new StringExpression(token.string.substr(1)));
 }
 
 map<string, Operator> binary_operators;
@@ -365,22 +382,6 @@ bool Parser::accept_unary_operator(Operator& result) {
 }
 
 #undef UNARY_OPERATOR
-
-struct not_an_expression : public runtime_error {
-  not_an_expression() : runtime_error("not an expression") {}
-};
-
-unique_ptr<Expression> Parser::accept_expression(Environment& environment) {
-  try {
-    stack<Operator> operators;
-    stack<unique_ptr<Expression>> operands;
-    operators.push(Operator());
-    infix_expression(environment, operators, operands);
-    return move(operands.top());
-  } catch (const not_an_expression&) {
-    return unique_ptr<Expression>();
-  }
-}
 
 void Parser::infix_expression
   (Environment& environment,
