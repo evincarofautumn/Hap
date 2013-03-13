@@ -89,46 +89,62 @@ unique_ptr<Value> shift_right
   return arithmetic(shifts_right<int>(), environment, left, right);
 }
 
+template<class F>
+unique_ptr<Value> relational
+  (F function,
+   Environment& environment,
+   const unique_ptr<const Expression>& left,
+   const unique_ptr<const Expression>& right) {
+  auto a(left->eval(environment));
+  auto b(right->eval(environment));
+  a->assert_type(Value::INTEGER);
+  b->assert_type(Value::INTEGER);
+  auto c(static_unique_cast<IntegerExpression>(move(a)));
+  auto d(static_unique_cast<IntegerExpression>(move(b)));
+  return unique_ptr<Value>
+    (new BooleanExpression(function(c->value, d->value)));
+}
+
 unique_ptr<Value> lt
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented <");
+  return relational(less<int>(), environment, left, right);
 }
 
 unique_ptr<Value> ge
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented >=");
+  return relational(greater_equal<int>(), environment, left, right);
 }
 
 unique_ptr<Value> gt
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented >");
+  return relational(greater<int>(), environment, left, right);
 }
 
 unique_ptr<Value> le
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented <=");
+  return relational(less_equal<int>(), environment, left, right);
 }
 
 unique_ptr<Value> eq
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented ==");
+  return relational(equal_to<int>(), environment, left, right);
 }
 
 unique_ptr<Value> ne
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented <>");
+  return relational(not_equal_to<int>(), environment, left, right);
 }
 
 unique_ptr<Value> and_
