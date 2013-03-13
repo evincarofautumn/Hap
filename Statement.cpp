@@ -99,7 +99,8 @@ RetStatement::RetStatement(unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
 unique_ptr<Value> RetStatement::exec(Environment& environment) const {
-  throw runtime_error("unimplemented ret");
+  auto value(expression->eval(environment));
+  throw flow::Return(move(value));
 }
 
 void RetStatement::write(ostream& stream) const {

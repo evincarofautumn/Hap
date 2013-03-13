@@ -13,7 +13,16 @@
 
 namespace hap {
 
-class Value {
+class Value;
+
+class Expression {
+public:
+  virtual ~Expression();
+  virtual std::unique_ptr<Value> eval(Environment&) const = 0;
+  virtual void write(std::ostream&) const = 0;
+};
+
+class Value : virtual public Expression {
 public:
   enum Type {
     UNDEFINED,
@@ -26,22 +35,17 @@ public:
   };
   void assert_type(Type) const;
   virtual ~Value();
+  virtual std::unique_ptr<Value> eval(Environment&) const {
+    return std::unique_ptr<Value>(copy());
+  }
   virtual Value* copy() const = 0;
   virtual Type type() const = 0;
 };
 
 std::ostream& operator<<(std::ostream&, const Value::Type&);
-
-class Expression {
-public:
-  virtual ~Expression();
-  virtual std::unique_ptr<Value> eval(Environment&) const = 0;
-  virtual void write(std::ostream&) const = 0;
-};
-
 std::ostream& operator<<(std::ostream&, const Expression&);
 
-class BooleanExpression : public Expression, public Value {
+class BooleanExpression : virtual public Expression, public Value {
 public:
   BooleanExpression(bool value)
     : value(value) {}
@@ -56,7 +60,7 @@ public:
   bool value;
 };
 
-class CallExpression : public Expression {
+class CallExpression : virtual public Expression {
 public:
   CallExpression
     (std::string&&,
@@ -68,7 +72,7 @@ private:
   std::vector<std::unique_ptr<Expression>> expressions;
 };
 
-class FunExpression : public Expression, public Value {
+class FunExpression : virtual public Expression, public Value {
 public:
   FunExpression
     (const std::string&,
@@ -93,7 +97,7 @@ private:
   mutable Environment environment;
 };
 
-class IntegerExpression : public Expression, public Value {
+class IntegerExpression : virtual public Expression, public Value {
 public:
   IntegerExpression(int value)
     : value(value) {}
@@ -108,7 +112,7 @@ public:
   int value;
 };
 
-class StringExpression : public Expression, public Value {
+class StringExpression : virtual public Expression, public Value {
 public:
   StringExpression(const std::string& value)
     : value(value) {}
@@ -123,7 +127,7 @@ public:
   std::string value;
 };
 
-class IdentifierExpression : public Expression {
+class IdentifierExpression : virtual public Expression {
 public:
   IdentifierExpression(const std::string& identifier)
     : identifier(identifier) {}
@@ -133,7 +137,7 @@ private:
   std::string identifier;
 };
 
-class ListExpression : public Expression {
+class ListExpression : virtual public Expression {
 public:
   ListExpression() {}
   void push(std::unique_ptr<const Expression> expression) {
@@ -157,12 +161,13 @@ public:
   virtual ListValue* copy() const override {
     return new ListValue(*this);
   }
+  virtual void write(std::ostream&) const override;
 private:
   ListValue(const ListValue&);
   std::vector<std::unique_ptr<Value>> values;
 };
 
-class MapExpression : public Expression {
+class MapExpression : virtual public Expression {
 public:
   MapExpression() {}
   void insert(std::unique_ptr<const Expression> key,
@@ -188,12 +193,13 @@ public:
   virtual MapValue* copy() const override {
     return new MapValue(*this);
   }
+  virtual void write(std::ostream&) const override;
 private:
   MapValue(const MapValue&);
   std::map<std::unique_ptr<Value>, std::unique_ptr<Value>> pairs;
 };
 
-class BinaryExpression : public Expression {
+class BinaryExpression : virtual public Expression {
 public:
   BinaryExpression
     (const Operator& operator_,
@@ -210,7 +216,7 @@ private:
   std::unique_ptr<const Expression> right;
 };
 
-class UnaryExpression : public Expression {
+class UnaryExpression : virtual public Expression {
 public:
   UnaryExpression
     (const Operator& operator_,
@@ -224,7 +230,7 @@ private:
   std::unique_ptr<const Expression> expression;
 };
 
-class UndefinedExpression : public Expression, public Value {
+class UndefinedExpression : virtual public Expression, public Value {
 public:
   UndefinedExpression() = default;
   virtual Value::Type type() const override {

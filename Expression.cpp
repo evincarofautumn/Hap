@@ -1,5 +1,6 @@
 #include "Expression.h"
 #include "Environment.h"
+#include "flow.h"
 #include "unique_cast.h"
 
 #include <ostream>
@@ -99,7 +100,11 @@ unique_ptr<Value> FunExpression::call
     auto value(argument->eval(environment));
     local.define(*parameter++, move(value));
   }
-  return body->exec(local);
+  try {
+    return body->exec(local);
+  } catch (flow::Return& result) {
+    return move(result.value);
+  }
 }
 
 unique_ptr<Value> IntegerExpression::eval(Environment&) const {
@@ -147,6 +152,15 @@ ListValue::ListValue(const ListValue& other) {
     values.push_back(unique_ptr<Value>(value->copy()));
 }
 
+void ListValue::write(ostream& stream) const {
+  stream << "[ ";
+  for (const auto& value : values) {
+    value->write(stream);
+    stream << ", ";
+  }
+  stream << ']';
+}
+
 unique_ptr<Value> MapExpression::eval(Environment& environment) const {
   unique_ptr<MapValue> map(new MapValue());
   for (const auto& pair : pairs) {
@@ -172,6 +186,17 @@ MapValue::MapValue(const MapValue& other) {
   for (const auto& pair : other.pairs)
     pairs.insert(make_pair(unique_ptr<Value>(pair.first->copy()),
                            unique_ptr<Value>(pair.second->copy())));
+}
+
+void MapValue::write(ostream& stream) const {
+  stream << "{ ";
+  for (const auto& pair : pairs) {
+    pair.first->write(stream);
+    stream << ": ";
+    pair.second->write(stream);
+    stream << ", ";
+  }
+  stream << '}';
 }
 
 unique_ptr<Value> BinaryExpression::eval(Environment& environment) const {
