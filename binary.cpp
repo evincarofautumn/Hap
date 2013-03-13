@@ -147,25 +147,41 @@ unique_ptr<Value> ne
   return relational(not_equal_to<int>(), environment, left, right);
 }
 
+template<class F>
+unique_ptr<Value> logical
+  (F function,
+   Environment& environment,
+   const unique_ptr<const Expression>& left,
+   const unique_ptr<const Expression>& right) {
+  auto a(left->eval(environment));
+  auto b(right->eval(environment));
+  a->assert_type(Value::BOOLEAN);
+  b->assert_type(Value::BOOLEAN);
+  auto c(static_unique_cast<BooleanExpression>(move(a)));
+  auto d(static_unique_cast<BooleanExpression>(move(b)));
+  return unique_ptr<Value>
+    (new BooleanExpression(function(c->value, d->value)));
+}
+
 unique_ptr<Value> and_
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented and");
+  return logical(logical_and<bool>(), environment, left, right);
 }
 
 unique_ptr<Value> xor_
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented xor");
+  return logical(not_equal_to<bool>(), environment, left, right);
 }
 
 unique_ptr<Value> or_
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented or");
+  return logical(logical_or<bool>(), environment, left, right);
 }
 
 unique_ptr<Value> assign

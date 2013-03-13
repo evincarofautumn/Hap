@@ -40,10 +40,22 @@ unique_ptr<Value> ref
   throw runtime_error("unimplemented unary ref");
 }
 
+template<class F>
+unique_ptr<Value> logical
+  (F function,
+   Environment& environment,
+   const unique_ptr<const Expression>& expression) {
+  auto a(expression->eval(environment));
+  a->assert_type(Value::BOOLEAN);
+  auto b(static_unique_cast<BooleanExpression>(move(a)));
+  return unique_ptr<Value>
+    (new BooleanExpression(function(b->value)));
+}
+
 unique_ptr<Value> not_
   (Environment& environment,
    const unique_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary not");
+  return logical(logical_not<bool>(), environment, expression);
 }
 
 unique_ptr<Value> lt
