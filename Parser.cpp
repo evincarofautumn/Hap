@@ -46,6 +46,8 @@ Parser::accept_statement(Environment& environment) {
      &Parser::accept_empty_statement,
      &Parser::accept_fun_statement,
      &Parser::accept_if_statement,
+     &Parser::accept_last_statement,
+     &Parser::accept_next_statement,
      &Parser::accept_repeat_when_statement,
      &Parser::accept_repeat_whenever_statement,
      &Parser::accept_ret_statement,
@@ -113,6 +115,20 @@ unique_ptr<Statement>
 Parser::accept_if_statement(Environment& environment) {
   return accept_flow_statement<IfStatement>
     (environment, "if");
+}
+
+unique_ptr<Statement>
+Parser::accept_last_statement(Environment& environment) {
+  return accept(Token(Token::IDENTIFIER, "last"))
+    ? unique_ptr<Statement>(new LastStatement())
+    : unique_ptr<Statement>();
+}
+
+unique_ptr<Statement>
+Parser::accept_next_statement(Environment& environment) {
+  return accept(Token(Token::IDENTIFIER, "next"))
+    ? unique_ptr<Statement>(new NextStatement())
+    : unique_ptr<Statement>();
 }
 
 unique_ptr<Statement>

@@ -63,6 +63,18 @@ private:
   mutable Environment local;
 };
 
+class LastStatement : public Statement {
+public:
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+};
+
+class NextStatement : public Statement {
+public:
+  virtual std::unique_ptr<Value> exec(Environment&) const override;
+  virtual void write(std::ostream&) const override;
+};
+
 class RetStatement : public Statement {
 public:
   RetStatement(std::unique_ptr<Expression>);

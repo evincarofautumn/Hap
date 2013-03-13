@@ -32,6 +32,8 @@ private:
     accept_empty_statement,
     accept_fun_statement,
     accept_if_statement,
+    accept_last_statement,
+    accept_next_statement,
     accept_repeat_when_statement,
     accept_repeat_whenever_statement,
     accept_ret_statement,

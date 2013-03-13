@@ -31,10 +31,10 @@ void BlockStatement::write(ostream& stream) const {
 }
 
 VarStatement::VarStatement
-  (const std::string& identifier,
-   std::unique_ptr<Expression> initializer)
+  (const string& identifier,
+   unique_ptr<Expression> initializer)
   : identifier(identifier),
-    initializer(std::move(initializer)) {}
+    initializer(move(initializer)) {}
 
 unique_ptr<Value> VarStatement::exec(Environment& environment) const {
   auto value = initializer
@@ -54,9 +54,9 @@ void VarStatement::write(ostream& stream) const {
 }
 
 FunStatement::FunStatement
-  (const std::string& identifier,
-   const std::vector<std::string>& parameters,
-   std::shared_ptr<Statement> body,
+  (const string& identifier,
+   const vector<string>& parameters,
+   shared_ptr<Statement> body,
    const Environment& environment)
   : identifier(identifier),
     parameters(parameters),
@@ -78,8 +78,24 @@ void FunStatement::write(ostream& stream) const {
   body->write(stream);
 }
 
-RetStatement::RetStatement(std::unique_ptr<Expression> expression)
-  : expression(std::move(expression)) {}
+unique_ptr<Value> LastStatement::exec(Environment&) const {
+  throw runtime_error("unimplemented last");
+}
+
+void LastStatement::write(ostream& stream) const {
+  stream << "last;\n";
+}
+
+unique_ptr<Value> NextStatement::exec(Environment&) const {
+  throw runtime_error("unimplemented next");
+}
+
+void NextStatement::write(ostream& stream) const {
+  stream << "next;\n";
+}
+
+RetStatement::RetStatement(unique_ptr<Expression> expression)
+  : expression(move(expression)) {}
 
 unique_ptr<Value> RetStatement::exec(Environment& environment) const {
   throw runtime_error("unimplemented ret");
@@ -92,25 +108,25 @@ void RetStatement::write(ostream& stream) const {
 }
 
 ExpressionStatement::ExpressionStatement
-  (std::unique_ptr<Expression> expression)
+  (unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
 unique_ptr<Value> ExpressionStatement::exec(Environment& environment) const {
   return expression->eval(environment);
 }
 
-void ExpressionStatement::write(std::ostream& stream) const {
+void ExpressionStatement::write(ostream& stream) const {
   expression->write(stream);
   stream << ";\n";
 }
 
 FlowStatement::FlowStatement
-  (const std::string& keyword,
-   std::unique_ptr<Expression> expression,
-   std::unique_ptr<Statement> statement)
+  (const string& keyword,
+   unique_ptr<Expression> expression,
+   unique_ptr<Statement> statement)
   : keyword(keyword),
-    expression(std::move(expression)),
-    statement(std::move(statement)) {}
+    expression(move(expression)),
+    statement(move(statement)) {}
 
 void FlowStatement::write(ostream& stream) const {
   stream << keyword << ' ';
@@ -121,9 +137,9 @@ void FlowStatement::write(ostream& stream) const {
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
   NAME##Statement::NAME##Statement \
-    (std::unique_ptr<Expression> expression, \
-     std::unique_ptr<Statement> statement) \
-    : FlowStatement(KEYWORD, std::move(expression), std::move(statement)) {}
+    (unique_ptr<Expression> expression, \
+     unique_ptr<Statement> statement) \
+    : FlowStatement(KEYWORD, move(expression), move(statement)) {}
 
 FLOW_STATEMENT(If, "if")
 FLOW_STATEMENT(When, "when")
