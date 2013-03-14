@@ -1,8 +1,9 @@
 LDFLAGS+=-lc++
-CXXFLAGS+=-std=c++11 -stdlib=libc++
+CXXFLAGS+=-std=c++11 -stdlib=libc++ -Isrc -Isrc/Expression -Isrc/Value -Isrc/Statement
 CPPFLAGS+=-MD -MP
-SOURCES=$(wildcard *.cpp)
+SOURCES=$(wildcard src/*.cpp src/Expression/*.cpp src/Value/*.cpp src/Statement/*.cpp)
 OBJECTS=$(SOURCES:%.cpp=%.o)
+DEPS=$(SOURCES:%.cpp=%.d)
 
 .PHONY : all
 all : build
@@ -12,12 +13,12 @@ clean : clean-build clean-deps
 
 .PHONY : clean-build
 clean-build :
-	rm -f hap
-	rm -f *.o
+	@rm -f hap
+	@rm -f $(OBJECTS)
 
 .PHONY : clean-deps
 clean-deps :
-	rm -f *.d
+	@rm -f $(DEPS)
 
 .PHONY : build
 build : hap
@@ -25,7 +26,7 @@ build : hap
 hap : $(OBJECTS)
 	$(CXX) -o $@ $(LDFLAGS) $(OBJECTS)
 
--include $(SOURCES:%.cpp=%.d)
+-include $(DEPS)
 
 define DEPENDS_ON_MAKEFILE
 $1 : Makefile
