@@ -204,14 +204,16 @@ unique_ptr<Expression> Parser::accept_expression(Environment& environment) {
 
 unique_ptr<Expression>
 Parser::accept_value_expression(Environment& environment) {
-  return first<Expression>
+  auto value(first<Expression>
     (environment,
      &Parser::accept_boolean_expression,
-     &Parser::accept_call_expression,
      &Parser::accept_identifier_expression,
      &Parser::accept_integer_expression,
      &Parser::accept_lambda_expression,
-     &Parser::accept_string_expression);
+     &Parser::accept_string_expression));
+  if (!value)
+    return unique_ptr<Expression>();
+  return accept_call_expression(environment, move(value));
 }
 
 unique_ptr<Expression>
@@ -226,14 +228,11 @@ Parser::accept_boolean_expression(Environment&) {
 }
 
 unique_ptr<Expression>
-Parser::accept_call_expression(Environment& environment) {
-  Token function;
-  if (!accept(Token::IDENTIFIER, function))
-    return unique_ptr<Expression>();
-  if (!accept(Token::LEFT_PARENTHESIS)) {
-    backtrack();
-    return unique_ptr<Expression>();
-  }
+Parser::accept_call_expression
+  (Environment& environment,
+   unique_ptr<Expression> value) {
+  if (!accept(Token::LEFT_PARENTHESIS))
+    return move(value);
   vector<unique_ptr<Expression>> arguments;
   if (!peek(Token::RIGHT_PARENTHESIS)) {
     while (true) {
@@ -249,7 +248,7 @@ Parser::accept_call_expression(Environment& environment) {
   }
   expect(Token::RIGHT_PARENTHESIS);
   return unique_ptr<Expression>
-    (new CallExpression(move(function.string), move(arguments)));
+    (new CallExpression(move(value), move(arguments)));
 }
 
 unique_ptr<Expression>
@@ -424,6 +423,9 @@ void Parser::infix_subexpression
     infix_expression(environment, operators, operands);
     expect(Token::RIGHT_PARENTHESIS);
     operators.pop();
+    auto value(move(operands.top()));
+    operands.pop();
+    operands.push(accept_call_expression(environment, move(value)));
   } else if (accept(Token::LEFT_BRACKET)) {
     unique_ptr<ListExpression> list(new ListExpression());
     operators.push(Operator());

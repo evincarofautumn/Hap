@@ -48,11 +48,12 @@ private:
     accept_value_expression,
     // ----
     accept_boolean_expression,
-    accept_call_expression,
     accept_identifier_expression,
     accept_integer_expression,
     accept_lambda_expression,
     accept_string_expression;
+  std::unique_ptr<Expression> accept_call_expression
+    (Environment&, std::unique_ptr<Expression>);
   AcceptOperator
     accept_binary_operator,
     accept_unary_operator;

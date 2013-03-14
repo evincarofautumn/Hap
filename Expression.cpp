@@ -49,20 +49,21 @@ void BooleanExpression::write(ostream& stream) const {
 }
 
 CallExpression::CallExpression
-  (std::string&& identifier,
+  (std::unique_ptr<Expression> function,
    std::vector<std::unique_ptr<Expression>>&& expressions)
-  : identifier(move(identifier)),
+  : function(move(function)),
     expressions(move(expressions)) {}
 
 std::unique_ptr<Value>CallExpression::eval(Environment& environment) const {
-  const auto& value(environment[identifier]);
-  value.assert_type(Value::FUNCTION);
-  const auto& function(static_cast<const FunExpression&>(value));
-  return function.call(expressions);
+  auto value(function->eval(environment));
+  value->assert_type(Value::FUNCTION);
+  const auto function(static_unique_cast<FunExpression>(move(value)));
+  return function->call(expressions);
 }
 
 void CallExpression::write(std::ostream& stream) const {
-  stream << identifier << "(";
+  function->write(stream);
+  stream << "(";
   for (const auto& expression : expressions) {
     expression->write(stream);
     stream << ", ";

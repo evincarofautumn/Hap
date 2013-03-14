@@ -63,12 +63,12 @@ public:
 class CallExpression : virtual public Expression {
 public:
   CallExpression
-    (std::string&&,
+    (std::unique_ptr<Expression>,
      std::vector<std::unique_ptr<Expression>>&&);
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
-  std::string identifier;
+  std::unique_ptr<Expression> function;
   std::vector<std::unique_ptr<Expression>> expressions;
 };
 
