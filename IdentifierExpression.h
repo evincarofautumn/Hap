@@ -5,7 +5,7 @@
 
 namespace hap {
 
-class IdentifierExpression : virtual public Expression {
+class IdentifierExpression : public Expression {
 public:
   IdentifierExpression(const std::string& identifier)
     : identifier(identifier) {}

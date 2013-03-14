@@ -5,7 +5,7 @@
 
 namespace hap {
 
-class MapExpression : virtual public Expression {
+class MapExpression : public Expression {
 public:
   MapExpression() {}
   void insert(std::unique_ptr<const Expression> key,

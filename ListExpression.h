@@ -5,7 +5,7 @@
 
 namespace hap {
 
-class ListExpression : virtual public Expression {
+class ListExpression : public Expression {
 public:
   ListExpression() {}
   void push(std::unique_ptr<const Expression> expression) {

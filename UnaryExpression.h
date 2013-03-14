@@ -5,7 +5,7 @@
 
 namespace hap {
 
-class UnaryExpression : virtual public Expression {
+class UnaryExpression : public Expression {
 public:
   UnaryExpression
     (const Operator& operator_,

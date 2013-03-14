@@ -6,7 +6,7 @@
 
 namespace hap {
 
-class FunExpression : virtual public Expression, public Value {
+class FunExpression : public Value {
 public:
   FunExpression
     (const std::string&,

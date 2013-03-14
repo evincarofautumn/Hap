@@ -6,7 +6,7 @@
 
 namespace hap {
 
-class StringExpression : virtual public Expression, public Value {
+class StringExpression : public Value {
 public:
   StringExpression(const std::string& value)
     : value(value) {}

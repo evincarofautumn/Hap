@@ -6,7 +6,7 @@
 
 namespace hap {
 
-class UndefinedExpression : virtual public Expression, public Value {
+class UndefinedExpression : public Value {
 public:
   UndefinedExpression() = default;
   virtual Value::Type type() const override {

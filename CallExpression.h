@@ -5,7 +5,7 @@
 
 namespace hap {
 
-class CallExpression : virtual public Expression {
+class CallExpression : public Expression {
 public:
   CallExpression
     (std::unique_ptr<Expression>,

@@ -6,7 +6,7 @@
 
 namespace hap {
 
-class IntegerExpression : virtual public Expression, public Value {
+class IntegerExpression : public Value {
 public:
   IntegerExpression(int value)
     : value(value) {}

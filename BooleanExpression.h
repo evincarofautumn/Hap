@@ -6,7 +6,7 @@
 
 namespace hap {
 
-class BooleanExpression : virtual public Expression, public Value {
+class BooleanExpression : public Value {
 public:
   BooleanExpression(bool value)
     : value(value) {}

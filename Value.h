@@ -5,7 +5,7 @@
 
 namespace hap {
 
-class Value : virtual public Expression {
+class Value : public Expression {
 public:
   enum Type {
     UNDEFINED,
