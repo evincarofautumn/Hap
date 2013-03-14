@@ -1,6 +1,8 @@
 #ifndef HAP_FLOW_H
 #define HAP_FLOW_H
 
+#include "Value.h"
+
 #include <memory>
 
 namespace hap {

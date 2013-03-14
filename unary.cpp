@@ -1,5 +1,7 @@
 #include "unary.h"
-#include "Expression.h"
+#include "BooleanExpression.h"
+#include "IntegerExpression.h"
+#include "Value.h"
 
 #include "unique_cast.h"
 
