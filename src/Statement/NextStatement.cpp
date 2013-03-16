@@ -7,7 +7,7 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> NextStatement::exec(Environment&) const {
+void NextStatement::exec(Environment&) const {
   throw flow::Next();
 }
 

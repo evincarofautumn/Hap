@@ -12,8 +12,8 @@ ExpressionStatement::ExpressionStatement
   (unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
-unique_ptr<Value> ExpressionStatement::exec(Environment& environment) const {
-  return expression->eval(environment);
+void ExpressionStatement::exec(Environment& environment) const {
+  expression->eval(environment);
 }
 
 void ExpressionStatement::write(ostream& stream) const {

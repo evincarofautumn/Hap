@@ -12,7 +12,7 @@ class Value;
 class Statement {
 public:
   virtual ~Statement();
-  virtual std::unique_ptr<Value> exec(Environment&) const = 0;
+  virtual void exec(Environment&) const = 0;
   virtual void write(std::ostream&) const = 0;
 protected:
   Statement() {}

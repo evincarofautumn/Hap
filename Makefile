@@ -1,5 +1,7 @@
 LDFLAGS+=-lc++
-CXXFLAGS+=-std=c++11 -stdlib=libc++ -Isrc -Isrc/Expression -Isrc/Value -Isrc/Statement
+INCFLAGS=$(addprefix -I,src src/Expression src/Value src/Statement)
+WARNFLAGS=$(addprefix -W,all error)
+CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS)
 CPPFLAGS+=-MD -MP
 SOURCES=$(wildcard src/*.cpp src/Expression/*.cpp src/Parser/*.cpp src/Statement/*.cpp src/Value/*.cpp)
 OBJECTS=$(SOURCES:%.cpp=%.o)

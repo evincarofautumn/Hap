@@ -11,7 +11,7 @@ namespace hap {
 RetStatement::RetStatement(unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
-unique_ptr<Value> RetStatement::exec(Environment& environment) const {
+void RetStatement::exec(Environment& environment) const {
   auto value(expression->eval(environment));
   throw flow::Return(move(value));
 }

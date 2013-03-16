@@ -41,24 +41,23 @@ FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 
 #undef FLOW_STATEMENT
 
-unique_ptr<Value> IfStatement::exec(Environment& environment) const {
+void IfStatement::exec(Environment& environment) const {
   auto value(expression->eval(environment));
   value->assert_type(Value::BOOLEAN);
   auto condition(static_unique_cast<BooleanExpression>(move(value)));
   if (condition->value)
     statement->exec(environment);
-  return unique_ptr<Value>(new UndefinedExpression());
 }
 
-unique_ptr<Value> WhenStatement::exec(Environment&) const {
+void WhenStatement::exec(Environment&) const {
   throw runtime_error("unimplemented when");
 }
 
-unique_ptr<Value> WheneverStatement::exec(Environment&) const {
+void WheneverStatement::exec(Environment&) const {
   throw runtime_error("unimplemented whenever");
 }
 
-unique_ptr<Value> WhileStatement::exec(Environment& environment) const {
+void WhileStatement::exec(Environment& environment) const {
   while (true) {
     auto value(expression->eval(environment));
     value->assert_type(Value::BOOLEAN);
@@ -73,14 +72,13 @@ unique_ptr<Value> WhileStatement::exec(Environment& environment) const {
       continue;
     }
   }
-  return unique_ptr<Value>(new UndefinedExpression());
 }
 
-unique_ptr<Value> RepeatWhenStatement::exec(Environment&) const {
+void RepeatWhenStatement::exec(Environment&) const {
   throw runtime_error("unimplemented repeat_when");
 }
 
-unique_ptr<Value> RepeatWheneverStatement::exec(Environment&) const {
+void RepeatWheneverStatement::exec(Environment&) const {
   throw runtime_error("unimplemented repeat_whenever");
 }
 

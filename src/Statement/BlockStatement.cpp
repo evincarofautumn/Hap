@@ -1,5 +1,7 @@
 #include "BlockStatement.h"
+
 #include "Value.h"
+#include "UndefinedExpression.h"
 
 #include <ostream>
 
@@ -7,11 +9,9 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> BlockStatement::exec(Environment& environment) const {
-  unique_ptr<Value> result;
+void BlockStatement::exec(Environment& environment) const {
   for (const auto& statement : statements)
-    result = statement->exec(environment);
-  return move(result);
+    statement->exec(environment);
 }
 
 void BlockStatement::write(ostream& stream) const {

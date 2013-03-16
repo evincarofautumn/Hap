@@ -15,12 +15,11 @@ VarStatement::VarStatement
   : identifier(identifier),
     initializer(move(initializer)) {}
 
-unique_ptr<Value> VarStatement::exec(Environment& environment) const {
+void VarStatement::exec(Environment& environment) const {
   auto value = initializer
     ? initializer->eval(environment)
     : unique_ptr<Value>(new UndefinedExpression());
   environment.define(identifier, move(value));
-  return unique_ptr<Value>(new UndefinedExpression());
 }
 
 void VarStatement::write(ostream& stream) const {

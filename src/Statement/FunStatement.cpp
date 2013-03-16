@@ -18,11 +18,10 @@ FunStatement::FunStatement
     body(body),
     local(environment) {}
 
-unique_ptr<Value> FunStatement::exec(Environment& environment) const {
+void FunStatement::exec(Environment& environment) const {
   unique_ptr<Value> value
     (new FunExpression(identifier, parameters, body, local));
   environment.define(identifier, move(value));
-  return unique_ptr<Value>(new UndefinedExpression());
 }
 
 void FunStatement::write(ostream& stream) const {
