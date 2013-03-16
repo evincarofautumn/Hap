@@ -155,35 +155,48 @@ unique_ptr<Value> logical
    Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  auto a(left->eval(environment));
-  auto b(right->eval(environment));
-  a->assert_type(Value::BOOLEAN);
-  b->assert_type(Value::BOOLEAN);
-  auto c(static_unique_cast<BooleanExpression>(move(a)));
-  auto d(static_unique_cast<BooleanExpression>(move(b)));
-  return unique_ptr<Value>
-    (new BooleanExpression(function(c->value, d->value)));
 }
 
 unique_ptr<Value> and_
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  return logical(logical_and<bool>(), environment, left, right);
+  auto left_value(left->eval(environment));
+  left_value->assert_type(Value::BOOLEAN);
+  auto left_boolean(static_unique_cast<BooleanExpression>(move(left_value)));
+  if (!left_boolean->value)
+    return unique_ptr<Value>(new BooleanExpression(false));
+  auto right_value(right->eval(environment));
+  right_value->assert_type(Value::BOOLEAN);
+  return move(right_value);
 }
 
 unique_ptr<Value> xor_
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  return logical(not_equal_to<bool>(), environment, left, right);
+  auto left_value(left->eval(environment));
+  left_value->assert_type(Value::BOOLEAN);
+  auto left_boolean(static_unique_cast<BooleanExpression>(move(left_value)));
+  auto right_value(right->eval(environment));
+  right_value->assert_type(Value::BOOLEAN);
+  auto right_boolean(static_unique_cast<BooleanExpression>(move(right_value)));
+  return unique_ptr<Value>
+    (new BooleanExpression(left_boolean->value != right_boolean->value));
 }
 
 unique_ptr<Value> or_
   (Environment& environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  return logical(logical_or<bool>(), environment, left, right);
+  auto left_value(left->eval(environment));
+  left_value->assert_type(Value::BOOLEAN);
+  auto left_boolean(static_unique_cast<BooleanExpression>(move(left_value)));
+  if (left_boolean->value)
+    return unique_ptr<Value>(new BooleanExpression(true));
+  auto right_value(right->eval(environment));
+  right_value->assert_type(Value::BOOLEAN);
+  return move(right_value);
 }
 
 unique_ptr<Value> assign
