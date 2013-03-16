@@ -1,8 +1,7 @@
 #include "unary.h"
 
-#include "BooleanExpression.h"
-#include "IntegerExpression.h"
-#include "Value.h"
+#include "BooleanValue.h"
+#include "IntegerValue.h"
 #include "unique_cast.h"
 
 #include <functional>
@@ -26,8 +25,8 @@ unique_ptr<Value> negate
    const unique_ptr<const Expression>& expression) {
   auto value(expression->eval(environment));
   value->assert_type(Value::INTEGER);
-  unique_ptr<IntegerExpression> integer
-    (static_unique_cast<IntegerExpression>(move(value)));
+  unique_ptr<IntegerValue> integer
+    (static_unique_cast<IntegerValue>(move(value)));
   integer->value = -integer->value;
   return static_unique_cast<Value>(move(integer));
 }
@@ -51,9 +50,9 @@ unique_ptr<Value> logical
    const unique_ptr<const Expression>& expression) {
   auto a(expression->eval(environment));
   a->assert_type(Value::BOOLEAN);
-  auto b(static_unique_cast<BooleanExpression>(move(a)));
+  auto b(static_unique_cast<BooleanValue>(move(a)));
   return unique_ptr<Value>
-    (new BooleanExpression(function(b->value)));
+    (new BooleanValue(function(b->value)));
 }
 
 unique_ptr<Value> not_

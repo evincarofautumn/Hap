@@ -1,19 +1,19 @@
 #include "Parser.h"
 
 #include "BinaryExpression.h"
-#include "BooleanExpression.h"
+#include "BooleanValue.h"
 #include "CallExpression.h"
 #include "FunExpression.h"
 #include "IdentifierExpression.h"
-#include "IntegerExpression.h"
+#include "IntegerValue.h"
 #include "ListExpression.h"
 #include "MapExpression.h"
 #include "Operator.h"
 #include "Operator.h"
 #include "RetStatement.h"
-#include "StringExpression.h"
+#include "StringValue.h"
 #include "UnaryExpression.h"
-#include "UndefinedExpression.h"
+#include "UndefinedValue.h"
 #include "binary.h"
 #include "unary.h"
 #include "unique_cast.h"
@@ -58,9 +58,9 @@ Parser::accept_value_expression(Environment& environment) {
 unique_ptr<Expression>
 Parser::accept_boolean_expression(Environment&) {
   if (accept(Token(Token::IDENTIFIER, "true")))
-    return unique_ptr<Expression>(new BooleanExpression(true));
+    return unique_ptr<Expression>(new BooleanValue(true));
   if (accept(Token(Token::IDENTIFIER, "false")))
-    return unique_ptr<Expression>(new BooleanExpression(false));
+    return unique_ptr<Expression>(new BooleanValue(false));
   return unique_ptr<Expression>();
 }
 
@@ -105,7 +105,7 @@ Parser::accept_integer_expression(Environment& environment) {
   int value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid integer");
-  return unique_ptr<Expression>(new IntegerExpression(value));
+  return unique_ptr<Expression>(new IntegerValue(value));
 }
 
 unique_ptr<Expression>
@@ -154,13 +154,13 @@ Parser::accept_string_expression(Environment&) {
   if (!accept(Token::STRING, token))
     return unique_ptr<Expression>();
   token.string.pop_back();
-  return unique_ptr<Expression>(new StringExpression(token.string.substr(1)));
+  return unique_ptr<Expression>(new StringValue(token.string.substr(1)));
 }
 
 unique_ptr<Expression>
 Parser::accept_undefined_expression(Environment&) {
   if (accept(Token(Token::IDENTIFIER, "undefined")))
-    return unique_ptr<Expression>(new UndefinedExpression());
+    return unique_ptr<Expression>(new UndefinedValue());
   return unique_ptr<Expression>();
 }
 
@@ -297,7 +297,7 @@ void Parser::infix_subexpression
         unique_ptr<const Expression> key;
         Token bareword;
         if (accept(Token::IDENTIFIER, bareword)) {
-          key.reset(new StringExpression(bareword.string));
+          key.reset(new StringValue(bareword.string));
         } else {
           infix_expression(environment, operators, operands);
           key = move(operands.top());

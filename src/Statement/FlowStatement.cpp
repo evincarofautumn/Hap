@@ -1,6 +1,6 @@
 #include "FlowStatement.h"
-#include "BooleanExpression.h"
-#include "UndefinedExpression.h"
+#include "BooleanValue.h"
+#include "UndefinedValue.h"
 #include "Value.h"
 #include "flow.h"
 #include "unique_cast.h"
@@ -44,7 +44,7 @@ FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 void IfStatement::exec(Environment& environment) const {
   auto value(expression->eval(environment));
   value->assert_type(Value::BOOLEAN);
-  auto condition(static_unique_cast<BooleanExpression>(move(value)));
+  auto condition(static_unique_cast<BooleanValue>(move(value)));
   if (condition->value)
     statement->exec(environment);
 }
@@ -61,7 +61,7 @@ void WhileStatement::exec(Environment& environment) const {
   while (true) {
     auto value(expression->eval(environment));
     value->assert_type(Value::BOOLEAN);
-    auto condition(static_unique_cast<BooleanExpression>(move(value)));
+    auto condition(static_unique_cast<BooleanValue>(move(value)));
     if (!condition->value)
       break;
     try {

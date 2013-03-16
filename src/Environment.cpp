@@ -1,5 +1,5 @@
 #include "Environment.h"
-#include "UndefinedExpression.h"
+#include "UndefinedValue.h"
 
 #include <sstream>
 #include <stdexcept>
@@ -16,7 +16,7 @@ Value& Environment::operator[](const string& name) {
   const auto existing(variables.find(name));
   if (existing == variables.end())
     return *variables.insert
-      (make_pair(name, shared_ptr<Value>(new UndefinedExpression())))
+      (make_pair(name, shared_ptr<Value>(new UndefinedValue())))
       .first->second;
   return *existing->second;
 }

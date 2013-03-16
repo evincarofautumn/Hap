@@ -1,7 +1,7 @@
 #include "binary.h"
-#include "BooleanExpression.h"
-#include "IntegerExpression.h"
-#include "Value.h"
+
+#include "BooleanValue.h"
+#include "IntegerValue.h"
 #include "unique_cast.h"
 
 #include <functional>
@@ -22,10 +22,10 @@ unique_ptr<Value> arithmetic
   auto b(right->eval(environment));
   a->assert_type(Value::INTEGER);
   b->assert_type(Value::INTEGER);
-  auto c(static_unique_cast<IntegerExpression>(move(a)));
-  auto d(static_unique_cast<IntegerExpression>(move(b)));
+  auto c(static_unique_cast<IntegerValue>(move(a)));
+  auto d(static_unique_cast<IntegerValue>(move(b)));
   return unique_ptr<Value>
-    (new IntegerExpression(function(c->value, d->value)));
+    (new IntegerValue(function(c->value, d->value)));
 }
 
 unique_ptr<Value> multiply
@@ -101,10 +101,10 @@ unique_ptr<Value> relational
   auto b(right->eval(environment));
   a->assert_type(Value::INTEGER);
   b->assert_type(Value::INTEGER);
-  auto c(static_unique_cast<IntegerExpression>(move(a)));
-  auto d(static_unique_cast<IntegerExpression>(move(b)));
+  auto c(static_unique_cast<IntegerValue>(move(a)));
+  auto d(static_unique_cast<IntegerValue>(move(b)));
   return unique_ptr<Value>
-    (new BooleanExpression(function(c->value, d->value)));
+    (new BooleanValue(function(c->value, d->value)));
 }
 
 unique_ptr<Value> lt
@@ -163,9 +163,9 @@ unique_ptr<Value> and_
    const unique_ptr<const Expression>& right) {
   auto left_value(left->eval(environment));
   left_value->assert_type(Value::BOOLEAN);
-  auto left_boolean(static_unique_cast<BooleanExpression>(move(left_value)));
+  auto left_boolean(static_unique_cast<BooleanValue>(move(left_value)));
   if (!left_boolean->value)
-    return unique_ptr<Value>(new BooleanExpression(false));
+    return unique_ptr<Value>(new BooleanValue(false));
   auto right_value(right->eval(environment));
   right_value->assert_type(Value::BOOLEAN);
   return move(right_value);
@@ -177,12 +177,12 @@ unique_ptr<Value> xor_
    const unique_ptr<const Expression>& right) {
   auto left_value(left->eval(environment));
   left_value->assert_type(Value::BOOLEAN);
-  auto left_boolean(static_unique_cast<BooleanExpression>(move(left_value)));
+  auto left_boolean(static_unique_cast<BooleanValue>(move(left_value)));
   auto right_value(right->eval(environment));
   right_value->assert_type(Value::BOOLEAN);
-  auto right_boolean(static_unique_cast<BooleanExpression>(move(right_value)));
+  auto right_boolean(static_unique_cast<BooleanValue>(move(right_value)));
   return unique_ptr<Value>
-    (new BooleanExpression(left_boolean->value != right_boolean->value));
+    (new BooleanValue(left_boolean->value != right_boolean->value));
 }
 
 unique_ptr<Value> or_
@@ -191,9 +191,9 @@ unique_ptr<Value> or_
    const unique_ptr<const Expression>& right) {
   auto left_value(left->eval(environment));
   left_value->assert_type(Value::BOOLEAN);
-  auto left_boolean(static_unique_cast<BooleanExpression>(move(left_value)));
+  auto left_boolean(static_unique_cast<BooleanValue>(move(left_value)));
   if (left_boolean->value)
-    return unique_ptr<Value>(new BooleanExpression(true));
+    return unique_ptr<Value>(new BooleanValue(true));
   auto right_value(right->eval(environment));
   right_value->assert_type(Value::BOOLEAN);
   return move(right_value);

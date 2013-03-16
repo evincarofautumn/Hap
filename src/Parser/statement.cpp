@@ -8,7 +8,7 @@
 #include "LastStatement.h"
 #include "NextStatement.h"
 #include "RetStatement.h"
-#include "UndefinedExpression.h"
+#include "UndefinedValue.h"
 #include "VarStatement.h"
 #include "unique_cast.h"
 
@@ -147,7 +147,7 @@ Parser::accept_var_statement(Environment& environment) {
     return unique_ptr<Statement>();
   Token identifier;
   expect(Token::IDENTIFIER, identifier);
-  unique_ptr<Expression> initializer(new UndefinedExpression());
+  unique_ptr<Expression> initializer(new UndefinedValue());
   if (accept(Token(Token::OPERATOR, "="))
       && !(initializer = accept_expression(environment)))
     expected("initializer");

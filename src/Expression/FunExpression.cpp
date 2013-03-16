@@ -1,6 +1,6 @@
 #include "FunExpression.h"
 
-#include "UndefinedExpression.h"
+#include "UndefinedValue.h"
 #include "flow.h"
 
 #include <iostream>
@@ -44,7 +44,7 @@ unique_ptr<Value> FunExpression::call
   } catch (flow::Return& result) {
     return move(result.value);
   }
-  return unique_ptr<Value>(new UndefinedExpression());
+  return unique_ptr<Value>(new UndefinedValue());
 }
 
 }

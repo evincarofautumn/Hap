@@ -1,19 +1,19 @@
-#ifndef HAP_BOOLEANEXPRESSION_H
-#define HAP_BOOLEANEXPRESSION_H
+#ifndef HAP_BOOLEANVALUE_H
+#define HAP_BOOLEANVALUE_H
 
 #include "Value.h"
 
 namespace hap {
 
-class BooleanExpression : public Value {
+class BooleanValue : public Value {
 public:
-  BooleanExpression(bool value)
+  BooleanValue(bool value)
     : value(value) {}
   virtual Value::Type type() const final override {
     return Type::BOOLEAN;
   }
-  virtual BooleanExpression* copy() const final override {
-    return new BooleanExpression(*this);
+  virtual BooleanValue* copy() const final override {
+    return new BooleanValue(*this);
   }
   virtual std::unique_ptr<Value> eval(Environment&) const final override;
   virtual void write(std::ostream&) const final override;
