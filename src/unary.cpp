@@ -1,9 +1,11 @@
 #include "unary.h"
+
 #include "BooleanExpression.h"
 #include "IntegerExpression.h"
 #include "Value.h"
-
 #include "unique_cast.h"
+
+#include <functional>
 
 using namespace std;
 

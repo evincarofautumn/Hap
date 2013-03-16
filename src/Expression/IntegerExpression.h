@@ -1,7 +1,6 @@
 #ifndef HAP_INTEGEREXPRESSION_H
 #define HAP_INTEGEREXPRESSION_H
 
-#include "Expression.h"
 #include "Value.h"
 
 namespace hap {

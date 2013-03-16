@@ -3,6 +3,8 @@
 
 #include "Expression.h"
 
+#include <map>
+
 namespace hap {
 
 class MapExpression : public Expression {
@@ -15,8 +17,9 @@ public:
   virtual std::unique_ptr<Value> eval(Environment&) const override;
   virtual void write(std::ostream&) const override;
 private:
-  std::map<std::unique_ptr<const Expression>,
-           std::unique_ptr<const Expression>> pairs;
+  std::map
+    <std::unique_ptr<const Expression>,
+     std::unique_ptr<const Expression>> pairs;
 };
 
 }

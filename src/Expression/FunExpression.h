@@ -1,8 +1,13 @@
 #ifndef HAP_FUNEXPRESSION_H
 #define HAP_FUNEXPRESSION_H
 
-#include "Expression.h"
 #include "Value.h"
+
+#include "Environment.h"
+#include "Statement.h"
+
+#include <string>
+#include <vector>
 
 namespace hap {
 

@@ -1,8 +1,9 @@
 #ifndef HAP_STRINGEXPRESSION_H
 #define HAP_STRINGEXPRESSION_H
 
-#include "Expression.h"
 #include "Value.h"
+
+#include <string>
 
 namespace hap {
 

@@ -3,6 +3,11 @@
 
 #include "Statement.h"
 
+#include "Environment.h"
+
+#include <string>
+#include <vector>
+
 namespace hap {
 
 class FunStatement : public Statement {

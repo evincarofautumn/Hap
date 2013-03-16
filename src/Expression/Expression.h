@@ -1,18 +1,12 @@
 #ifndef HAP_EXPRESSION_H
 #define HAP_EXPRESSION_H
 
-#include "Environment.h"
-#include "Operator.h"
-#include "Statement.h"
-
 #include <iosfwd>
-#include <map>
 #include <memory>
-#include <string>
-#include <vector>
 
 namespace hap {
 
+class Environment;
 class Value;
 
 class Expression {

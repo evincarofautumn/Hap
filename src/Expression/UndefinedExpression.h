@@ -1,7 +1,6 @@
 #ifndef HAP_UNDEFINEDEXPRESSION_H
 #define HAP_UNDEFINEDEXPRESSION_H
 
-#include "Expression.h"
 #include "Value.h"
 
 namespace hap {

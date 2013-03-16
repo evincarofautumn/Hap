@@ -3,6 +3,8 @@
 
 #include "Statement.h"
 
+#include <string>
+
 namespace hap {
 
 class VarStatement : public Statement {

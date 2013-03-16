@@ -3,6 +3,8 @@
 
 #include "Value.h"
 
+#include <map>
+
 namespace hap {
 
 class MapValue : public Value {

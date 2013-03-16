@@ -3,6 +3,8 @@
 
 #include "Value.h"
 
+#include <vector>
+
 namespace hap {
 
 class ListValue : public Value {

@@ -1,7 +1,6 @@
 #ifndef HAP_BOOLEANEXPRESSION_H
 #define HAP_BOOLEANEXPRESSION_H
 
-#include "Expression.h"
 #include "Value.h"
 
 namespace hap {

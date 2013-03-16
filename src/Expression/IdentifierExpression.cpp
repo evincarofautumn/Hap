@@ -1,5 +1,6 @@
 #include "IdentifierExpression.h"
 
+#include "Environment.h"
 #include "Value.h"
 
 using namespace std;

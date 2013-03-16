@@ -3,6 +3,8 @@
 
 #include "Expression.h"
 
+#include "Operator.h"
+
 namespace hap {
 
 class UnaryExpression : public Expression {

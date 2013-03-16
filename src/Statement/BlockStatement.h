@@ -3,6 +3,8 @@
 
 #include "Statement.h"
 
+#include <vector>
+
 namespace hap {
 
 class BlockStatement : public Statement {

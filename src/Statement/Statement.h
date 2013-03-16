@@ -1,15 +1,13 @@
 #ifndef HAP_STATEMENT_H
 #define HAP_STATEMENT_H
 
-#include "Environment.h"
-
 #include <memory>
-#include <string>
-#include <vector>
 
 namespace hap {
 
+class Environment;
 class Expression;
+class Value;
 
 class Statement {
 public:

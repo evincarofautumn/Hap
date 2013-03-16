@@ -1,5 +1,7 @@
 #include "VarStatement.h"
+
 #include "UndefinedExpression.h"
+#include "Environment.h"
 
 #include <ostream>
 

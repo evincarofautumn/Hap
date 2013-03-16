@@ -3,6 +3,8 @@
 
 #include "Expression.h"
 
+#include <vector>
+
 namespace hap {
 
 class ListExpression : public Expression {

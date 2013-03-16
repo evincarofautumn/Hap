@@ -3,6 +3,8 @@
 
 #include "Expression.h"
 
+#include <string>
+
 namespace hap {
 
 class IdentifierExpression : public Expression {
