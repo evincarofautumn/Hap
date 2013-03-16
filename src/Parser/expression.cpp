@@ -57,13 +57,11 @@ Parser::accept_value_expression(Environment& environment) {
 
 unique_ptr<Expression>
 Parser::accept_boolean_expression(Environment&) {
-  if (accept(Token(Token::IDENTIFIER, "true"))) {
+  if (accept(Token(Token::IDENTIFIER, "true")))
     return unique_ptr<Expression>(new BooleanExpression(true));
-  } else if (accept(Token(Token::IDENTIFIER, "false"))) {
+  if (accept(Token(Token::IDENTIFIER, "false")))
     return unique_ptr<Expression>(new BooleanExpression(false));
-  } else {
-    return unique_ptr<Expression>();
-  }
+  return unique_ptr<Expression>();
 }
 
 unique_ptr<Expression>
