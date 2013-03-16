@@ -51,7 +51,8 @@ private:
     accept_identifier_expression,
     accept_integer_expression,
     accept_lambda_expression,
-    accept_string_expression;
+    accept_string_expression,
+    accept_undefined_expression;
   std::unique_ptr<Expression> accept_call_expression
     (Environment&, std::unique_ptr<Expression>);
   AcceptOperator

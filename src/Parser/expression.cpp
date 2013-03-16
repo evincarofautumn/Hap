@@ -13,6 +13,7 @@
 #include "RetStatement.h"
 #include "StringExpression.h"
 #include "UnaryExpression.h"
+#include "UndefinedExpression.h"
 #include "binary.h"
 #include "unary.h"
 #include "unique_cast.h"
@@ -47,7 +48,8 @@ Parser::accept_value_expression(Environment& environment) {
      &Parser::accept_identifier_expression,
      &Parser::accept_integer_expression,
      &Parser::accept_lambda_expression,
-     &Parser::accept_string_expression));
+     &Parser::accept_string_expression,
+     &Parser::accept_undefined_expression));
   if (!value)
     return unique_ptr<Expression>();
   return accept_call_expression(environment, move(value));
@@ -155,6 +157,13 @@ Parser::accept_string_expression(Environment&) {
     return unique_ptr<Expression>();
   token.string.pop_back();
   return unique_ptr<Expression>(new StringExpression(token.string.substr(1)));
+}
+
+unique_ptr<Expression>
+Parser::accept_undefined_expression(Environment&) {
+  if (accept(Token(Token::IDENTIFIER, "undefined")))
+    return unique_ptr<Expression>(new UndefinedExpression());
+  return unique_ptr<Expression>();
 }
 
 map<string, Operator> binary_operators;

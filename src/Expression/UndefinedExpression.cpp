@@ -11,7 +11,7 @@ unique_ptr<Value> UndefinedExpression::eval(Environment& environment) const {
 }
 
 void UndefinedExpression::write(ostream& stream) const {
-  stream << "undef";
+  stream << "undefined";
 }
 
 }
