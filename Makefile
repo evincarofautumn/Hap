@@ -29,6 +29,10 @@ build : hap
 hap : $(OBJECTS)
 	$(CXX) -o $@ $(LDFLAGS) $(OBJECTS)
 
+.PHONY : loc
+loc :
+	wc -l $(SOURCES) | sort -n
+
 -include $(DEPS)
 
 define DEPENDS_ON_MAKEFILE
