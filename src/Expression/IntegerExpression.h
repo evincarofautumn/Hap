@@ -9,14 +9,14 @@ class IntegerExpression : public Value {
 public:
   IntegerExpression(int value)
     : value(value) {}
-  virtual Value::Type type() const override {
+  virtual Value::Type type() const final override {
     return Type::INTEGER;
   }
-  virtual IntegerExpression* copy() const override {
+  virtual IntegerExpression* copy() const final override {
     return new IntegerExpression(*this);
   }
-  virtual std::unique_ptr<Value> eval(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
   int value;
 };
 

@@ -14,8 +14,8 @@ public:
               std::unique_ptr<const Expression> value) {
     pairs.insert(std::make_pair(std::move(key), std::move(value)));
   }
-  virtual std::unique_ptr<Value> eval(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
 private:
   std::map
     <std::unique_ptr<const Expression>,

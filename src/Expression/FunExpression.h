@@ -18,14 +18,14 @@ public:
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
      Environment&);
-  virtual Value::Type type() const override {
+  virtual Value::Type type() const final override {
     return Type::FUNCTION;
   }
-  virtual FunExpression* copy() const override {
+  virtual FunExpression* copy() const final override {
     return new FunExpression(*this);
   }
-  virtual std::unique_ptr<Value> eval(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
   std::unique_ptr<Value> call
     (const std::vector<std::unique_ptr<Expression>>&) const;
 private:

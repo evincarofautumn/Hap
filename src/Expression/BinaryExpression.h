@@ -16,8 +16,8 @@ public:
     : operator_(operator_),
       left(std::move(left)),
       right(std::move(right)) {}
-  virtual std::unique_ptr<Value> eval(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
 private:
   Operator operator_;
   std::unique_ptr<const Expression> left;

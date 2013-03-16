@@ -9,14 +9,14 @@ class BooleanExpression : public Value {
 public:
   BooleanExpression(bool value)
     : value(value) {}
-  virtual Value::Type type() const override {
+  virtual Value::Type type() const final override {
     return Type::BOOLEAN;
   }
-  virtual BooleanExpression* copy() const override {
+  virtual BooleanExpression* copy() const final override {
     return new BooleanExpression(*this);
   }
-  virtual std::unique_ptr<Value> eval(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
   bool value;
 };
 

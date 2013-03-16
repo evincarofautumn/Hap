@@ -13,8 +13,8 @@ public:
   void push(std::unique_ptr<Statement> statement) {
     statements.push_back(std::move(statement));
   }
-  virtual std::unique_ptr<Value> exec(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
 private:
   std::vector<std::unique_ptr<Statement>> statements;
 };

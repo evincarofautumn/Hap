@@ -8,8 +8,8 @@ namespace hap {
 class ExpressionStatement : public Statement {
 public:
   ExpressionStatement(std::unique_ptr<Expression>);
-  virtual std::unique_ptr<Value> exec(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
 private:
   std::unique_ptr<Expression> expression;
 };

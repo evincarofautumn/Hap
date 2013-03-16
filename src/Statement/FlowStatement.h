@@ -14,7 +14,7 @@ public:
      std::unique_ptr<Expression>,
      std::unique_ptr<Statement>);
   virtual std::unique_ptr<Value> exec(Environment&) const = 0;
-  virtual void write(std::ostream&) const override;
+  virtual void write(std::ostream&) const final override;
 protected:
   std::string keyword;
   std::unique_ptr<Expression> expression;
@@ -27,7 +27,7 @@ public: \
   NAME##Statement \
     (std::unique_ptr<Expression>, \
      std::unique_ptr<Statement>); \
-  virtual std::unique_ptr<Value> exec(Environment&) const override; \
+  virtual std::unique_ptr<Value> exec(Environment&) const final override; \
 };
 
 FLOW_STATEMENT(If, "if")

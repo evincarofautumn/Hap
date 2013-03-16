@@ -7,8 +7,8 @@ namespace hap {
 
 class LastStatement : public Statement {
 public:
-  virtual std::unique_ptr<Value> exec(Environment&) const override;
-  virtual void write(std::ostream&) const override;
+  virtual std::unique_ptr<Value> exec(Environment&) const final override;
+  virtual void write(std::ostream&) const final override;
 };
 
 }
