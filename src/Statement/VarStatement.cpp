@@ -16,9 +16,7 @@ VarStatement::VarStatement
     initializer(move(initializer)) {}
 
 void VarStatement::exec(Environment& environment) const {
-  auto value = initializer
-    ? initializer->eval(environment)
-    : unique_ptr<Value>(new UndefinedExpression());
+  auto value(initializer->eval(environment));
   environment.define(identifier, move(value));
 }
 
