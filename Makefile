@@ -7,27 +7,42 @@ CPPFLAGS+=-MD -MP
 SOURCES=$(wildcard $(addsuffix /*.cpp,$(SOURCE_PATHS)))
 OBJECTS=$(SOURCES:%.cpp=%.o)
 DEPS=$(SOURCES:%.cpp=%.d)
+TESTER=./test/run.sh
+HAP=./hap
 
 .PHONY : all
-all : build
+all : build test
 
 .PHONY : clean
-clean : clean-build clean-deps
+clean : clean-build clean-deps clean-test
 
 .PHONY : clean-build
 clean-build :
-	@rm -f hap
+	@rm -f $(HAP)
 	@rm -f $(OBJECTS)
 
 .PHONY : clean-deps
 clean-deps :
 	@rm -f $(DEPS)
 
-.PHONY : build
-build : hap
+.PHONY : clean-test
+clean-test :
+	@rm -f test/*.actual
 
-hap : $(OBJECTS)
+.PHONY : build
+build : $(HAP)
+
+$(HAP) : $(OBJECTS)
 	$(CXX) -o $@ $(LDFLAGS) $(OBJECTS)
+
+TESTS=$(basename $(notdir $(wildcard test/*.hap)))
+define TESTRULE
+test-$1 : $(HAP)
+	@$(TESTER) $$(realpath $(HAP)) $1
+test : test-$1
+endef
+.PHONY : $(foreach TEST,$(TESTS),test-$(TEST))
+$(foreach TEST,$(TESTS),$(eval $(call TESTRULE,$(TEST))))
 
 .PHONY : loc
 loc :
