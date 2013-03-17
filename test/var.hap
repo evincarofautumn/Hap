@@ -1,0 +1,4 @@
+var x;
+var y = 0;
+trace x;
+trace y;

@@ -1,0 +1,5 @@
+trace "Hello, world!"
+trace 0
+trace [1, 2, 3]
+trace [1, 2, 3, ]
+trace {a: "a", b: "b"}
