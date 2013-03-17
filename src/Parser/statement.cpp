@@ -8,6 +8,7 @@
 #include "LastStatement.h"
 #include "NextStatement.h"
 #include "RetStatement.h"
+#include "TraceStatement.h"
 #include "UndefinedValue.h"
 #include "VarStatement.h"
 #include "unique_cast.h"
@@ -39,6 +40,7 @@ Parser::accept_statement(Environment& environment) {
      &Parser::accept_repeat_when_statement,
      &Parser::accept_repeat_whenever_statement,
      &Parser::accept_ret_statement,
+     &Parser::accept_trace_statement,
      &Parser::accept_var_statement,
      &Parser::accept_when_statement,
      &Parser::accept_whenever_statement,
@@ -138,6 +140,16 @@ Parser::accept_ret_statement(Environment& environment) {
   auto expression(accept_expression(environment));
   return expression
     ? unique_ptr<Statement>(new RetStatement(move(expression)))
+    : unique_ptr<Statement>();
+}
+
+unique_ptr<Statement>
+Parser::accept_trace_statement(Environment& environment) {
+  if (!accept(Token(Token::IDENTIFIER, "trace")))
+    return unique_ptr<Statement>();
+  auto expression(accept_expression(environment));
+  return expression
+    ? unique_ptr<Statement>(new TraceStatement(move(expression)))
     : unique_ptr<Statement>();
 }
 
