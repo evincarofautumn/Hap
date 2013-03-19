@@ -18,6 +18,7 @@ public:
     return new StringValue(*this);
   }
   virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
   std::string value;
 };

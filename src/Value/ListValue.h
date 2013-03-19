@@ -19,6 +19,7 @@ public:
   virtual ListValue* copy() const final override {
     return new ListValue(*this);
   }
+  virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   ListValue(const ListValue&);

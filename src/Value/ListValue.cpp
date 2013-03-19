@@ -11,6 +11,12 @@ ListValue::ListValue(const ListValue& other) {
     values.push_back(unique_ptr<Value>(value->copy()));
 }
 
+bool ListValue::less(const Value& other) const {
+  return Value::less(other)
+    || (other.type() == Value::LIST
+      && values < static_cast<const ListValue&>(other).values);
+}
+
 void ListValue::write(ostream& stream) const {
   stream << "[ ";
   for (const auto& value : values) {

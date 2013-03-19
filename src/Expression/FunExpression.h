@@ -25,6 +25,7 @@ public:
     return new FunExpression(*this);
   }
   virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
   std::unique_ptr<Value> call
     (const std::vector<std::unique_ptr<Expression>>&) const;

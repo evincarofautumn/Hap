@@ -22,10 +22,12 @@ public:
     return std::unique_ptr<Value>(copy());
   }
   virtual Value* copy() const = 0;
+  virtual bool less(const Value&) const = 0;
   virtual Type type() const = 0;
 };
 
 std::ostream& operator<<(std::ostream&, const Value::Type&);
+bool operator<(const Value&, const Value&);
 
 }
 

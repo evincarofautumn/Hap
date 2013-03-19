@@ -23,6 +23,10 @@ unique_ptr<Value> FunExpression::eval(Environment& environment) const {
   throw runtime_error("unimplemented fun");
 }
 
+bool FunExpression::less(const Value& other) const {
+  return Value::less(other);
+}
+
 void FunExpression::write(ostream& stream) const {
   stream << "\\" << identifier << "(";
   for (const auto& parameter : parameters)

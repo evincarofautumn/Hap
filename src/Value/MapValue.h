@@ -2,6 +2,7 @@
 #define HAP_MAPVALUE_H
 
 #include "Value.h"
+#include "indirect_compare.h"
 
 #include <map>
 
@@ -19,10 +20,14 @@ public:
   virtual MapValue* copy() const final override {
     return new MapValue(*this);
   }
+  virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   MapValue(const MapValue&);
-  std::map<std::unique_ptr<Value>, std::unique_ptr<Value>> pairs;
+  std::map
+    <std::unique_ptr<Value>,
+     std::unique_ptr<Value>,
+     indirect_compare<Value>> pairs;
 };
 
 }
