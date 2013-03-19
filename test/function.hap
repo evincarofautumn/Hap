@@ -1,0 +1,23 @@
+fun add_long(x, y) {
+    var sum = x + y;
+    ret sum;
+}
+
+trace add_long(2, 3);
+
+fun add_normal(x, y) {
+    ret x + y;
+}
+
+trace add_normal(3, 4);
+
+fun add_concise(x, y)
+    ret x + y;
+
+trace add_concise(5, 6);
+
+fun returns_function() {
+    ret add_concise;
+}
+
+trace (returns_function())(6, 7);
