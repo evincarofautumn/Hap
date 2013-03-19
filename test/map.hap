@@ -1,0 +1,38 @@
+# Zero pairs.
+trace {};
+
+# One pair.
+trace {0:0};
+
+# One pair with trailing comma.
+trace {0:0,};
+
+# Two pairs.
+trace {0:0, 1:1};
+
+# Two pairs with trailing comma.
+trace {0:0, 1:1,};
+
+# Many pairs.
+trace {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6};
+
+# Many pairs with trailing comma.
+trace {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6,};
+
+# One bareword pair.
+trace {a:0};
+
+# One bareword pair with trailing comma.
+trace {a:0,};
+
+# Two bareword pairs.
+trace {a:0, b:1};
+
+# Two bareword pairs with trailing comma.
+trace {a:0, b:1,};
+
+# Many bareword pairs.
+trace {a:0, b:1, c:2, d:3, e:4, f:5, g:6};
+
+# Many bareword pairs with trailing comma.
+trace {a:0, b:1, c:2, d:3, e:4, f:5, g:6,};

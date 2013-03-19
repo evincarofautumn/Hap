@@ -1,0 +1,20 @@
+# Zero elements.
+trace [];
+
+# One element.
+trace [0];
+
+# One element with trailing comma.
+trace [0,];
+
+# Two elements.
+trace [0, 1];
+
+# Two elements with trailing comma.
+trace [0, 1,];
+
+# Many elements.
+trace [0, 1, 2, 3, 4, 5, 6];
+
+# Many elements with trailing comma.
+trace [0, 1, 2, 3, 4, 5, 6,];
