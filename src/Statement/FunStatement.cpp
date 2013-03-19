@@ -13,7 +13,7 @@ FunStatement::FunStatement
   (const string& identifier,
    const vector<string>& parameters,
    shared_ptr<Statement> body,
-   const Environment& environment)
+   Environment& environment)
   : identifier(identifier),
     parameters(parameters),
     body(body),

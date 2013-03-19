@@ -34,7 +34,7 @@ private:
   std::string identifier;
   std::vector<std::string> parameters;
   std::shared_ptr<Statement> body;
-  mutable Environment environment;
+  Environment& environment;
 };
 
 }

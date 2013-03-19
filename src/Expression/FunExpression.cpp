@@ -37,7 +37,7 @@ void FunExpression::write(ostream& stream) const {
 
 unique_ptr<Value> FunExpression::call
   (const vector<unique_ptr<Expression>>& arguments) const {
-  Environment local(environment);
+  Environment local(&environment);
   auto parameter = parameters.cbegin();
   for (const auto& argument : arguments) {
     auto value(argument->eval(environment));

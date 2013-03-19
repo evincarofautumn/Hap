@@ -21,7 +21,7 @@ unique_ptr<Statement>
 Parser::accept_statements(Environment& environment) {
   unique_ptr<BlockStatement> block(new BlockStatement());
   unique_ptr<Statement> statement;
-  Environment local(environment);
+  Environment local(&environment);
   while ((statement = accept_statement(local)))
     block->push(move(statement));
   return static_unique_cast<Statement>(move(block));
