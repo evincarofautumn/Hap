@@ -1,0 +1,21 @@
+# Literals
+trace true;
+trace false;
+
+# AND
+trace false and false;
+trace false and true;
+trace true and false;
+trace true and true;
+
+# OR
+trace false or false;
+trace false or true;
+trace true or false;
+trace true or true;
+
+# XOR
+trace false xor false;
+trace false xor true;
+trace true xor false;
+trace true xor true;
