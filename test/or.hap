@@ -1,0 +1,14 @@
+fun returns_false() {
+  trace "false";
+  ret false;
+}
+
+fun returns_true() {
+  trace "true";
+  ret true;
+}
+
+returns_false() or returns_false();
+returns_false() or returns_true();
+returns_true() or returns_false();
+returns_true() or returns_true();

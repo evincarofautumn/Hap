@@ -1,0 +1,14 @@
+fun returns_false() {
+  trace "false";
+  ret false;
+}
+
+fun returns_true() {
+  trace "true";
+  ret true;
+}
+
+returns_false() xor returns_false();
+returns_false() xor returns_true();
+returns_true() xor returns_false();
+returns_true() xor returns_true();
