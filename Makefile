@@ -46,7 +46,11 @@ $(foreach TEST,$(TESTS),$(eval $(call TESTRULE,$(TEST))))
 
 .PHONY : loc
 loc :
-	wc -l $(SOURCES) | sort -n
+	@wc -l $(SOURCES) | sort -n
+
+.PHONY : woc
+woc :
+	@./tools/woc.pl $(SOURCES)
 
 -include $(DEPS)
 
