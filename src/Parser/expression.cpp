@@ -28,7 +28,7 @@ struct not_an_expression : public runtime_error {
   not_an_expression() : runtime_error("not an expression") {}
 };
 
-unique_ptr<Expression> Parser::accept_expression(const std::shared_ptr<Environment> environment) {
+unique_ptr<Expression> Parser::accept_expression(const shared_ptr<Environment> environment) {
   try {
     stack<Operator> operators;
     stack<unique_ptr<Expression>> operands;
@@ -41,7 +41,7 @@ unique_ptr<Expression> Parser::accept_expression(const std::shared_ptr<Environme
 }
 
 unique_ptr<Expression>
-Parser::accept_value_expression(const std::shared_ptr<Environment> environment) {
+Parser::accept_value_expression(const shared_ptr<Environment> environment) {
   auto value(first<Expression>
     (environment,
      &Parser::accept_boolean_expression,
@@ -56,7 +56,7 @@ Parser::accept_value_expression(const std::shared_ptr<Environment> environment) 
 }
 
 unique_ptr<Expression>
-Parser::accept_boolean_expression(const std::shared_ptr<Environment>) {
+Parser::accept_boolean_expression(const shared_ptr<Environment>) {
   if (accept(Token(Token::IDENTIFIER, "true")))
     return unique_ptr<Expression>(new BooleanValue(true));
   if (accept(Token(Token::IDENTIFIER, "false")))
@@ -66,7 +66,7 @@ Parser::accept_boolean_expression(const std::shared_ptr<Environment>) {
 
 unique_ptr<Expression>
 Parser::accept_call_expression
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    unique_ptr<Expression> value) {
   if (!accept(Token::LEFT_PARENTHESIS))
     return move(value);
@@ -89,7 +89,7 @@ Parser::accept_call_expression
 }
 
 unique_ptr<Expression>
-Parser::accept_identifier_expression(const std::shared_ptr<Environment>) {
+Parser::accept_identifier_expression(const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
     return unique_ptr<Expression>();
@@ -97,7 +97,7 @@ Parser::accept_identifier_expression(const std::shared_ptr<Environment>) {
 }
 
 unique_ptr<Expression>
-Parser::accept_integer_expression(const std::shared_ptr<Environment> environment) {
+Parser::accept_integer_expression(const shared_ptr<Environment> environment) {
   Token token;
   if (!accept(Token::INTEGER, token))
     return unique_ptr<Expression>();
@@ -109,7 +109,7 @@ Parser::accept_integer_expression(const std::shared_ptr<Environment> environment
 }
 
 unique_ptr<Expression>
-Parser::accept_lambda_expression(const std::shared_ptr<Environment> environment) {
+Parser::accept_lambda_expression(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::OPERATOR, "\\")))
     return unique_ptr<Expression>();
   Token identifier(Token::IDENTIFIER, "lambda");
@@ -149,7 +149,7 @@ Parser::accept_lambda_expression(const std::shared_ptr<Environment> environment)
 }
 
 unique_ptr<Expression>
-Parser::accept_string_expression(const std::shared_ptr<Environment>) {
+Parser::accept_string_expression(const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::STRING, token))
     return unique_ptr<Expression>();
@@ -158,7 +158,7 @@ Parser::accept_string_expression(const std::shared_ptr<Environment>) {
 }
 
 unique_ptr<Expression>
-Parser::accept_undefined_expression(const std::shared_ptr<Environment>) {
+Parser::accept_undefined_expression(const shared_ptr<Environment>) {
   if (accept(Token(Token::IDENTIFIER, "undefined")))
     return unique_ptr<Expression>(new UndefinedValue());
   return unique_ptr<Expression>();
@@ -243,7 +243,7 @@ bool Parser::accept_unary_operator(Operator& result) {
 #undef UNARY_OPERATOR
 
 void Parser::infix_expression
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    stack<Operator>& operators,
    stack<unique_ptr<Expression>>& operands) {
   infix_subexpression(environment, operators, operands);
@@ -257,7 +257,7 @@ void Parser::infix_expression
 }
 
 void Parser::infix_subexpression
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    stack<Operator>& operators,
    stack<unique_ptr<Expression>>& operands) {
   Operator unary;

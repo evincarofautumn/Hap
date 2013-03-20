@@ -9,7 +9,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> MapExpression::eval
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   shared_ptr<MapValue> map(new MapValue());
   for (const auto& pair : pairs) {
     auto key(pair.first->eval(environment));

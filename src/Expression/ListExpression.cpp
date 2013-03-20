@@ -9,7 +9,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> ListExpression::eval
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   shared_ptr<ListValue> list(new ListValue());
   for (const auto& expression : expressions)
     list->push(expression->eval(environment));

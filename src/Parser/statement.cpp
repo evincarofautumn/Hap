@@ -19,7 +19,7 @@ using namespace std;
 namespace hap {
 
 unique_ptr<Statement>
-Parser::accept_statements(const std::shared_ptr<Environment> environment) {
+Parser::accept_statements(const shared_ptr<Environment> environment) {
   unique_ptr<BlockStatement> block(new BlockStatement());
   unique_ptr<Statement> statement;
   shared_ptr<Environment> local(new Environment(environment));
@@ -29,7 +29,7 @@ Parser::accept_statements(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_statement(const shared_ptr<Environment> environment) {
   return first<Statement>
     (environment,
      &Parser::accept_block_statement,
@@ -51,7 +51,7 @@ Parser::accept_statement(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_block_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_block_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token::LEFT_BRACE))
     return unique_ptr<Statement>();
   unique_ptr<Statement> block(accept_statements(environment));
@@ -60,14 +60,14 @@ Parser::accept_block_statement(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_empty_statement(const std::shared_ptr<Environment>) {
+Parser::accept_empty_statement(const shared_ptr<Environment>) {
   return accept(Token::SEMICOLON)
     ? unique_ptr<Statement>(new BlockStatement())
     : unique_ptr<Statement>();
 }
 
 unique_ptr<Statement>
-Parser::accept_expression_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_expression_statement(const shared_ptr<Environment> environment) {
   auto expression(accept_expression(environment));
   if (!expression)
     return unique_ptr<Statement>();
@@ -76,7 +76,7 @@ Parser::accept_expression_statement(const std::shared_ptr<Environment> environme
 }
 
 unique_ptr<Statement>
-Parser::accept_fun_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_fun_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "fun")))
     return unique_ptr<Statement>();
   Token identifier;
@@ -104,39 +104,39 @@ Parser::accept_fun_statement(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_if_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_if_statement(const shared_ptr<Environment> environment) {
   return accept_flow_statement<IfStatement>
     (environment, "if");
 }
 
 unique_ptr<Statement>
-Parser::accept_last_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_last_statement(const shared_ptr<Environment> environment) {
   return accept(Token(Token::IDENTIFIER, "last"))
     ? unique_ptr<Statement>(new LastStatement())
     : unique_ptr<Statement>();
 }
 
 unique_ptr<Statement>
-Parser::accept_next_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_next_statement(const shared_ptr<Environment> environment) {
   return accept(Token(Token::IDENTIFIER, "next"))
     ? unique_ptr<Statement>(new NextStatement())
     : unique_ptr<Statement>();
 }
 
 unique_ptr<Statement>
-Parser::accept_repeat_when_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_repeat_when_statement(const shared_ptr<Environment> environment) {
   return accept_flow_statement<RepeatWhenStatement>
     (environment, "repeat_when");
 }
 
 unique_ptr<Statement>
-Parser::accept_repeat_whenever_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_repeat_whenever_statement(const shared_ptr<Environment> environment) {
   return accept_flow_statement<RepeatWheneverStatement>
     (environment, "repeat_whenever");
 }
 
 unique_ptr<Statement>
-Parser::accept_ret_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_ret_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "ret")))
     return unique_ptr<Statement>();
   auto expression(accept_expression(environment));
@@ -146,7 +146,7 @@ Parser::accept_ret_statement(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_trace_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_trace_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "trace")))
     return unique_ptr<Statement>();
   auto expression(accept_expression(environment));
@@ -156,7 +156,7 @@ Parser::accept_trace_statement(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_var_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_var_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "var")))
     return unique_ptr<Statement>();
   Token identifier;
@@ -172,19 +172,19 @@ Parser::accept_var_statement(const std::shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_when_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_when_statement(const shared_ptr<Environment> environment) {
   return accept_flow_statement<WhenStatement>
     (environment, "when");
 }
 
 unique_ptr<Statement>
-Parser::accept_whenever_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_whenever_statement(const shared_ptr<Environment> environment) {
   return accept_flow_statement<WheneverStatement>
     (environment, "whenever");
 }
 
 unique_ptr<Statement>
-Parser::accept_while_statement(const std::shared_ptr<Environment> environment) {
+Parser::accept_while_statement(const shared_ptr<Environment> environment) {
   return accept_flow_statement<WhileStatement>
     (environment, "while");
 }

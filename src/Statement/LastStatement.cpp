@@ -7,7 +7,7 @@ using namespace std;
 
 namespace hap {
 
-void LastStatement::exec(const std::shared_ptr<Environment>) const {
+void LastStatement::exec(const shared_ptr<Environment>) const {
   throw flow::Last();
 }
 

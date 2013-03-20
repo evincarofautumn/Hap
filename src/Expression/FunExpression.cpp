@@ -20,7 +20,7 @@ FunExpression::FunExpression
     environment(environment) {}
 
 shared_ptr<Value> FunExpression::eval
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   throw runtime_error("unimplemented fun");
 }
 

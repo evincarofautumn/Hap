@@ -15,7 +15,7 @@ namespace binary {
 template<class F>
 shared_ptr<Value> arithmetic
   (F function,
-   const std::shared_ptr<Environment> environment,
+   const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   auto a(left->eval(environment));
@@ -29,35 +29,35 @@ shared_ptr<Value> arithmetic
 }
 
 shared_ptr<Value> multiply
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return arithmetic(multiplies<int>(), environment, left, right);
 }
 
 shared_ptr<Value> divide
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return arithmetic(divides<int>(), environment, left, right);
 }
 
 shared_ptr<Value> modulate
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return arithmetic(modulus<int>(), environment, left, right);
 }
 
 shared_ptr<Value> add
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return arithmetic(plus<int>(), environment, left, right);
 }
 
 shared_ptr<Value> subtract
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   throw runtime_error("unimplemented -");
@@ -71,7 +71,7 @@ struct shifts_left {
 };
 
 shared_ptr<Value> shift_left
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return arithmetic(shifts_left<int>(), environment, left, right);
@@ -85,7 +85,7 @@ struct shifts_right {
 };
 
 shared_ptr<Value> shift_right
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return arithmetic(shifts_right<int>(), environment, left, right);
@@ -94,7 +94,7 @@ shared_ptr<Value> shift_right
 template<class F>
 shared_ptr<Value> relational
   (F function,
-   const std::shared_ptr<Environment> environment,
+   const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   auto a(left->eval(environment));
@@ -108,42 +108,42 @@ shared_ptr<Value> relational
 }
 
 shared_ptr<Value> lt
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return relational(less<int>(), environment, left, right);
 }
 
 shared_ptr<Value> ge
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return relational(greater_equal<int>(), environment, left, right);
 }
 
 shared_ptr<Value> gt
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return relational(greater<int>(), environment, left, right);
 }
 
 shared_ptr<Value> le
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return relational(less_equal<int>(), environment, left, right);
 }
 
 shared_ptr<Value> eq
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return relational(equal_to<int>(), environment, left, right);
 }
 
 shared_ptr<Value> ne
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   return relational(not_equal_to<int>(), environment, left, right);
@@ -152,13 +152,13 @@ shared_ptr<Value> ne
 template<class F>
 shared_ptr<Value> logical
   (F function,
-   const std::shared_ptr<Environment> environment,
+   const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
 }
 
 shared_ptr<Value> and_
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   auto left_value(left->eval(environment));
@@ -172,7 +172,7 @@ shared_ptr<Value> and_
 }
 
 shared_ptr<Value> xor_
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   auto left_value(left->eval(environment));
@@ -186,7 +186,7 @@ shared_ptr<Value> xor_
 }
 
 shared_ptr<Value> or_
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   auto left_value(left->eval(environment));
@@ -200,14 +200,14 @@ shared_ptr<Value> or_
 }
 
 shared_ptr<Value> assign
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   throw runtime_error("unimplemented =");
 }
 
 shared_ptr<Value> comma
-  (const std::shared_ptr<Environment> environment,
+  (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
   throw runtime_error("unimplemented ,");

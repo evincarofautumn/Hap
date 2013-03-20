@@ -6,7 +6,7 @@ using namespace std;
 namespace hap {
 
 Parser::Parser
-  (const std::vector<Token>& input,
+  (const vector<Token>& input,
    const shared_ptr<Environment> global)
   : tokens(input),
     current(tokens.begin()),

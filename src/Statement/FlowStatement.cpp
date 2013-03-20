@@ -42,7 +42,7 @@ FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 #undef FLOW_STATEMENT
 
 void IfStatement::exec
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   auto value(expression->eval(environment));
   value->assert_type(Value::BOOLEAN);
   auto condition(static_pointer_cast<BooleanValue>(value));
@@ -50,15 +50,15 @@ void IfStatement::exec
     statement->exec(environment);
 }
 
-void WhenStatement::exec(const std::shared_ptr<Environment>) const {
+void WhenStatement::exec(const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented when");
 }
 
-void WheneverStatement::exec(const std::shared_ptr<Environment>) const {
+void WheneverStatement::exec(const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented whenever");
 }
 
-void WhileStatement::exec(const std::shared_ptr<Environment> environment) const {
+void WhileStatement::exec(const shared_ptr<Environment> environment) const {
   while (true) {
     auto value(expression->eval(environment));
     value->assert_type(Value::BOOLEAN);
@@ -75,11 +75,11 @@ void WhileStatement::exec(const std::shared_ptr<Environment> environment) const 
   }
 }
 
-void RepeatWhenStatement::exec(const std::shared_ptr<Environment>) const {
+void RepeatWhenStatement::exec(const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented repeat_when");
 }
 
-void RepeatWheneverStatement::exec(const std::shared_ptr<Environment>) const {
+void RepeatWheneverStatement::exec(const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented repeat_whenever");
 }
 

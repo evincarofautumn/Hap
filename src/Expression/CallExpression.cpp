@@ -17,7 +17,7 @@ CallExpression::CallExpression
     expressions(move(expressions)) {}
 
 shared_ptr<Value>CallExpression::eval
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   auto value(function->eval(environment));
   value->assert_type(Value::FUNCTION);
   const auto function(static_pointer_cast<FunExpression>(value));

@@ -7,7 +7,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> IntegerValue::eval
-  (const std::shared_ptr<Environment>) const {
+  (const shared_ptr<Environment>) const {
   return shared_ptr<Value>(new IntegerValue(*this));
 }
 

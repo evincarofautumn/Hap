@@ -13,7 +13,7 @@ ExpressionStatement::ExpressionStatement
   : expression(move(expression)) {}
 
 void ExpressionStatement::exec
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   expression->eval(environment);
 }
 

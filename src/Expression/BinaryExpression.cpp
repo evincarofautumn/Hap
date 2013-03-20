@@ -8,7 +8,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> BinaryExpression::eval
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   if (operator_.binary)
     return operator_.binary(environment, left, right);
   ostringstream message;

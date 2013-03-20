@@ -8,7 +8,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> UnaryExpression::eval
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   if (operator_.unary)
     return operator_.unary(environment, expression);
   ostringstream message;

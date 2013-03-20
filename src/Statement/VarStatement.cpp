@@ -16,7 +16,7 @@ VarStatement::VarStatement
     initializer(move(initializer)) {}
 
 void VarStatement::exec
-  (const std::shared_ptr<Environment> environment) const {
+  (const shared_ptr<Environment> environment) const {
   auto value(initializer->eval(environment));
   environment->define(identifier, value);
 }
