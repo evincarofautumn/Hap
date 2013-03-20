@@ -1,0 +1,10 @@
+var x;
+trace x;
+x = 0;
+trace x;
+x = "";
+trace x;
+x = false;
+trace x;
+x = undefined;
+trace x;
