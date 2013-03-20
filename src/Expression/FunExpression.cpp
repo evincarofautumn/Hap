@@ -13,13 +13,14 @@ FunExpression::FunExpression
   (const string& identifier,
    const vector<string>& parameters,
    shared_ptr<Statement> body,
-   Environment& environment)
+   shared_ptr<Environment> environment)
   : identifier(identifier),
     parameters(parameters),
     body(body),
     environment(environment) {}
 
-unique_ptr<Value> FunExpression::eval(Environment& environment) const {
+shared_ptr<Value> FunExpression::eval
+  (const std::shared_ptr<Environment> environment) const {
   throw runtime_error("unimplemented fun");
 }
 
@@ -35,18 +36,18 @@ void FunExpression::write(ostream& stream) const {
   body->write(stream);
 }
 
-unique_ptr<Value> FunExpression::call
+shared_ptr<Value> FunExpression::call
   (const vector<unique_ptr<Expression>>& arguments) const {
-  Environment local(&environment);
-  auto parameter = parameters.cbegin();
+  shared_ptr<Environment> local(new Environment(environment));
+  auto parameter(parameters.begin());
   for (const auto& argument : arguments) {
     auto value(argument->eval(environment));
-    local.define(*parameter++, move(value));
+    local->define(*parameter++, value);
   }
   try {
     body->exec(local);
   } catch (flow::Return& result) {
-    return move(result.value);
+    return result.value;
   }
   return unique_ptr<Value>(new UndefinedValue());
 }

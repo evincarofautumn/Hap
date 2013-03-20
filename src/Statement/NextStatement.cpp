@@ -7,7 +7,7 @@ using namespace std;
 
 namespace hap {
 
-void NextStatement::exec(Environment&) const {
+void NextStatement::exec(const std::shared_ptr<Environment>) const {
   throw flow::Next();
 }
 

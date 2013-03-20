@@ -2,7 +2,7 @@ LDFLAGS+=-lc++
 SOURCE_PATHS=src src/Expression src/Parser src/Statement src/Value
 INCFLAGS=$(addprefix -I,$(SOURCE_PATHS))
 WARNFLAGS=$(addprefix -W,all error)
-CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS)
+CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS) -g
 CPPFLAGS+=-MD -MP
 SOURCES=$(wildcard $(addsuffix /*.cpp,$(SOURCE_PATHS)))
 OBJECTS=$(SOURCES:%.cpp=%.o)

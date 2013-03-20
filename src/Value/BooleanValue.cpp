@@ -6,8 +6,9 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> BooleanValue::eval(Environment&) const {
-  return unique_ptr<Value>(new BooleanValue(*this));
+shared_ptr<Value> BooleanValue::eval
+  (const std::shared_ptr<Environment>) const {
+  return shared_ptr<Value>(new BooleanValue(*this));
 }
 
 bool BooleanValue::less(const Value& other) const {

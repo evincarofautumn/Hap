@@ -6,8 +6,9 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> IntegerValue::eval(Environment&) const {
-  return unique_ptr<Value>(new IntegerValue(*this));
+shared_ptr<Value> IntegerValue::eval
+  (const std::shared_ptr<Environment>) const {
+  return shared_ptr<Value>(new IntegerValue(*this));
 }
 
 bool IntegerValue::less(const Value& other) const {

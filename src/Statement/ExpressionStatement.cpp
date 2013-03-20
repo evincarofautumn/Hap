@@ -12,7 +12,8 @@ ExpressionStatement::ExpressionStatement
   (unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
-void ExpressionStatement::exec(Environment& environment) const {
+void ExpressionStatement::exec
+  (const std::shared_ptr<Environment> environment) const {
   expression->eval(environment);
 }
 

@@ -17,24 +17,24 @@ public:
     (const std::string&,
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
-     Environment&);
+     std::shared_ptr<Environment>);
   virtual Value::Type type() const final override {
     return Type::FUNCTION;
   }
   virtual FunExpression* copy() const final override {
     return new FunExpression(*this);
   }
-  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
   virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
-  std::unique_ptr<Value> call
+  std::shared_ptr<Value> call
     (const std::vector<std::unique_ptr<Expression>>&) const;
 private:
   FunExpression(const FunExpression&) = default;
   std::string identifier;
   std::vector<std::string> parameters;
   std::shared_ptr<Statement> body;
-  Environment& environment;
+  std::shared_ptr<Environment> environment;
 };
 
 }

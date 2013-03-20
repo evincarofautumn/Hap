@@ -15,7 +15,7 @@ public:
   virtual IntegerValue* copy() const final override {
     return new IntegerValue(*this);
   }
-  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
   virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
   int value;

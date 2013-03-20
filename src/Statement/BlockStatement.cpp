@@ -9,7 +9,8 @@ using namespace std;
 
 namespace hap {
 
-void BlockStatement::exec(Environment& environment) const {
+void BlockStatement::exec
+  (const std::shared_ptr<Environment> environment) const {
   for (const auto& statement : statements)
     statement->exec(environment);
 }

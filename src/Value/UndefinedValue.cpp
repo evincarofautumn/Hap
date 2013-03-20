@@ -6,8 +6,9 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> UndefinedValue::eval(Environment& environment) const {
-  return unique_ptr<Value>(new UndefinedValue(*this));
+shared_ptr<Value> UndefinedValue::eval
+  (const std::shared_ptr<Environment>) const {
+  return shared_ptr<Value>(new UndefinedValue(*this));
 }
 
 bool UndefinedValue::less(const Value& other) const {

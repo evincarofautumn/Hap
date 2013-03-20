@@ -11,8 +11,8 @@ namespace hap {
 class MapValue : public Value {
 public:
   MapValue() {}
-  void insert(std::unique_ptr<Value> key, std::unique_ptr<Value> value) {
-    pairs.insert(std::make_pair(std::move(key), std::move(value)));
+  void insert(std::shared_ptr<Value> key, std::shared_ptr<Value> value) {
+    pairs.insert(std::make_pair(key, value));
   }
   virtual Value::Type type() const final override {
     return Type::MAP;
@@ -25,8 +25,8 @@ public:
 private:
   MapValue(const MapValue&);
   std::map
-    <std::unique_ptr<Value>,
-     std::unique_ptr<Value>,
+    <std::shared_ptr<Value>,
+     std::shared_ptr<Value>,
      indirect_compare<Value>> pairs;
 };
 

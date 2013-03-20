@@ -10,8 +10,8 @@ namespace hap {
 class ListValue : public Value {
 public:
   ListValue() {}
-  void push(std::unique_ptr<Value> value) {
-    values.push_back(std::move(value));
+  void push(std::shared_ptr<Value> value) {
+    values.push_back(value);
   }
   virtual Value::Type type() const final override {
     return Type::LIST;
@@ -23,7 +23,7 @@ public:
   virtual void write(std::ostream&) const final override;
 private:
   ListValue(const ListValue&);
-  std::vector<std::unique_ptr<Value>> values;
+  std::vector<std::shared_ptr<Value>> values;
 };
 
 }

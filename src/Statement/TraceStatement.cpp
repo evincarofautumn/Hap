@@ -10,7 +10,8 @@ namespace hap {
 TraceStatement::TraceStatement(unique_ptr<Expression> expression)
   : expression(move(expression)) {}
 
-void TraceStatement::exec(Environment& environment) const {
+void TraceStatement::exec
+  (const std::shared_ptr<Environment> environment) const {
   auto value(expression->eval(environment));
   value->write(cout);
   cout << endl;

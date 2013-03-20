@@ -15,9 +15,10 @@ VarStatement::VarStatement
   : identifier(identifier),
     initializer(move(initializer)) {}
 
-void VarStatement::exec(Environment& environment) const {
+void VarStatement::exec
+  (const std::shared_ptr<Environment> environment) const {
   auto value(initializer->eval(environment));
-  environment.define(identifier, move(value));
+  environment->define(identifier, value);
 }
 
 void VarStatement::write(ostream& stream) const {

@@ -16,12 +16,13 @@ class Statement;
 
 class Parser {
 private:
-  typedef std::unique_ptr<Statement> AcceptStatement(Environment&);
-  typedef std::unique_ptr<Expression> AcceptExpression(Environment&);
+  typedef std::unique_ptr<Statement> AcceptStatement
+    (std::shared_ptr<Environment>);
+  typedef std::unique_ptr<Expression> AcceptExpression
+    (std::shared_ptr<Environment>);
   typedef bool AcceptOperator(Operator&);
 public:
-  Parser(const std::vector<Token>& input)
-    : tokens(input), current(tokens.begin()) {}
+  Parser(const std::vector<Token>&, std::shared_ptr<Environment>);
   std::unique_ptr<Statement> accept_program();
 private:
   AcceptStatement
@@ -55,13 +56,14 @@ private:
     accept_string_expression,
     accept_undefined_expression;
   std::unique_ptr<Expression> accept_call_expression
-    (Environment&, std::unique_ptr<Expression>);
+    (std::shared_ptr<Environment>, std::unique_ptr<Expression>);
   AcceptOperator
     accept_binary_operator,
     accept_unary_operator;
   template<class T, class First, class... Rest>
   typename std::unique_ptr<T> first
-    (Environment& environment, First function, Rest&&... rest) {
+    (const std::shared_ptr<Environment> environment,
+     First function, Rest&&... rest) {
     auto result((this->*function)(environment));
     if (result)
       return std::move(result);
@@ -69,15 +71,15 @@ private:
   }
   template<class T, class Only>
   typename std::unique_ptr<T> first
-    (Environment& environment, Only function) {
+    (const std::shared_ptr<Environment> environment, Only function) {
     return (this->*function)(environment);
   }
   void infix_expression
-    (Environment&,
+    (std::shared_ptr<Environment>,
      std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
   void infix_subexpression
-    (Environment&,
+    (std::shared_ptr<Environment>,
      std::stack<Operator>&,
      std::stack<std::unique_ptr<Expression>>&);
   void pop_operator
@@ -105,14 +107,15 @@ private:
   bool at_end() const;
   template<class FlowStatement>
   std::unique_ptr<Statement>
-  accept_flow_statement(Environment&, const std::string&);
-  Environment global;
+  accept_flow_statement(std::shared_ptr<Environment>, const std::string&);
+  std::shared_ptr<Environment> global;
 };
 
 template<class StatementType>
 std::unique_ptr<Statement>
 Parser::accept_flow_statement
-  (Environment& environment, const std::string& keyword) {
+  (const std::shared_ptr<Environment> environment,
+   const std::string& keyword) {
   using namespace std;
   if (!accept(Token(Token::IDENTIFIER, keyword)))
     return unique_ptr<Statement>();

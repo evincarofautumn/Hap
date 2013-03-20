@@ -7,7 +7,7 @@ namespace hap {
 
 class LastStatement : public Statement {
 public:
-  virtual void exec(Environment&) const final override;
+  virtual void exec(std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 };
 

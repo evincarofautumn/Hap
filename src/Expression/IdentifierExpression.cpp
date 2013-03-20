@@ -7,8 +7,9 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> IdentifierExpression::eval(Environment& environment) const {
-  return unique_ptr<Value>(environment[identifier].copy());
+shared_ptr<Value> IdentifierExpression::eval
+  (const std::shared_ptr<Environment> environment) const {
+  return (*environment)[identifier];
 }
 
 void IdentifierExpression::write(ostream& stream) const {

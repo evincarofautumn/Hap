@@ -8,23 +8,23 @@ using namespace std;
 
 namespace hap {
 
-Environment::Environment(Environment* const parent)
+Environment::Environment(const weak_ptr<Environment> parent)
   : parent(parent) {}
 
-void Environment::define(const string& name, unique_ptr<Value> value) {
-  variables.insert(make_pair(name, move(value)));
+void Environment::define(const string& name, shared_ptr<Value> value) {
+  variables[name] = value;
 }
 
-Value& Environment::operator[](const string& name) {
+shared_ptr<Value>& Environment::operator[](const string& name) {
   const auto existing(variables.find(name));
   if (existing == variables.end()) {
-    if (!parent)
-      return *variables.insert
-        (make_pair(name, shared_ptr<Value>(new UndefinedValue())))
-        .first->second;
-    return (*parent)[name];
+    if (const auto held_parent = parent.lock()) {
+      return (*held_parent)[name];
+    }
+    variables[name].reset(new UndefinedValue());
+    return variables[name];
   }
-  return *existing->second;
+  return existing->second;
 }
 
 }

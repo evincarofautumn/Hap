@@ -10,9 +10,10 @@ class Statement;
 
 class Interpreter {
 public:
+  Interpreter(std::shared_ptr<Environment>);
   void run(std::unique_ptr<Statement>);
 private:
-  Environment global;
+  std::shared_ptr<Environment> global;
 };
 
 }

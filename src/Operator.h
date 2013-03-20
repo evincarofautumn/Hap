@@ -12,12 +12,13 @@ class Value;
 
 class Operator {
 private:
-  typedef std::unique_ptr<Value> ValuePointer;
+  typedef std::shared_ptr<Value> ValuePointer;
   typedef std::unique_ptr<const Expression> ExpressionPointer;
+  typedef std::shared_ptr<Environment> EnvironmentPointer;
 public:
-  typedef ValuePointer Unary(Environment&, const ExpressionPointer&);
+  typedef ValuePointer Unary(EnvironmentPointer, const ExpressionPointer&);
   typedef ValuePointer Binary
-    (Environment&, const ExpressionPointer&, const ExpressionPointer&);
+    (EnvironmentPointer, const ExpressionPointer&, const ExpressionPointer&);
   enum Arity {
     SENTINEL,
     UNARY,

@@ -18,8 +18,8 @@ public:
   };
   void assert_type(Type) const;
   virtual ~Value();
-  virtual std::unique_ptr<Value> eval(Environment&) const {
-    return std::unique_ptr<Value>(copy());
+  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const {
+    return std::shared_ptr<Value>(copy());
   }
   virtual Value* copy() const = 0;
   virtual bool less(const Value&) const = 0;

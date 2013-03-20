@@ -12,17 +12,17 @@ namespace hap {
 FunStatement::FunStatement
   (const string& identifier,
    const vector<string>& parameters,
-   shared_ptr<Statement> body,
-   Environment& environment)
+   const shared_ptr<Statement> body,
+   const std::shared_ptr<Environment> environment)
   : identifier(identifier),
     parameters(parameters),
     body(body),
     local(environment) {}
 
-void FunStatement::exec(Environment& environment) const {
-  unique_ptr<Value> value
-    (new FunExpression(identifier, parameters, body, local));
-  environment.define(identifier, move(value));
+void FunStatement::exec
+  (const std::shared_ptr<Environment> environment) const {
+  environment->define(identifier, shared_ptr<Value>
+    (new FunExpression(identifier, parameters, body, local)));
 }
 
 void FunStatement::write(ostream& stream) const {

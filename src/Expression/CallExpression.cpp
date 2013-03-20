@@ -16,10 +16,11 @@ CallExpression::CallExpression
   : function(move(function)),
     expressions(move(expressions)) {}
 
-unique_ptr<Value>CallExpression::eval(Environment& environment) const {
+shared_ptr<Value>CallExpression::eval
+  (const std::shared_ptr<Environment> environment) const {
   auto value(function->eval(environment));
   value->assert_type(Value::FUNCTION);
-  const auto function(static_unique_cast<FunExpression>(move(value)));
+  const auto function(static_pointer_cast<FunExpression>(value));
   return function->call(expressions);
 }
 

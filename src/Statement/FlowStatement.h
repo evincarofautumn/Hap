@@ -13,7 +13,7 @@ public:
     (const std::string&,
      std::unique_ptr<Expression>,
      std::unique_ptr<Statement>);
-  virtual void exec(Environment&) const = 0;
+  virtual void exec(std::shared_ptr<Environment>) const = 0;
   virtual void write(std::ostream&) const final override;
 protected:
   std::string keyword;
@@ -27,7 +27,7 @@ public: \
   NAME##Statement \
     (std::unique_ptr<Expression>, \
      std::unique_ptr<Statement>); \
-  virtual void exec(Environment&) const final override; \
+  virtual void exec(std::shared_ptr<Environment>) const final override; \
 };
 
 FLOW_STATEMENT(If, "if")

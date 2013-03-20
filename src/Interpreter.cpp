@@ -9,6 +9,9 @@ using namespace std;
 
 namespace hap {
 
+Interpreter::Interpreter(const shared_ptr<Environment> global)
+  : global(global) {}
+
 void Interpreter::run(unique_ptr<Statement> statement) {
   statement->exec(global);
 }

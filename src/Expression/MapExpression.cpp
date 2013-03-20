@@ -8,14 +8,15 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> MapExpression::eval(Environment& environment) const {
-  unique_ptr<MapValue> map(new MapValue());
+shared_ptr<Value> MapExpression::eval
+  (const std::shared_ptr<Environment> environment) const {
+  shared_ptr<MapValue> map(new MapValue());
   for (const auto& pair : pairs) {
     auto key(pair.first->eval(environment));
     auto value(pair.second->eval(environment));
-    map->insert(move(key), move(value));
+    map->insert(key, value);
   }
-  return static_unique_cast<Value>(move(map));
+  return static_pointer_cast<Value>(map);
 }
 
 void MapExpression::write(ostream& stream) const {

@@ -11,12 +11,12 @@ class Value;
 
 class Environment {
 public:
-  Environment(Environment* = nullptr);
-  void define(const std::string&, std::unique_ptr<Value>);
-  Value& operator[](const std::string&);
+  Environment(std::weak_ptr<Environment> = std::weak_ptr<Environment>());
+  void define(const std::string&, std::shared_ptr<Value>);
+  std::shared_ptr<Value>& operator[](const std::string&);
 private:
   Environment(const Environment&) = delete;
-  Environment* parent;
+  std::weak_ptr<Environment> parent;
   std::map<std::string, std::shared_ptr<Value>> variables;
 };
 

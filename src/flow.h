@@ -16,9 +16,9 @@ struct Last {};
 struct Next {};
 
 struct Return {
-  Return(std::unique_ptr<Value> value)
-    : value(std::move(value)) {}
-  std::unique_ptr<Value> value;
+  Return(std::shared_ptr<Value> value)
+    : value(value) {}
+  std::shared_ptr<Value> value;
 };
 
 }

@@ -16,14 +16,14 @@ public:
     (const std::string&,
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
-     Environment&);
-  virtual void exec(Environment&) const final override;
+     std::shared_ptr<Environment>);
+  virtual void exec(std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   std::string identifier;
   std::vector<std::string> parameters;
   std::shared_ptr<Statement> body;
-  Environment& local;
+  std::shared_ptr<Environment> local;
 };
 
 }

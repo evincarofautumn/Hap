@@ -19,9 +19,10 @@ int main(int argc, char** argv) try {
     throw runtime_error("Bad command line.");
   ifstream input(argv[0]);
   vector<Token> tokens = tokenize(input);
-  Parser parser(tokens);
+  shared_ptr<Environment> global(new Environment());
+  Parser parser(tokens, global);
   unique_ptr<Statement> program(parser.accept_program());
-  Interpreter interpreter;
+  Interpreter interpreter(global);
   interpreter.run(move(program));
 } catch (const exception& error) {
   cerr << error.what() << '\n';

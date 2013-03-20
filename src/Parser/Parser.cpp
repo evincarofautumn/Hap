@@ -5,6 +5,13 @@ using namespace std;
 
 namespace hap {
 
+Parser::Parser
+  (const std::vector<Token>& input,
+   const shared_ptr<Environment> global)
+  : tokens(input),
+    current(tokens.begin()),
+    global(global) {}
+
 unique_ptr<Statement>
 Parser::accept_program() {
   unique_ptr<Statement> statements(accept_statements(global));

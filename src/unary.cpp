@@ -12,87 +12,87 @@ namespace hap {
 
 namespace unary {
 
-unique_ptr<Value> identity
-  (Environment& environment,
+shared_ptr<Value> identity
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   auto value(expression->eval(environment));
   value->assert_type(Value::INTEGER);
-  return move(value);
+  return value;
 }
 
-unique_ptr<Value> negate
-  (Environment& environment,
+shared_ptr<Value> negate
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   auto value(expression->eval(environment));
   value->assert_type(Value::INTEGER);
-  unique_ptr<IntegerValue> integer
-    (static_unique_cast<IntegerValue>(move(value)));
+  shared_ptr<IntegerValue> integer
+    (static_pointer_cast<IntegerValue>(value));
   integer->value = -integer->value;
-  return static_unique_cast<Value>(move(integer));
+  return static_pointer_cast<Value>(integer);
 }
 
-unique_ptr<Value> val
-  (Environment& environment,
+shared_ptr<Value> val
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary val");
 }
 
-unique_ptr<Value> ref
-  (Environment& environment,
+shared_ptr<Value> ref
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary ref");
 }
 
 template<class F>
-unique_ptr<Value> logical
+shared_ptr<Value> logical
   (F function,
-   Environment& environment,
+   const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   auto a(expression->eval(environment));
   a->assert_type(Value::BOOLEAN);
-  auto b(static_unique_cast<BooleanValue>(move(a)));
-  return unique_ptr<Value>
+  auto b(static_pointer_cast<BooleanValue>(a));
+  return shared_ptr<Value>
     (new BooleanValue(function(b->value)));
 }
 
-unique_ptr<Value> not_
-  (Environment& environment,
+shared_ptr<Value> not_
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   return logical(logical_not<bool>(), environment, expression);
 }
 
-unique_ptr<Value> lt
-  (Environment& environment,
+shared_ptr<Value> lt
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary less than");
 }
 
-unique_ptr<Value> ge
-  (Environment& environment,
+shared_ptr<Value> ge
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary greater than or equal to");
 }
 
-unique_ptr<Value> gt
-  (Environment& environment,
+shared_ptr<Value> gt
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary greater than");
 }
 
-unique_ptr<Value> le
-  (Environment& environment,
+shared_ptr<Value> le
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary less than or equal to");
 }
 
-unique_ptr<Value> eq
-  (Environment& environment,
+shared_ptr<Value> eq
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary equals");
 }
 
-unique_ptr<Value> ne
-  (Environment& environment,
+shared_ptr<Value> ne
+  (const std::shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& expression) {
   throw runtime_error("unimplemented unary not equals");
 }

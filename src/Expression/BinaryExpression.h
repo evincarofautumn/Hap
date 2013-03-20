@@ -16,7 +16,7 @@ public:
     : operator_(operator_),
       left(std::move(left)),
       right(std::move(right)) {}
-  virtual std::unique_ptr<Value> eval(Environment&) const final override;
+  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   Operator operator_;

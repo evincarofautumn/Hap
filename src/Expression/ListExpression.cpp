@@ -8,11 +8,12 @@ using namespace std;
 
 namespace hap {
 
-unique_ptr<Value> ListExpression::eval(Environment& environment) const {
-  unique_ptr<ListValue> list(new ListValue());
+shared_ptr<Value> ListExpression::eval
+  (const std::shared_ptr<Environment> environment) const {
+  shared_ptr<ListValue> list(new ListValue());
   for (const auto& expression : expressions)
     list->push(expression->eval(environment));
-  return static_unique_cast<Value>(move(list));
+  return static_pointer_cast<Value>(list);
 }
 
 void ListExpression::write(ostream& stream) const {
