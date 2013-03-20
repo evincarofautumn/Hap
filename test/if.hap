@@ -1,0 +1,17 @@
+if (true)
+  trace true;
+
+if (false) {
+  trace false;
+}
+
+var t = true;
+
+if (t) {
+  trace true;
+}
+
+var f = false;
+
+if (f)
+  trace false;
