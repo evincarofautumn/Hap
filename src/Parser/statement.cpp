@@ -67,7 +67,8 @@ Parser::accept_empty_statement(const shared_ptr<Environment>) {
 }
 
 unique_ptr<Statement>
-Parser::accept_expression_statement(const shared_ptr<Environment> environment) {
+Parser::accept_expression_statement
+  (const shared_ptr<Environment> environment) {
   auto expression(accept_expression(environment));
   if (!expression)
     return unique_ptr<Statement>();
@@ -124,13 +125,15 @@ Parser::accept_next_statement(const shared_ptr<Environment> environment) {
 }
 
 unique_ptr<Statement>
-Parser::accept_repeat_when_statement(const shared_ptr<Environment> environment) {
+Parser::accept_repeat_when_statement
+  (const shared_ptr<Environment> environment) {
   return accept_flow_statement<RepeatWhenStatement>
     (environment, "repeat_when");
 }
 
 unique_ptr<Statement>
-Parser::accept_repeat_whenever_statement(const shared_ptr<Environment> environment) {
+Parser::accept_repeat_whenever_statement
+  (const shared_ptr<Environment> environment) {
   return accept_flow_statement<RepeatWheneverStatement>
     (environment, "repeat_whenever");
 }

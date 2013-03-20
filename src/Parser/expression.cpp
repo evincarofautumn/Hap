@@ -28,7 +28,8 @@ struct not_an_expression : public runtime_error {
   not_an_expression() : runtime_error("not an expression") {}
 };
 
-unique_ptr<Expression> Parser::accept_expression(const shared_ptr<Environment> environment) {
+unique_ptr<Expression> Parser::accept_expression
+  (const shared_ptr<Environment> environment) {
   try {
     stack<Operator> operators;
     stack<unique_ptr<Expression>> operands;
