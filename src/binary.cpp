@@ -1,6 +1,8 @@
 #include "binary.h"
 
 #include "BooleanValue.h"
+#include "Environment.h"
+#include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "unique_cast.h"
 
@@ -203,7 +205,13 @@ shared_ptr<Value> assign
   (const shared_ptr<Environment> environment,
    const unique_ptr<const Expression>& left,
    const unique_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented =");
+  if (const auto left_identifier
+      = dynamic_cast<const IdentifierExpression*>(left.get())) {
+    auto value(right->eval(environment));
+    (*environment)[left_identifier->identifier] = value;
+    return value;
+  }
+  throw runtime_error("non-lvalue in assignment");
 }
 
 shared_ptr<Value> comma
