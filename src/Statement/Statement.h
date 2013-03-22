@@ -13,10 +13,11 @@ class Value;
 class Statement {
 public:
   virtual ~Statement();
-  virtual void exec(Context&, std::shared_ptr<Environment>) const = 0;
   virtual void write(std::ostream&) const = 0;
+  void execute(Context&, std::shared_ptr<Environment>) const;
 protected:
   Statement() {}
+  virtual void exec(Context&, std::shared_ptr<Environment>) const = 0;
 private:
   Statement(const Statement&);
   Statement& operator=(const Statement&);

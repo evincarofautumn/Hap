@@ -45,7 +45,7 @@ shared_ptr<Value> FunExpression::call
     local->define(*parameter++, value);
   }
   try {
-    body->exec(context, local);
+    body->execute(context, local);
   } catch (flow::Return& result) {
     return result.value;
   }

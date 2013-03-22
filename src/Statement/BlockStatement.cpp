@@ -12,7 +12,7 @@ namespace hap {
 void BlockStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
   for (const auto& statement : statements)
-    statement->exec(context, environment);
+    statement->execute(context, environment);
 }
 
 void BlockStatement::write(ostream& stream) const {

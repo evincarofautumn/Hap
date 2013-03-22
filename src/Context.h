@@ -17,6 +17,7 @@ public:
     REPEAT = 1,
     RESUME = 2,
   };
+  void interrupt(std::shared_ptr<Environment>);
   void listen
     (std::shared_ptr<const Expression>,
      Behavior,
@@ -28,7 +29,9 @@ private:
     std::shared_ptr<const Statement> handler;
     std::shared_ptr<Environment> environment;
   };
-  std::map<std::shared_ptr<const Expression>, Handler> listeners;
+  typedef std::map<std::shared_ptr<const Expression>, Handler> ListenerMap;
+  ListenerMap listeners;
+  std::vector<ListenerMap::iterator> dead_listeners;
 };
 
 }

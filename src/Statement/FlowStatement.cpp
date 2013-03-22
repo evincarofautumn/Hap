@@ -49,7 +49,7 @@ void IfStatement::exec
   value->assert_type(Value::BOOLEAN);
   auto condition(static_pointer_cast<BooleanValue>(value));
   if (condition->value)
-    statement->exec(context, environment);
+    statement->execute(context, environment);
 }
 
 void WhenStatement::exec
@@ -70,7 +70,7 @@ void WhileStatement::exec
     if (!condition->value)
       break;
     try {
-      statement->exec(context, environment);
+      statement->execute(context, environment);
     } catch (const flow::Last&) {
       break;
     } catch (const flow::Next&) {
