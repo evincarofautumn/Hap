@@ -1,0 +1,16 @@
+var x = false;
+when (x) {
+  trace "x";
+}
+{
+  x = true;
+  x = false;
+}
+var y = false;
+when (y) {
+  trace "y";
+}
+atomic {
+  y = true;
+  y = false;
+}

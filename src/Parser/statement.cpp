@@ -1,5 +1,6 @@
 #include "Parser.h"
 
+#include "AtomicStatement.h"
 #include "BlockStatement.h"
 #include "Expression.h"
 #include "ExpressionStatement.h"
@@ -32,6 +33,7 @@ shared_ptr<Statement>
 Parser::accept_statement(const shared_ptr<Environment> environment) {
   return first<Statement>
     (environment,
+     &Parser::accept_atomic_statement,
      &Parser::accept_block_statement,
      &Parser::accept_empty_statement,
      &Parser::accept_fun_statement,
@@ -48,6 +50,16 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
      &Parser::accept_while_statement,
      // ----
      &Parser::accept_expression_statement);
+}
+
+shared_ptr<Statement>
+Parser::accept_atomic_statement(const shared_ptr<Environment> environment) {
+  if (!accept(Token(Token::IDENTIFIER, "atomic")))
+    return shared_ptr<Statement>();
+  auto statement(accept_statement(environment));
+  if (!statement)
+    expected("statement");
+  return shared_ptr<Statement>(new AtomicStatement(statement));
 }
 
 shared_ptr<Statement>

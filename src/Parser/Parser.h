@@ -29,6 +29,7 @@ private:
     accept_statement,
     accept_statements,
     // ----
+    accept_atomic_statement,
     accept_block_statement,
     accept_empty_statement,
     accept_fun_statement,
