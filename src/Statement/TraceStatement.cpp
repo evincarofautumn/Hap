@@ -7,12 +7,12 @@ using namespace std;
 
 namespace hap {
 
-TraceStatement::TraceStatement(unique_ptr<Expression> expression)
-  : expression(move(expression)) {}
+TraceStatement::TraceStatement(shared_ptr<Expression> expression)
+  : expression(expression) {}
 
 void TraceStatement::exec
-  (const shared_ptr<Environment> environment) const {
-  auto value(expression->eval(environment));
+  (Context& context, const shared_ptr<Environment> environment) const {
+  auto value(expression->eval(context, environment));
   value->write(cout);
   cout << endl;
 }

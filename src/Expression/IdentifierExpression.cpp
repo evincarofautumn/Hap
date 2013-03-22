@@ -8,7 +8,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> IdentifierExpression::eval
-  (const shared_ptr<Environment> environment) const {
+  (Context& context, const shared_ptr<Environment> environment) const {
   return (*environment)[identifier];
 }
 

@@ -11,17 +11,18 @@ class BinaryExpression : public Expression {
 public:
   BinaryExpression
     (const Operator& operator_,
-     std::unique_ptr<Expression> left,
-     std::unique_ptr<Expression> right)
+     std::shared_ptr<Expression> left,
+     std::shared_ptr<Expression> right)
     : operator_(operator_),
-      left(std::move(left)),
-      right(std::move(right)) {}
-  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
+      left(left),
+      right(right) {}
+  virtual std::shared_ptr<Value> eval
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   Operator operator_;
-  std::unique_ptr<const Expression> left;
-  std::unique_ptr<const Expression> right;
+  std::shared_ptr<const Expression> left;
+  std::shared_ptr<const Expression> right;
 };
 
 }

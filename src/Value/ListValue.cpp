@@ -8,7 +8,7 @@ namespace hap {
 
 ListValue::ListValue(const ListValue& other) {
   for (const auto& value : other.values)
-    values.push_back(unique_ptr<Value>(value->copy()));
+    values.push_back(shared_ptr<Value>(value->copy()));
 }
 
 bool ListValue::less(const Value& other) const {

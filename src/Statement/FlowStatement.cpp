@@ -1,5 +1,7 @@
 #include "FlowStatement.h"
+
 #include "BooleanValue.h"
+#include "Context.h"
 #include "UndefinedValue.h"
 #include "Value.h"
 #include "flow.h"
@@ -13,11 +15,11 @@ namespace hap {
 
 FlowStatement::FlowStatement
   (const string& keyword,
-   unique_ptr<Expression> expression,
-   unique_ptr<Statement> statement)
+   shared_ptr<Expression> expression,
+   shared_ptr<Statement> statement)
   : keyword(keyword),
-    expression(move(expression)),
-    statement(move(statement)) {}
+    expression(expression),
+    statement(statement) {}
 
 void FlowStatement::write(ostream& stream) const {
   stream << keyword << ' ';
@@ -28,9 +30,9 @@ void FlowStatement::write(ostream& stream) const {
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
   NAME##Statement::NAME##Statement \
-    (unique_ptr<Expression> expression, \
-     unique_ptr<Statement> statement) \
-    : FlowStatement(KEYWORD, move(expression), move(statement)) {}
+    (shared_ptr<Expression> expression, \
+     shared_ptr<Statement> statement) \
+    : FlowStatement(KEYWORD, expression, statement) {}
 
 FLOW_STATEMENT(If, "if")
 FLOW_STATEMENT(When, "when")
@@ -42,31 +44,33 @@ FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 #undef FLOW_STATEMENT
 
 void IfStatement::exec
-  (const shared_ptr<Environment> environment) const {
-  auto value(expression->eval(environment));
+  (Context& context, const shared_ptr<Environment> environment) const {
+  auto value(expression->eval(context, environment));
   value->assert_type(Value::BOOLEAN);
   auto condition(static_pointer_cast<BooleanValue>(value));
   if (condition->value)
-    statement->exec(environment);
+    statement->exec(context, environment);
 }
 
-void WhenStatement::exec(const shared_ptr<Environment>) const {
-  throw runtime_error("unimplemented when");
+void WhenStatement::exec
+  (Context& context, const shared_ptr<Environment> environment) const {
+  context.listen(expression, Context::NORMAL, statement, environment);
 }
 
-void WheneverStatement::exec(const shared_ptr<Environment>) const {
+void WheneverStatement::exec(Context&, const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented whenever");
 }
 
-void WhileStatement::exec(const shared_ptr<Environment> environment) const {
+void WhileStatement::exec
+  (Context& context, const shared_ptr<Environment> environment) const {
   while (true) {
-    auto value(expression->eval(environment));
+    auto value(expression->eval(context, environment));
     value->assert_type(Value::BOOLEAN);
     auto condition(static_pointer_cast<BooleanValue>(value));
     if (!condition->value)
       break;
     try {
-      statement->exec(environment);
+      statement->exec(context, environment);
     } catch (const flow::Last&) {
       break;
     } catch (const flow::Next&) {
@@ -75,11 +79,13 @@ void WhileStatement::exec(const shared_ptr<Environment> environment) const {
   }
 }
 
-void RepeatWhenStatement::exec(const shared_ptr<Environment>) const {
+void RepeatWhenStatement::exec
+  (Context&, const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented repeat_when");
 }
 
-void RepeatWheneverStatement::exec(const shared_ptr<Environment>) const {
+void RepeatWheneverStatement::exec
+  (Context&, const shared_ptr<Environment>) const {
   throw runtime_error("unimplemented repeat_whenever");
 }
 

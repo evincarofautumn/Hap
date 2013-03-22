@@ -16,14 +16,14 @@ class Statement;
 
 class Parser {
 private:
-  typedef std::unique_ptr<Statement> AcceptStatement
+  typedef std::shared_ptr<Statement> AcceptStatement
     (std::shared_ptr<Environment>);
-  typedef std::unique_ptr<Expression> AcceptExpression
+  typedef std::shared_ptr<Expression> AcceptExpression
     (std::shared_ptr<Environment>);
   typedef bool AcceptOperator(Operator&);
 public:
   Parser(const std::vector<Token>&, std::shared_ptr<Environment>);
-  std::unique_ptr<Statement> accept_program();
+  std::shared_ptr<Statement> accept_program();
 private:
   AcceptStatement
     accept_statement,
@@ -55,40 +55,40 @@ private:
     accept_lambda_expression,
     accept_string_expression,
     accept_undefined_expression;
-  std::unique_ptr<Expression> accept_call_expression
-    (std::shared_ptr<Environment>, std::unique_ptr<Expression>);
+  std::shared_ptr<Expression> accept_call_expression
+    (std::shared_ptr<Environment>, std::shared_ptr<Expression>);
   AcceptOperator
     accept_binary_operator,
     accept_unary_operator;
   template<class T, class First, class... Rest>
-  typename std::unique_ptr<T> first
+  typename std::shared_ptr<T> first
     (const std::shared_ptr<Environment> environment,
      First function, Rest&&... rest) {
     auto result((this->*function)(environment));
     if (result)
-      return std::move(result);
+      return result;
     return first<T, Rest...>(environment, std::forward<Rest>(rest)...);
   }
   template<class T, class Only>
-  typename std::unique_ptr<T> first
+  typename std::shared_ptr<T> first
     (const std::shared_ptr<Environment> environment, Only function) {
     return (this->*function)(environment);
   }
   void infix_expression
     (std::shared_ptr<Environment>,
      std::stack<Operator>&,
-     std::stack<std::unique_ptr<Expression>>&);
+     std::stack<std::shared_ptr<Expression>>&);
   void infix_subexpression
     (std::shared_ptr<Environment>,
      std::stack<Operator>&,
-     std::stack<std::unique_ptr<Expression>>&);
+     std::stack<std::shared_ptr<Expression>>&);
   void pop_operator
     (std::stack<Operator>&,
-     std::stack<std::unique_ptr<Expression>>&);
+     std::stack<std::shared_ptr<Expression>>&);
   void push_operator
     (const Operator&,
      std::stack<Operator>&,
-     std::stack<std::unique_ptr<Expression>>&);
+     std::stack<std::shared_ptr<Expression>>&);
   typedef std::vector<Token> Tokens;
   const Tokens tokens;
   Tokens::const_iterator current;
@@ -106,29 +106,29 @@ private:
   void expected(const Token&) const;
   bool at_end() const;
   template<class FlowStatement>
-  std::unique_ptr<Statement>
+  std::shared_ptr<Statement>
   accept_flow_statement(std::shared_ptr<Environment>, const std::string&);
   std::shared_ptr<Environment> global;
 };
 
 template<class StatementType>
-std::unique_ptr<Statement>
+std::shared_ptr<Statement>
 Parser::accept_flow_statement
   (const std::shared_ptr<Environment> environment,
    const std::string& keyword) {
   using namespace std;
   if (!accept(Token(Token::IDENTIFIER, keyword)))
-    return unique_ptr<Statement>();
-  unique_ptr<Expression> expression;
+    return shared_ptr<Statement>();
+  shared_ptr<Expression> expression;
   expect(Token::LEFT_PARENTHESIS);
   if (!(expression = accept_expression(environment)))
     expected("expression");
   expect(Token::RIGHT_PARENTHESIS);
-  unique_ptr<Statement> statement;
+  shared_ptr<Statement> statement;
   if (!(statement = accept_statement(environment)))
     expected("statement");
-  return unique_ptr<Statement>
-    (new StatementType(move(expression), move(statement)));
+  return shared_ptr<Statement>
+    (new StatementType(expression, statement));
 }
 
 }

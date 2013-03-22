@@ -11,16 +11,17 @@ class MapExpression : public Expression {
 public:
   MapExpression() {}
   void insert
-    (std::unique_ptr<const Expression> key,
-     std::unique_ptr<const Expression> value) {
-    pairs.insert(std::make_pair(std::move(key), std::move(value)));
+    (std::shared_ptr<const Expression> key,
+     std::shared_ptr<const Expression> value) {
+    pairs.insert(std::make_pair(key, value));
   }
-  virtual std::shared_ptr<Value> eval(const std::shared_ptr<Environment>) const final override;
+  virtual std::shared_ptr<Value> eval
+    (Context&, const std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   std::map
-    <std::unique_ptr<const Expression>,
-     std::unique_ptr<const Expression>> pairs;
+    <std::shared_ptr<const Expression>,
+     std::shared_ptr<const Expression>> pairs;
 };
 
 }

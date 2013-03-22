@@ -9,11 +9,11 @@ using namespace std;
 
 namespace hap {
 
-Interpreter::Interpreter(const shared_ptr<Environment> global)
-  : global(global) {}
+Interpreter::Interpreter(const shared_ptr<Environment> environment)
+  : global_environment(environment) {}
 
-void Interpreter::run(unique_ptr<Statement> statement) {
-  statement->exec(global);
+void Interpreter::run(shared_ptr<Statement> statement) {
+  statement->exec(global_context, global_environment);
 }
 
 }

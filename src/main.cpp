@@ -21,9 +21,9 @@ int main(int argc, char** argv) try {
   vector<Token> tokens = tokenize(input);
   shared_ptr<Environment> global(new Environment());
   Parser parser(tokens, global);
-  unique_ptr<Statement> program(parser.accept_program());
+  shared_ptr<Statement> program(parser.accept_program());
   Interpreter interpreter(global);
-  interpreter.run(move(program));
+  interpreter.run(program);
 } catch (const exception& error) {
   cerr << error.what() << '\n';
   return 1;

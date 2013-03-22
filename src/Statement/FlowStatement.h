@@ -11,23 +11,25 @@ class FlowStatement : public Statement {
 public:
   FlowStatement
     (const std::string&,
-     std::unique_ptr<Expression>,
-     std::unique_ptr<Statement>);
-  virtual void exec(std::shared_ptr<Environment>) const = 0;
+     std::shared_ptr<Expression>,
+     std::shared_ptr<Statement>);
+  virtual void exec
+    (Context&, std::shared_ptr<Environment>) const = 0;
   virtual void write(std::ostream&) const final override;
 protected:
   std::string keyword;
-  std::unique_ptr<Expression> expression;
-  std::unique_ptr<Statement> statement;
+  std::shared_ptr<Expression> expression;
+  std::shared_ptr<Statement> statement;
 };
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
 class NAME##Statement : public FlowStatement { \
 public: \
   NAME##Statement \
-    (std::unique_ptr<Expression>, \
-     std::unique_ptr<Statement>); \
-  virtual void exec(std::shared_ptr<Environment>) const final override; \
+    (std::shared_ptr<Expression>, \
+     std::shared_ptr<Statement>); \
+  virtual void exec \
+    (Context&, std::shared_ptr<Environment>) const final override; \
 };
 
 FLOW_STATEMENT(If, "if")

@@ -9,12 +9,13 @@ namespace hap {
 
 class VarStatement : public Statement {
 public:
-  VarStatement(const std::string&, std::unique_ptr<Expression>);
-  virtual void exec(std::shared_ptr<Environment>) const final override;
+  VarStatement(const std::string&, std::shared_ptr<Expression>);
+  virtual void exec
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   std::string identifier;
-  std::unique_ptr<Expression> initializer;
+  std::shared_ptr<Expression> initializer;
 };
 
 }

@@ -8,11 +8,12 @@ using namespace std;
 
 namespace hap {
 
-RetStatement::RetStatement(unique_ptr<Expression> expression)
-  : expression(move(expression)) {}
+RetStatement::RetStatement(shared_ptr<Expression> expression)
+  : expression(expression) {}
 
-void RetStatement::exec(const shared_ptr<Environment> environment) const {
-  auto value(expression->eval(environment));
+void RetStatement::exec
+  (Context& context, const shared_ptr<Environment> environment) const {
+  auto value(expression->eval(context, environment));
   throw flow::Return(value);
 }
 

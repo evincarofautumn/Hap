@@ -8,9 +8,9 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> UnaryExpression::eval
-  (const shared_ptr<Environment> environment) const {
+  (Context& context, const shared_ptr<Environment> environment) const {
   if (operator_.unary)
-    return operator_.unary(environment, expression);
+    return operator_.unary(context, environment, expression);
   ostringstream message;
   message << "unimplemented unary operator " << operator_;
   throw runtime_error(message.str());

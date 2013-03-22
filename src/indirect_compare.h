@@ -20,16 +20,6 @@ public:
      const std::shared_ptr<T>& b) const {
     return compare(*a, *b);
   }
-  bool operator()
-    (const std::unique_ptr<const T>& a,
-     const std::unique_ptr<const T>& b) const {
-    return compare(*a, *b);
-  }
-  bool operator()
-    (const std::unique_ptr<T>& a,
-     const std::unique_ptr<T>& b) const {
-    return compare(*a, *b);
-  }
 private:
   Less compare;
 };

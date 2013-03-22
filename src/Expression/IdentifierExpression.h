@@ -11,7 +11,8 @@ class IdentifierExpression : public Expression {
 public:
   IdentifierExpression(const std::string& identifier)
     : identifier(identifier) {}
-  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
+  virtual std::shared_ptr<Value> eval
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
   std::string identifier;
 };

@@ -9,8 +9,8 @@ namespace hap {
 MapValue::MapValue(const MapValue& other) {
   for (const auto& pair : other.pairs)
     pairs.insert (make_pair
-      (unique_ptr<Value>(pair.first->copy()),
-       unique_ptr<Value>(pair.second->copy())));
+      (shared_ptr<Value>(pair.first->copy()),
+       shared_ptr<Value>(pair.second->copy())));
 }
 
 bool MapValue::less(const Value& other) const {

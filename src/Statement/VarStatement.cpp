@@ -11,13 +11,13 @@ namespace hap {
 
 VarStatement::VarStatement
   (const string& identifier,
-   unique_ptr<Expression> initializer)
+   shared_ptr<Expression> initializer)
   : identifier(identifier),
-    initializer(move(initializer)) {}
+    initializer(initializer) {}
 
 void VarStatement::exec
-  (const shared_ptr<Environment> environment) const {
-  auto value(initializer->eval(environment));
+  (Context& context, const shared_ptr<Environment> environment) const {
+  auto value(initializer->eval(context, environment));
   environment->define(identifier, value);
 }
 

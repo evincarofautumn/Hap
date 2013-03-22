@@ -10,13 +10,14 @@ namespace hap {
 class BlockStatement : public Statement {
 public:
   BlockStatement() {}
-  void push(std::unique_ptr<Statement> statement) {
-    statements.push_back(std::move(statement));
+  void push(std::shared_ptr<Statement> statement) {
+    statements.push_back(statement);
   }
-  virtual void exec(std::shared_ptr<Environment>) const final override;
+  virtual void exec
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
-  std::vector<std::unique_ptr<Statement>> statements;
+  std::vector<std::shared_ptr<Statement>> statements;
 };
 
 }

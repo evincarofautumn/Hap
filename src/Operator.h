@@ -6,6 +6,7 @@
 
 namespace hap {
 
+class Context;
 class Environment;
 class Expression;
 class Value;
@@ -13,12 +14,14 @@ class Value;
 class Operator {
 private:
   typedef std::shared_ptr<Value> ValuePointer;
-  typedef std::unique_ptr<const Expression> ExpressionPointer;
+  typedef std::shared_ptr<const Expression> ExpressionPointer;
   typedef std::shared_ptr<Environment> EnvironmentPointer;
 public:
-  typedef ValuePointer Unary(EnvironmentPointer, const ExpressionPointer&);
+  typedef ValuePointer Unary
+    (Context&, EnvironmentPointer, const ExpressionPointer&);
   typedef ValuePointer Binary
-    (EnvironmentPointer, const ExpressionPointer&, const ExpressionPointer&);
+    (Context&, EnvironmentPointer,
+     const ExpressionPointer&, const ExpressionPointer&);
   enum Arity {
     SENTINEL,
     UNARY,

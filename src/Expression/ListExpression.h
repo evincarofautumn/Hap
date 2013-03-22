@@ -10,13 +10,14 @@ namespace hap {
 class ListExpression : public Expression {
 public:
   ListExpression() {}
-  void push(std::unique_ptr<const Expression> expression) {
-    expressions.push_back(std::move(expression));
+  void push(std::shared_ptr<const Expression> expression) {
+    expressions.push_back(expression);
   }
-  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
+  virtual std::shared_ptr<Value> eval
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
-  std::vector<std::unique_ptr<const Expression>> expressions;
+  std::vector<std::shared_ptr<const Expression>> expressions;
 };
 
 }

@@ -17,7 +17,8 @@ public:
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
      std::shared_ptr<Environment>);
-  virtual void exec(std::shared_ptr<Environment>) const final override;
+  virtual void exec
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   std::string identifier;

@@ -9,11 +9,11 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> MapExpression::eval
-  (const shared_ptr<Environment> environment) const {
+  (Context& context, const shared_ptr<Environment> environment) const {
   shared_ptr<MapValue> map(new MapValue());
   for (const auto& pair : pairs) {
-    auto key(pair.first->eval(environment));
-    auto value(pair.second->eval(environment));
+    auto key(pair.first->eval(context, environment));
+    auto value(pair.second->eval(context, environment));
     map->insert(key, value);
   }
   return static_pointer_cast<Value>(map);

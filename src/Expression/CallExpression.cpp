@@ -11,17 +11,17 @@ using namespace std;
 namespace hap {
 
 CallExpression::CallExpression
-  (unique_ptr<Expression> function,
-   vector<unique_ptr<Expression>>&& expressions)
-  : function(move(function)),
-    expressions(move(expressions)) {}
+  (shared_ptr<Expression> function,
+   vector<shared_ptr<Expression>>&& expressions)
+  : function(function),
+    expressions(expressions) {}
 
 shared_ptr<Value>CallExpression::eval
-  (const shared_ptr<Environment> environment) const {
-  auto value(function->eval(environment));
+  (Context& context, const shared_ptr<Environment> environment) const {
+  auto value(function->eval(context, environment));
   value->assert_type(Value::FUNCTION);
   const auto function(static_pointer_cast<FunExpression>(value));
-  return function->call(expressions);
+  return function->call(context, expressions);
 }
 
 void CallExpression::write(ostream& stream) const {

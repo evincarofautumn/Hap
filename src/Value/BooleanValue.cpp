@@ -7,7 +7,7 @@ using namespace std;
 namespace hap {
 
 shared_ptr<Value> BooleanValue::eval
-  (const shared_ptr<Environment>) const {
+  (Context&, const shared_ptr<Environment>) const {
   return shared_ptr<Value>(new BooleanValue(*this));
 }
 

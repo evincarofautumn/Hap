@@ -18,7 +18,8 @@ public:
   };
   void assert_type(Type) const;
   virtual ~Value();
-  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const {
+  virtual std::shared_ptr<Value> eval
+    (Context&, std::shared_ptr<Environment>) const {
     return std::shared_ptr<Value>(copy());
   }
   virtual Value* copy() const = 0;

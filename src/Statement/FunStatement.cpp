@@ -20,7 +20,7 @@ FunStatement::FunStatement
     local(environment) {}
 
 void FunStatement::exec
-  (const shared_ptr<Environment> environment) const {
+  (Context&, const shared_ptr<Environment> environment) const {
   environment->define(identifier, shared_ptr<Value>
     (new FunExpression(identifier, parameters, body, local)));
 }

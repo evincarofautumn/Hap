@@ -28,20 +28,20 @@ struct not_an_expression : public runtime_error {
   not_an_expression() : runtime_error("not an expression") {}
 };
 
-unique_ptr<Expression> Parser::accept_expression
+shared_ptr<Expression> Parser::accept_expression
   (const shared_ptr<Environment> environment) {
   try {
     stack<Operator> operators;
-    stack<unique_ptr<Expression>> operands;
+    stack<shared_ptr<Expression>> operands;
     operators.push(Operator());
     infix_expression(environment, operators, operands);
-    return move(operands.top());
+    return operands.top();
   } catch (const not_an_expression&) {
-    return unique_ptr<Expression>();
+    return shared_ptr<Expression>();
   }
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_value_expression(const shared_ptr<Environment> environment) {
   auto value(first<Expression>
     (environment,
@@ -52,26 +52,26 @@ Parser::accept_value_expression(const shared_ptr<Environment> environment) {
      &Parser::accept_string_expression,
      &Parser::accept_undefined_expression));
   if (!value)
-    return unique_ptr<Expression>();
-  return accept_call_expression(environment, move(value));
+    return shared_ptr<Expression>();
+  return accept_call_expression(environment, value);
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_boolean_expression(const shared_ptr<Environment>) {
   if (accept(Token(Token::IDENTIFIER, "true")))
-    return unique_ptr<Expression>(new BooleanValue(true));
+    return shared_ptr<Expression>(new BooleanValue(true));
   if (accept(Token(Token::IDENTIFIER, "false")))
-    return unique_ptr<Expression>(new BooleanValue(false));
-  return unique_ptr<Expression>();
+    return shared_ptr<Expression>(new BooleanValue(false));
+  return shared_ptr<Expression>();
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_call_expression
   (const shared_ptr<Environment> environment,
-   unique_ptr<Expression> value) {
+   shared_ptr<Expression> value) {
   if (!accept(Token::LEFT_PARENTHESIS))
-    return move(value);
-  vector<unique_ptr<Expression>> arguments;
+    return value;
+  vector<shared_ptr<Expression>> arguments;
   if (!peek(Token::RIGHT_PARENTHESIS)) {
     while (true) {
       if (peek(Token::RIGHT_PARENTHESIS))
@@ -79,40 +79,40 @@ Parser::accept_call_expression
       auto argument(accept_expression(environment));
       if (!argument)
         expected("expression");
-      arguments.push_back(move(argument));
+      arguments.push_back(argument);
       if (!accept(Token::COMMA))
         break;
     }
   }
   expect(Token::RIGHT_PARENTHESIS);
-  return unique_ptr<Expression>
-    (new CallExpression(move(value), move(arguments)));
+  return shared_ptr<Expression>
+    (new CallExpression(value, move(arguments)));
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_identifier_expression(const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
-    return unique_ptr<Expression>();
-  return unique_ptr<Expression>(new IdentifierExpression(token.string));
+    return shared_ptr<Expression>();
+  return shared_ptr<Expression>(new IdentifierExpression(token.string));
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_integer_expression(const shared_ptr<Environment> environment) {
   Token token;
   if (!accept(Token::INTEGER, token))
-    return unique_ptr<Expression>();
+    return shared_ptr<Expression>();
   istringstream stream(token.string);
   int value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid integer");
-  return unique_ptr<Expression>(new IntegerValue(value));
+  return shared_ptr<Expression>(new IntegerValue(value));
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_lambda_expression(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::OPERATOR, "\\")))
-    return unique_ptr<Expression>();
+    return shared_ptr<Expression>();
   Token identifier(Token::IDENTIFIER, "lambda");
   accept(Token::IDENTIFIER, identifier);
   vector<string> parameters;
@@ -123,46 +123,46 @@ Parser::accept_lambda_expression(const shared_ptr<Environment> environment) {
         break;
       Token parameter;
       expect(Token::IDENTIFIER, parameter);
-      parameters.push_back(move(parameter.string));
+      parameters.push_back(parameter.string);
       if (!accept(Token::COMMA))
         break;
     }
   }
   expect(Token::RIGHT_PARENTHESIS);
-  unique_ptr<Statement> body;
+  shared_ptr<Statement> body;
   if (accept(Token::COLON)) {
     auto expression(accept_expression(environment));
     if (!expression)
       expected("expression");
-    body.reset(new RetStatement(move(expression)));
+    body.reset(new RetStatement(expression));
   } else if (accept(Token::LEFT_BRACE)) {
     body = accept_statements(environment);
     expect(Token::RIGHT_BRACE);
   } else {
     expected("colon or block");
   }
-  return unique_ptr<Expression>
+  return shared_ptr<Expression>
     (new FunExpression
      (identifier.string,
       parameters,
-      move(body),
+      body,
       environment));
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_string_expression(const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::STRING, token))
-    return unique_ptr<Expression>();
+    return shared_ptr<Expression>();
   token.string.pop_back();
-  return unique_ptr<Expression>(new StringValue(token.string.substr(1)));
+  return shared_ptr<Expression>(new StringValue(token.string.substr(1)));
 }
 
-unique_ptr<Expression>
+shared_ptr<Expression>
 Parser::accept_undefined_expression(const shared_ptr<Environment>) {
   if (accept(Token(Token::IDENTIFIER, "undefined")))
-    return unique_ptr<Expression>(new UndefinedValue());
-  return unique_ptr<Expression>();
+    return shared_ptr<Expression>(new UndefinedValue());
+  return shared_ptr<Expression>();
 }
 
 map<string, Operator> binary_operators;
@@ -246,7 +246,7 @@ bool Parser::accept_unary_operator(Operator& result) {
 void Parser::infix_expression
   (const shared_ptr<Environment> environment,
    stack<Operator>& operators,
-   stack<unique_ptr<Expression>>& operands) {
+   stack<shared_ptr<Expression>>& operands) {
   infix_subexpression(environment, operators, operands);
   Operator operator_;
   while (accept_binary_operator(operator_)) {
@@ -260,26 +260,26 @@ void Parser::infix_expression
 void Parser::infix_subexpression
   (const shared_ptr<Environment> environment,
    stack<Operator>& operators,
-   stack<unique_ptr<Expression>>& operands) {
+   stack<shared_ptr<Expression>>& operands) {
   Operator unary;
-  unique_ptr<Expression> value;
+  shared_ptr<Expression> value;
   if (accept(Token::LEFT_PARENTHESIS)) {
     operators.push(Operator());
     infix_expression(environment, operators, operands);
     expect(Token::RIGHT_PARENTHESIS);
     operators.pop();
-    auto value(move(operands.top()));
+    auto value(operands.top());
     operands.pop();
-    operands.push(accept_call_expression(environment, move(value)));
+    operands.push(accept_call_expression(environment, value));
   } else if (accept(Token::LEFT_BRACKET)) {
-    unique_ptr<ListExpression> list(new ListExpression());
+    shared_ptr<ListExpression> list(new ListExpression());
     operators.push(Operator());
     if (!peek(Token::RIGHT_BRACKET)) {
       while (true) {
         if (peek(Token::RIGHT_BRACKET))
           break;
         infix_expression(environment, operators, operands);
-        list->push(move(operands.top()));
+        list->push(operands.top());
         operands.pop();
         if (!accept(Token::COMMA))
           break;
@@ -287,40 +287,40 @@ void Parser::infix_subexpression
     }
     expect(Token::RIGHT_BRACKET);
     operators.pop();
-    operands.push(static_unique_cast<Expression>(move(list)));
+    operands.push(static_pointer_cast<Expression>(list));
   } else if (accept(Token::LEFT_BRACE)) {
-    unique_ptr<MapExpression> map(new MapExpression());
+    shared_ptr<MapExpression> map(new MapExpression());
     operators.push(Operator());
     if (!peek(Token::RIGHT_BRACE)) {
       while (true) {
         if (peek(Token::RIGHT_BRACE))
           break;
-        unique_ptr<const Expression> key;
+        shared_ptr<const Expression> key;
         Token bareword;
         if (accept(Token::IDENTIFIER, bareword)) {
           key.reset(new StringValue(bareword.string));
         } else {
           infix_expression(environment, operators, operands);
-          key = move(operands.top());
+          key = operands.top();
           operands.pop();
         }
         expect(Token::COLON);
         infix_expression(environment, operators, operands);
-        unique_ptr<const Expression> value(move(operands.top()));
+        shared_ptr<const Expression> value(operands.top());
         operands.pop();
-        map->insert(move(key), move(value));
+        map->insert(key, value);
         if (!accept(Token::COMMA))
           break;
       }
     }
     expect(Token::RIGHT_BRACE);
     operators.pop();
-    operands.push(static_unique_cast<Expression>(move(map)));
+    operands.push(static_pointer_cast<Expression>(map));
   } else if (accept_unary_operator(unary)) {
     push_operator(unary, operators, operands);
     infix_subexpression(environment, operators, operands);
   } else if ((value = accept_value_expression(environment))) {
-    operands.push(move(value));
+    operands.push(value);
   } else {
     throw not_an_expression();
   }
@@ -328,23 +328,23 @@ void Parser::infix_subexpression
 
 void Parser::pop_operator
   (stack<Operator>& operators,
-   stack<unique_ptr<Expression>>& operands) {
+   stack<shared_ptr<Expression>>& operands) {
   if (operators.top().arity == Operator::BINARY) {
     Operator operator_(operators.top());
     operators.pop();
-    unique_ptr<Expression> b(move(operands.top()));
+    shared_ptr<Expression> b(operands.top());
     operands.pop();
-    unique_ptr<Expression> a(move(operands.top()));
+    shared_ptr<Expression> a(operands.top());
     operands.pop();
-    operands.push(unique_ptr<Expression>
-      (new BinaryExpression(operator_, move(a), move(b))));
+    operands.push(shared_ptr<Expression>
+      (new BinaryExpression(operator_, a, b)));
   } else if (operators.top().arity == Operator::UNARY) {
     Operator operator_(operators.top());
     operators.pop();
-    unique_ptr<Expression> a(move(operands.top()));
+    shared_ptr<Expression> a(operands.top());
     operands.pop();
-    operands.push(unique_ptr<Expression>
-      (new UnaryExpression(operator_, move(a))));
+    operands.push(shared_ptr<Expression>
+      (new UnaryExpression(operator_, a)));
   } else {
     throw runtime_error("error parsing expression");
   }
@@ -353,7 +353,7 @@ void Parser::pop_operator
 void Parser::push_operator
   (const Operator& operator_,
    stack<Operator>& operators,
-   stack<unique_ptr<Expression>>& operands) {
+   stack<shared_ptr<Expression>>& operands) {
   while (operator_ < operators.top())
     pop_operator(operators, operands);
   operators.push(operator_);

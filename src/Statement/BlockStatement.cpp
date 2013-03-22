@@ -10,9 +10,9 @@ using namespace std;
 namespace hap {
 
 void BlockStatement::exec
-  (const shared_ptr<Environment> environment) const {
+  (Context& context, const shared_ptr<Environment> environment) const {
   for (const auto& statement : statements)
-    statement->exec(environment);
+    statement->exec(context, environment);
 }
 
 void BlockStatement::write(ostream& stream) const {

@@ -24,11 +24,12 @@ public:
   virtual FunExpression* copy() const final override {
     return new FunExpression(*this);
   }
-  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
+  virtual std::shared_ptr<Value> eval
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
   std::shared_ptr<Value> call
-    (const std::vector<std::unique_ptr<Expression>>&) const;
+    (Context&, const std::vector<std::shared_ptr<Expression>>&) const;
 private:
   FunExpression(const FunExpression&) = default;
   std::string identifier;

@@ -11,14 +11,15 @@ class UnaryExpression : public Expression {
 public:
   UnaryExpression
     (const Operator& operator_,
-     std::unique_ptr<const Expression> expression)
+     std::shared_ptr<const Expression> expression)
     : operator_(operator_),
-      expression(std::move(expression)) {}
-  virtual std::shared_ptr<Value> eval(std::shared_ptr<Environment>) const final override;
+      expression(expression) {}
+  virtual std::shared_ptr<Value> eval
+    (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   Operator operator_;
-  std::unique_ptr<const Expression> expression;
+  std::shared_ptr<const Expression> expression;
 };
 
 }

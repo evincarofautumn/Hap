@@ -9,12 +9,12 @@ using namespace std;
 namespace hap {
 
 ExpressionStatement::ExpressionStatement
-  (unique_ptr<Expression> expression)
-  : expression(move(expression)) {}
+  (shared_ptr<Expression> expression)
+  : expression(expression) {}
 
 void ExpressionStatement::exec
-  (const shared_ptr<Environment> environment) const {
-  expression->eval(environment);
+  (Context& context, const shared_ptr<Environment> environment) const {
+  expression->eval(context, environment);
 }
 
 void ExpressionStatement::write(ostream& stream) const {

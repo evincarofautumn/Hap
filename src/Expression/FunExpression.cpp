@@ -20,7 +20,7 @@ FunExpression::FunExpression
     environment(environment) {}
 
 shared_ptr<Value> FunExpression::eval
-  (const shared_ptr<Environment> environment) const {
+  (Context&, const shared_ptr<Environment> environment) const {
   throw runtime_error("unimplemented fun");
 }
 
@@ -37,19 +37,19 @@ void FunExpression::write(ostream& stream) const {
 }
 
 shared_ptr<Value> FunExpression::call
-  (const vector<unique_ptr<Expression>>& arguments) const {
+  (Context& context, const vector<shared_ptr<Expression>>& arguments) const {
   shared_ptr<Environment> local(new Environment(environment));
   auto parameter(parameters.begin());
   for (const auto& argument : arguments) {
-    auto value(argument->eval(environment));
+    auto value(argument->eval(context, environment));
     local->define(*parameter++, value);
   }
   try {
-    body->exec(local);
+    body->exec(context, local);
   } catch (flow::Return& result) {
     return result.value;
   }
-  return unique_ptr<Value>(new UndefinedValue());
+  return shared_ptr<Value>(new UndefinedValue());
 }
 
 }
