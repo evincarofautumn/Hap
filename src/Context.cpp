@@ -1,13 +1,18 @@
 #include "Context.h"
 
+#include "Atomic.h"
 #include "BooleanValue.h"
 
 using namespace std;
 
 namespace hap {
 
+Context::Context() : atomic(false) {}
+
 void Context::interrupt
   (const shared_ptr<Environment> environment) {
+  if (atomic)
+    return;
   vector<shared_ptr<const Statement>> handlers;
   for (auto listener = listeners.begin();
        listener != listeners.end();
@@ -17,7 +22,11 @@ void Context::interrupt
       continue;
     if (listener->second.behavior & REPEAT)
       throw runtime_error("unimplemented repeat_*");
-    const auto value(listener->first->eval(*this, listener->second.environment));
+    shared_ptr<Value> value;
+    {
+      Atomic atomic(*this);
+      value = listener->first->eval(*this, listener->second.environment);
+    }
     value->assert_type(Value::BOOLEAN);
     const auto condition(static_pointer_cast<BooleanValue>(value));
     if (!condition->value)

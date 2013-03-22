@@ -1,6 +1,16 @@
 var x = 10;
 trace x;
-when (x == 0) {
+when (x == 20) {
   trace x;
 }
-x = 0;
+x = 20;
+
+var y = 30;
+trace y;
+fun f() {
+  ret y == 40;
+}
+when (f()) {
+  trace y;
+}
+y = 40;
