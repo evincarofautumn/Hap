@@ -70,4 +70,68 @@ void suite_tokenize() {
        "(",
        expected);
   }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::RIGHT_PARENTHESIS, ")"));
+    test_tokenize
+      ("right parenthesis",
+       ")",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::LEFT_BRACE, "{"));
+    test_tokenize
+      ("left brace",
+       "{",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::RIGHT_BRACE, "}"));
+    test_tokenize
+      ("right brace",
+       "}",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::LEFT_BRACKET, "["));
+    test_tokenize
+      ("left bracket",
+       "[",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::RIGHT_BRACKET, "]"));
+    test_tokenize
+      ("right bracket",
+       "]",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::COMMA, ","));
+    test_tokenize
+      ("comma",
+       ",",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::SEMICOLON, ";"));
+    test_tokenize
+      ("semicolon",
+       ";",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::COLON, ":"));
+    test_tokenize
+      ("colon",
+       ":",
+       expected);
+  }
 }
