@@ -42,9 +42,24 @@ void test_tokenize
 
 void suite_tokenize() {
   {
+    vector<Token> expected;
     test_tokenize
       ("empty input",
        "",
-       vector<Token>());
+       expected);
+  }
+  {
+    vector<Token> expected;
+    test_tokenize
+      ("comment ending at end of input",
+       "# this is a comment",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    test_tokenize
+      ("comment with newline",
+       "# this is a comment\n",
+       expected);
   }
 }
