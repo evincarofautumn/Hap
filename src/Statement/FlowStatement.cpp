@@ -54,8 +54,9 @@ void WhenStatement::exec
   context.listen(expression, Context::NORMAL, statement, environment);
 }
 
-void WheneverStatement::exec(Context&, const shared_ptr<Environment>) const {
-  throw runtime_error("unimplemented whenever");
+void WheneverStatement::exec
+  (Context& context, const shared_ptr<Environment> environment) const {
+  context.listen(expression, Context::RESUME, statement, environment);
 }
 
 void WhileStatement::exec

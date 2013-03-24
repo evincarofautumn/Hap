@@ -1,0 +1,11 @@
+var x = false;
+trace x;
+whenever (x) {
+  trace x;
+}
+x = true;
+x = false;
+x = true;
+x = false;
+x = true;
+x = true;
