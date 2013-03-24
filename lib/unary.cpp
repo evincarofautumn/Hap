@@ -2,7 +2,6 @@
 
 #include "BooleanValue.h"
 #include "IntegerValue.h"
-#include "unique_cast.h"
 
 #include <functional>
 

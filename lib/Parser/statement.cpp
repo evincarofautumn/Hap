@@ -13,7 +13,6 @@
 #include "TraceStatement.h"
 #include "UndefinedValue.h"
 #include "VarStatement.h"
-#include "unique_cast.h"
 
 using namespace std;
 

@@ -4,7 +4,6 @@
 #include "Environment.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
-#include "unique_cast.h"
 
 #include <functional>
 

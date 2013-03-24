@@ -2,8 +2,6 @@
 #include "FunExpression.h"
 #include "Value.h"
 
-#include "unique_cast.h"
-
 #include <ostream>
 
 using namespace std;
