@@ -284,4 +284,22 @@ void suite_tokenize() {
        "+,-;...:?",
        expected);
   }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    expected.push_back(Token(Token::STRING, "\"abc\""));
+    TEST_TOKENIZE
+      ("identifier followed by string literal",
+       "abc\"abc\"",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::STRING, "\"abc\""));
+    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    TEST_TOKENIZE
+      ("string literal followed by identifier",
+       "\"abc\"abc",
+       expected);
+  }
 }
