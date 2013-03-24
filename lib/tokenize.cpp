@@ -22,7 +22,7 @@ enum State {
 vector<Token> tokenize(istream& stream) {
   vector<Token> tokens;
   string token;
-  int character;
+  int character = 0;
   const string operator_characters = "!$%&*+,-./:<=>?@\\^|~";
   map<char, Token::Type> single_character_tokens;
   {

@@ -62,4 +62,12 @@ void suite_tokenize() {
        "# this is a comment\n",
        expected);
   }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::LEFT_PARENTHESIS, "("));
+    test_tokenize
+      ("left parenthesis",
+       "(",
+       expected);
+  }
 }
