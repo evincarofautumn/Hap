@@ -36,8 +36,6 @@ FLOW_STATEMENT(If, "if")
 FLOW_STATEMENT(When, "when")
 FLOW_STATEMENT(Whenever, "whenever")
 FLOW_STATEMENT(While, "while")
-FLOW_STATEMENT(RepeatWhen, "repeat_when")
-FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 
 #undef FLOW_STATEMENT
 

@@ -40,8 +40,6 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
      &Parser::accept_if_statement,
      &Parser::accept_last_statement,
      &Parser::accept_next_statement,
-     &Parser::accept_repeat_when_statement,
-     &Parser::accept_repeat_whenever_statement,
      &Parser::accept_ret_statement,
      &Parser::accept_trace_statement,
      &Parser::accept_var_statement,
@@ -134,20 +132,6 @@ Parser::accept_next_statement(const shared_ptr<Environment> environment) {
   return accept(Token(Token::IDENTIFIER, "next"))
     ? shared_ptr<Statement>(new NextStatement())
     : shared_ptr<Statement>();
-}
-
-shared_ptr<Statement>
-Parser::accept_repeat_when_statement
-  (const shared_ptr<Environment> environment) {
-  return accept_flow_statement<RepeatWhenStatement>
-    (environment, "repeat_when");
-}
-
-shared_ptr<Statement>
-Parser::accept_repeat_whenever_statement
-  (const shared_ptr<Environment> environment) {
-  return accept_flow_statement<RepeatWheneverStatement>
-    (environment, "repeat_whenever");
 }
 
 shared_ptr<Statement>

@@ -36,8 +36,6 @@ private:
     accept_if_statement,
     accept_last_statement,
     accept_next_statement,
-    accept_repeat_when_statement,
-    accept_repeat_whenever_statement,
     accept_ret_statement,
     accept_trace_statement,
     accept_var_statement,

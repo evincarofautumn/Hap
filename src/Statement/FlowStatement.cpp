@@ -15,8 +15,8 @@ namespace hap {
 
 FlowStatement::FlowStatement
   (const string& keyword,
-   shared_ptr<Expression> expression,
-   shared_ptr<Statement> statement)
+   const shared_ptr<Expression> expression,
+   const shared_ptr<Statement> statement)
   : keyword(keyword),
     expression(expression),
     statement(statement) {}
@@ -30,16 +30,14 @@ void FlowStatement::write(ostream& stream) const {
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
   NAME##Statement::NAME##Statement \
-    (shared_ptr<Expression> expression, \
-     shared_ptr<Statement> statement) \
+    (const shared_ptr<Expression> expression, \
+     const shared_ptr<Statement> statement) \
     : FlowStatement(KEYWORD, expression, statement) {}
 
 FLOW_STATEMENT(If, "if")
 FLOW_STATEMENT(When, "when")
 FLOW_STATEMENT(Whenever, "whenever")
 FLOW_STATEMENT(While, "while")
-FLOW_STATEMENT(RepeatWhen, "repeat_when")
-FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 
 #undef FLOW_STATEMENT
 
@@ -72,16 +70,6 @@ void WhileStatement::exec
       continue;
     }
   }
-}
-
-void RepeatWhenStatement::exec
-  (Context&, const shared_ptr<Environment>) const {
-  throw runtime_error("unimplemented repeat_when");
-}
-
-void RepeatWheneverStatement::exec
-  (Context&, const shared_ptr<Environment>) const {
-  throw runtime_error("unimplemented repeat_whenever");
 }
 
 }

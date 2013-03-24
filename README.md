@@ -133,16 +133,4 @@ var NAME = EXPR;</code></pre></td>
 <td>Repeatedly</td>
 <td>As long as <code>EXPR</code> remains true; never if <code>EXPR</code> is already false.</td>
 </tr>
-<tr>
-<td><pre><code>repeat_when EXPR STAT</code></pre></td>
-<td>Asynchronous</td>
-<td>Repeatedly</td>
-<td>The first time <code>EXPR</code> becomes true. Stops when <code>EXPR</code> becomes false.</td>
-</tr>
-<tr>
-<td><pre><code>repeat_whenever EXPR STAT</code></pre></td>
-<td>Asynchronous</td>
-<td>Repeatedly</td>
-<td>Every time <code>EXPR</code> becomes true. Pauses whenever <code>EXPR</code> becomes false; resumes whenever it becomes true.</td>
-</tr>
 </table>
