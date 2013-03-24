@@ -51,6 +51,20 @@ void suite_tokenize() {
   {
     vector<Token> expected;
     test_tokenize
+      ("only spaces",
+       "     ",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    test_tokenize
+      ("all whitespace characters",
+       " \t\n\r\f\v",
+       expected);
+  }
+  {
+    vector<Token> expected;
+    test_tokenize
       ("comment ending at end of input",
        "# this is a comment",
        expected);
