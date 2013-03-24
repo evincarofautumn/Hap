@@ -302,4 +302,13 @@ void suite_tokenize() {
        "\"abc\"abc",
        expected);
   }
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::INTEGER, "123"));
+    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    TEST_TOKENIZE
+      ("integer followed by identifier",
+       "123abc",
+       expected);
+  }
 }
