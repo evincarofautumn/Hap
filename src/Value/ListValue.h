@@ -21,9 +21,14 @@ public:
   }
   virtual bool less(const Value&) const final override;
   virtual void write(std::ostream&) const final override;
+  std::vector<std::shared_ptr<Value>> values;
 private:
   ListValue(const ListValue&);
-  std::vector<std::shared_ptr<Value>> values;
+};
+
+template<>
+struct value_traits<Value::Type::LIST> {
+  typedef ListValue type;
 };
 
 }

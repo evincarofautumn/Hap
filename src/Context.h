@@ -17,6 +17,7 @@ public:
     NORMAL = 0,
     REPEAT = 1,
     RESUME = 2,
+    REPEAT_RESUME = REPEAT | RESUME,
   };
   Context();
   void interrupt(std::shared_ptr<Environment>);
@@ -28,10 +29,12 @@ public:
 private:
   struct Handler {
     Behavior behavior;
-    std::shared_ptr<const Statement> handler;
+    bool previous;
+    std::shared_ptr<const Statement> statement;
     std::shared_ptr<Environment> environment;
   };
   typedef std::map<std::shared_ptr<const Expression>, Handler> ListenerMap;
+  bool dead(ListenerMap::iterator) const;
   ListenerMap listeners;
   std::vector<ListenerMap::iterator> dead_listeners;
   bool atomic;

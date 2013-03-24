@@ -1,3 +1,4 @@
+
 #include "Context.h"
 
 #include "Atomic.h"
@@ -13,33 +14,43 @@ void Context::interrupt
   (const shared_ptr<Environment> environment) {
   if (atomic)
     return;
-  vector<shared_ptr<const Statement>> handlers;
+  vector<shared_ptr<const Statement>> statements;
   for (auto listener = listeners.begin();
        listener != listeners.end();
        ++listener) {
-    const auto dead = find(begin(dead_listeners), end(dead_listeners), listener);
-    if (dead != dead_listeners.end())
+    if (dead(listener))
       continue;
-    if (listener->second.behavior & REPEAT)
+    const auto& condition(listener->first);
+    auto& handler(listener->second);
+    if (handler.behavior & REPEAT)
       throw runtime_error("unimplemented repeat_*");
-    shared_ptr<Value> value;
+    bool value = false;
     {
       Atomic atomic(*this);
-      value = listener->first->eval(*this, listener->second.environment);
+      value = eval_as<Value::BOOLEAN>
+        (condition, *this, handler.environment)->value;
     }
-    value->assert_type(Value::BOOLEAN);
-    const auto condition(static_pointer_cast<BooleanValue>(value));
-    if (!condition->value)
-      continue;
-    if (!(listener->second.behavior & RESUME))
-      dead_listeners.push_back(listener);
-    handlers.push_back(listener->second.handler);
+    if (value) {
+      if (handler.behavior & RESUME) {
+        if (!handler.previous)
+          statements.push_back(handler.statement);
+      } else {
+        statements.push_back(handler.statement);
+        dead_listeners.push_back(listener);
+      }
+    }
+    handler.previous = value;
   }
   for (const auto& dead_listener : dead_listeners)
     listeners.erase(dead_listener);
   dead_listeners.clear();
-  for (const auto& handler : handlers)
-    handler->execute(*this, environment);
+  for (const auto& statement : statements)
+    statement->execute(*this, environment);
+}
+
+bool Context::dead(ListenerMap::iterator listener) const {
+  return find(begin(dead_listeners), end(dead_listeners), listener)
+    != dead_listeners.end();
 }
 
 void Context::listen
@@ -47,7 +58,7 @@ void Context::listen
    const Behavior behavior,
    const shared_ptr<const Statement> body,
    const shared_ptr<Environment> environment) {
-  Handler handler{behavior, body, environment};
+  Handler handler{behavior, false, body, environment};
   listeners.insert(make_pair(condition, handler));
 }
 

@@ -22,6 +22,11 @@ private:
   UndefinedValue(const UndefinedValue&) = default;
 };
 
+template<>
+struct value_traits<Value::Type::UNDEFINED> {
+  typedef UndefinedValue type;
+};
+
 }
 
 #endif

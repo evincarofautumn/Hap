@@ -21,14 +21,11 @@ shared_ptr<Value> arithmetic
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  auto a(left->eval(context, environment));
-  auto b(right->eval(context, environment));
-  a->assert_type(Value::INTEGER);
-  b->assert_type(Value::INTEGER);
-  auto c(static_pointer_cast<IntegerValue>(a));
-  auto d(static_pointer_cast<IntegerValue>(b));
   return shared_ptr<Value>
-    (new IntegerValue(function(c->value, d->value)));
+    (new IntegerValue
+     (function
+      (eval_as<Value::INTEGER>(left, context, environment)->value,
+       eval_as<Value::INTEGER>(right, context, environment)->value)));
 }
 
 shared_ptr<Value> multiply
@@ -108,14 +105,11 @@ shared_ptr<Value> relational
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  auto a(left->eval(context, environment));
-  auto b(right->eval(context, environment));
-  a->assert_type(Value::INTEGER);
-  b->assert_type(Value::INTEGER);
-  auto c(static_pointer_cast<IntegerValue>(a));
-  auto d(static_pointer_cast<IntegerValue>(b));
   return shared_ptr<Value>
-    (new BooleanValue(function(c->value, d->value)));
+    (new BooleanValue
+     (function
+      (eval_as<Value::INTEGER>(left, context, environment)->value,
+       eval_as<Value::INTEGER>(right, context, environment)->value)));
 }
 
 shared_ptr<Value> lt
@@ -171,14 +165,10 @@ shared_ptr<Value> and_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  auto left_value(left->eval(context, environment));
-  left_value->assert_type(Value::BOOLEAN);
-  auto left_boolean(static_pointer_cast<BooleanValue>(left_value));
-  if (!left_boolean->value)
-    return shared_ptr<Value>(new BooleanValue(false));
-  auto right_value(right->eval(context, environment));
-  right_value->assert_type(Value::BOOLEAN);
-  return right_value;
+  return shared_ptr<Value>
+    (new BooleanValue
+     (eval_as<Value::BOOLEAN>(left, context, environment)->value
+      && eval_as<Value::BOOLEAN>(right, context, environment)->value));
 }
 
 shared_ptr<Value> xor_
@@ -186,14 +176,10 @@ shared_ptr<Value> xor_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  auto left_value(left->eval(context, environment));
-  left_value->assert_type(Value::BOOLEAN);
-  auto left_boolean(static_pointer_cast<BooleanValue>(left_value));
-  auto right_value(right->eval(context, environment));
-  right_value->assert_type(Value::BOOLEAN);
-  auto right_boolean(static_pointer_cast<BooleanValue>(right_value));
   return shared_ptr<Value>
-    (new BooleanValue(left_boolean->value != right_boolean->value));
+    (new BooleanValue
+     (eval_as<Value::BOOLEAN>(left, context, environment)->value
+      != eval_as<Value::BOOLEAN>(right, context, environment)->value));
 }
 
 shared_ptr<Value> or_
@@ -201,14 +187,10 @@ shared_ptr<Value> or_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  auto left_value(left->eval(context, environment));
-  left_value->assert_type(Value::BOOLEAN);
-  auto left_boolean(static_pointer_cast<BooleanValue>(left_value));
-  if (left_boolean->value)
-    return shared_ptr<Value>(new BooleanValue(true));
-  auto right_value(right->eval(context, environment));
-  right_value->assert_type(Value::BOOLEAN);
-  return right_value;
+  return shared_ptr<Value>
+    (new BooleanValue
+     (eval_as<Value::BOOLEAN>(left, context, environment)->value
+      || eval_as<Value::BOOLEAN>(right, context, environment)->value));
 }
 
 shared_ptr<Value> assign

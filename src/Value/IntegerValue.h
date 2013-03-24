@@ -22,6 +22,11 @@ public:
   int value;
 };
 
+template<>
+struct value_traits<Value::Type::INTEGER> {
+  typedef IntegerValue type;
+};
+
 }
 
 #endif

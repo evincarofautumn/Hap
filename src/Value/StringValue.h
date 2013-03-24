@@ -24,6 +24,11 @@ public:
   std::string value;
 };
 
+template<>
+struct value_traits<Value::Type::STRING> {
+  typedef StringValue type;
+};
+
 }
 
 #endif

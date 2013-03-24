@@ -22,6 +22,11 @@ public:
   bool value;
 };
 
+template<>
+struct value_traits<Value::Type::BOOLEAN> {
+  typedef BooleanValue type;
+};
+
 }
 
 #endif

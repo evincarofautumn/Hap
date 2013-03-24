@@ -45,10 +45,7 @@ FLOW_STATEMENT(RepeatWhenever, "repeat_whenever")
 
 void IfStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
-  auto value(expression->eval(context, environment));
-  value->assert_type(Value::BOOLEAN);
-  auto condition(static_pointer_cast<BooleanValue>(value));
-  if (condition->value)
+  if (eval_as<Value::BOOLEAN>(expression, context, environment)->value)
     statement->execute(context, environment);
 }
 
@@ -64,10 +61,7 @@ void WheneverStatement::exec(Context&, const shared_ptr<Environment>) const {
 void WhileStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
   while (true) {
-    auto value(expression->eval(context, environment));
-    value->assert_type(Value::BOOLEAN);
-    auto condition(static_pointer_cast<BooleanValue>(value));
-    if (!condition->value)
+    if (!eval_as<Value::BOOLEAN>(expression, context, environment)->value)
       break;
     try {
       statement->execute(context, environment);
