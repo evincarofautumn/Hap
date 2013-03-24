@@ -10,15 +10,7 @@ namespace unary {
 Operator::Unary
   identity,
   negate,
-  val,
-  ref,
-  not_,
-  lt,
-  ge,
-  gt,
-  le,
-  eq,
-  ne;
+  not_;
 
 }
 

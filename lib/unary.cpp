@@ -32,20 +32,6 @@ shared_ptr<Value> negate
   return static_pointer_cast<Value>(integer);
 }
 
-shared_ptr<Value> val
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary val");
-}
-
-shared_ptr<Value> ref
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary ref");
-}
-
 template<class F>
 shared_ptr<Value> logical
   (F function,
@@ -64,48 +50,6 @@ shared_ptr<Value> not_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& expression) {
   return logical(logical_not<bool>(), context, environment, expression);
-}
-
-shared_ptr<Value> lt
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary less than");
-}
-
-shared_ptr<Value> ge
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary greater than or equal to");
-}
-
-shared_ptr<Value> gt
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary greater than");
-}
-
-shared_ptr<Value> le
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary less than or equal to");
-}
-
-shared_ptr<Value> eq
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary equals");
-}
-
-shared_ptr<Value> ne
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& expression) {
-  throw runtime_error("unimplemented unary not equals");
 }
 
 }

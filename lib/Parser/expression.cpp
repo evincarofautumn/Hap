@@ -218,15 +218,7 @@ bool Parser::accept_unary_operator(Operator& result) {
     using namespace unary;
     UNARY_OPERATOR("+", identity);
     UNARY_OPERATOR("-", negate);
-    UNARY_OPERATOR("val", val);
-    UNARY_OPERATOR("ref", ref);
     UNARY_OPERATOR("not", not_);
-    UNARY_OPERATOR("<", lt);
-    UNARY_OPERATOR(">=", ge);
-    UNARY_OPERATOR(">", gt);
-    UNARY_OPERATOR("<=", le);
-    UNARY_OPERATOR("==", eq);
-    UNARY_OPERATOR("<>", ne);
   }
   if (at_end() || !(current->type == Token::OPERATOR
       || current->type == Token::IDENTIFIER))
