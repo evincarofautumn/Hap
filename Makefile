@@ -1,14 +1,20 @@
 LDFLAGS+=-lc++
-SOURCE_PATHS=src src/Expression src/Parser src/Statement src/Value
-INCFLAGS=$(addprefix -I,$(SOURCE_PATHS))
+
+LIB_PATHS=lib lib/Expression lib/Parser lib/Statement lib/Value
+HAP_SOURCE_PATHS=hap $(LIB_PATHS)
+
+INCFLAGS=$(addprefix -I,$(LIB_PATHS))
 WARNFLAGS=$(addprefix -W,all error)
-CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS) -g
+CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS)
+
 CPPFLAGS+=-MD -MP
-SOURCES=$(wildcard $(addsuffix /*.cpp,$(SOURCE_PATHS)))
-OBJECTS=$(SOURCES:%.cpp=%.o)
-DEPS=$(SOURCES:%.cpp=%.d)
+
+HAP=./bin/hap
+HAP_SOURCES=$(wildcard $(addsuffix /*.cpp,$(HAP_SOURCE_PATHS)))
+HAP_OBJECTS=$(HAP_SOURCES:%.cpp=%.o)
+HAP_DEPS=$(HAP_SOURCES:%.cpp=%.d)
+
 TESTER=./test/run.sh
-HAP=./hap
 
 .PHONY : all
 all : build test
@@ -19,11 +25,11 @@ clean : clean-build clean-deps clean-test
 .PHONY : clean-build
 clean-build :
 	@rm -f $(HAP)
-	@rm -f $(OBJECTS)
+	@rm -f $(HAP_OBJECTS)
 
 .PHONY : clean-deps
 clean-deps :
-	@rm -f $(DEPS)
+	@rm -f $(HAP_DEPS)
 
 .PHONY : clean-test
 clean-test :
@@ -32,8 +38,8 @@ clean-test :
 .PHONY : build
 build : $(HAP)
 
-$(HAP) : $(OBJECTS)
-	$(CXX) -o $@ $(LDFLAGS) $(OBJECTS)
+$(HAP) : $(HAP_OBJECTS)
+	$(CXX) -o $@ $(LDFLAGS) $(HAP_OBJECTS)
 
 TESTS=$(basename $(notdir $(wildcard test/*.hap)))
 define TESTRULE
@@ -46,13 +52,13 @@ $(foreach TEST,$(TESTS),$(eval $(call TESTRULE,$(TEST))))
 
 .PHONY : loc
 loc :
-	@wc -l $(SOURCES) | sort -n
+	@wc -l $(HAP_SOURCES) | sort -n
 
 .PHONY : woc
 woc :
-	@./tools/woc.pl $(SOURCES)
+	@./tools/woc.pl $(HAP_SOURCES)
 
--include $(DEPS)
+-include $(HAP_DEPS)
 
 define DEPENDS_ON_MAKEFILE
 $1 : Makefile
@@ -60,4 +66,4 @@ $1 : Makefile
 endef
 
 $(call DEPENDS_ON_MAKEFILE,hap)
-$(foreach OBJECT,$(OBJECTS),$(eval $(call DEPENDS_ON_MAKEFILE,$(OBJECT))))
+$(foreach OBJECT,$(HAP_OBJECTS),$(eval $(call DEPENDS_ON_MAKEFILE,$(OBJECT))))
