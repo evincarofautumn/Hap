@@ -1,7 +1,6 @@
 LDFLAGS+=-lc++
 
 LIB_PATHS=lib lib/Expression lib/Parser lib/Statement lib/Value
-HAP_SOURCE_PATHS=hap $(LIB_PATHS)
 
 INCFLAGS=$(addprefix -I,$(LIB_PATHS))
 WARNFLAGS=$(addprefix -W,all error)
@@ -10,6 +9,7 @@ CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS)
 CPPFLAGS+=-MD -MP
 
 HAP=./bin/hap
+HAP_SOURCE_PATHS=hap $(LIB_PATHS)
 HAP_SOURCES=$(wildcard $(addsuffix /*.cpp,$(HAP_SOURCE_PATHS)))
 HAP_OBJECTS=$(HAP_SOURCES:%.cpp=%.o)
 HAP_DEPS=$(HAP_SOURCES:%.cpp=%.d)
