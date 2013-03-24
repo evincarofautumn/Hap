@@ -14,10 +14,8 @@ class Context {
 public:
   friend class Atomic;
   enum Behavior {
-    NORMAL = 0,
-    REPEAT = 1,
-    RESUME = 2,
-    REPEAT_RESUME = REPEAT | RESUME,
+    ONCE,
+    REPEATEDLY,
   };
   Context();
   void interrupt(std::shared_ptr<Environment>);

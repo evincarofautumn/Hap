@@ -1,6 +1,7 @@
 #ifndef HAP_VALUE_H
 #define HAP_VALUE_H
 
+#include "Atomic.h"
 #include "Expression.h"
 
 namespace hap {
@@ -39,6 +40,20 @@ std::shared_ptr<typename value_traits<T>::type> eval_as
   value->assert_type(T);
   return std::static_pointer_cast<typename value_traits<T>::type>(value);
 }
+
+template<Value::Type T>
+std::shared_ptr<typename value_traits<T>::type> atomic_eval_as
+  (const std::shared_ptr<const Expression> expression,
+   Context& context,
+   const std::shared_ptr<Environment> environment) {
+  std::shared_ptr<typename value_traits<T>::type> result;
+  {
+    Atomic atomic(context);
+    result = eval_as<T>(expression, context, environment);
+  }
+  return result;
+}
+
 
 std::ostream& operator<<(std::ostream&, const Value::Type&);
 bool operator<(const Value&, const Value&);

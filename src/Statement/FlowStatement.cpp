@@ -51,12 +51,12 @@ void IfStatement::exec
 
 void WhenStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
-  context.listen(expression, Context::NORMAL, statement, environment);
+  context.listen(expression, Context::ONCE, statement, environment);
 }
 
 void WheneverStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
-  context.listen(expression, Context::RESUME, statement, environment);
+  context.listen(expression, Context::REPEATEDLY, statement, environment);
 }
 
 void WhileStatement::exec

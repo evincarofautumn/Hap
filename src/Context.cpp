@@ -22,22 +22,19 @@ void Context::interrupt
       continue;
     const auto& condition(listener->first);
     auto& handler(listener->second);
-    if (handler.behavior & REPEAT)
-      throw runtime_error("unimplemented repeat_*");
-    bool value = false;
-    {
-      Atomic atomic(*this);
-      value = eval_as<Value::BOOLEAN>
-        (condition, *this, handler.environment)->value;
-    }
-    if (value) {
-      if (handler.behavior & RESUME) {
-        if (!handler.previous)
-          statements.push_back(handler.statement);
-      } else {
+    const bool value = atomic_eval_as<Value::BOOLEAN>
+      (condition, *this, handler.environment)->value;
+    switch (handler.behavior) {
+    case ONCE:
+      if (value) {
         statements.push_back(handler.statement);
         dead_listeners.push_back(listener);
       }
+      break;
+    case REPEATEDLY:
+      if (value && !handler.previous)
+        statements.push_back(handler.statement);
+      break;
     }
     handler.previous = value;
   }
