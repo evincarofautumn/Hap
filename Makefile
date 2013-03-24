@@ -14,10 +14,16 @@ HAP_SOURCES=$(wildcard $(addsuffix /*.cpp,$(HAP_SOURCE_PATHS)))
 HAP_OBJECTS=$(HAP_SOURCES:%.cpp=%.o)
 HAP_DEPS=$(HAP_SOURCES:%.cpp=%.d)
 
+UNIT=./bin/hap-unit
+UNIT_SOURCE_PATHS=unit $(LIB_PATHS)
+UNIT_SOURCES=$(wildcard $(addsuffix /*.cpp,$(UNIT_SOURCE_PATHS)))
+UNIT_OBJECTS=$(UNIT_SOURCES:%.cpp=%.o)
+UNIT_DEPS=$(UNIT_SOURCES:%.cpp=%.d)
+
 TESTER=./test/run.sh
 
 .PHONY : all
-all : build test
+all : build unit-test test
 
 .PHONY : clean
 clean : clean-build clean-deps clean-test
@@ -26,10 +32,13 @@ clean : clean-build clean-deps clean-test
 clean-build :
 	@rm -f $(HAP)
 	@rm -f $(HAP_OBJECTS)
+	@rm -f $(UNIT)
+	@rm -f $(UNIT_OBJECTS)
 
 .PHONY : clean-deps
 clean-deps :
 	@rm -f $(HAP_DEPS)
+	@rm -f $(UNIT_DEPS)
 
 .PHONY : clean-test
 clean-test :
@@ -40,6 +49,13 @@ build : $(HAP)
 
 $(HAP) : $(HAP_OBJECTS)
 	$(CXX) -o $@ $(LDFLAGS) $(HAP_OBJECTS)
+
+.PHONY : unit-test
+unit-test : $(UNIT)
+	@$(UNIT)
+
+$(UNIT) : $(UNIT_OBJECTS)
+	$(CXX) -o $@ $(LDFLAGS) $(UNIT_OBJECTS)
 
 TESTS=$(basename $(notdir $(wildcard test/*.hap)))
 define TESTRULE
@@ -59,6 +75,7 @@ woc :
 	@./tools/woc.pl $(HAP_SOURCES)
 
 -include $(HAP_DEPS)
+-include $(UNIT_DEPS)
 
 define DEPENDS_ON_MAKEFILE
 $1 : Makefile
