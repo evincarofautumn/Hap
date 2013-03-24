@@ -65,7 +65,7 @@ shared_ptr<Value> subtract
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented -");
+  return arithmetic(minus<int>(), context, environment, left, right);
 }
 
 template<class T>
