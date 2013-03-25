@@ -10,8 +10,38 @@
 using namespace std;
 
 namespace hap {
-
 namespace binary {
+
+#define BINARY_OPERATOR(NAME, ASSOCIATIVITY, PRECEDENCE, IMPLEMENTATION) \
+  make_pair(NAME, Operator \
+    (Operator::BINARY, \
+     NAME, \
+     Operator::ASSOCIATIVITY, \
+     Operator::PRECEDENCE, \
+     binary::IMPLEMENTATION))
+
+map<string, Operator> operators {
+  BINARY_OPERATOR("*", LEFT, MULTIPLICATIVE, multiply),
+  BINARY_OPERATOR("/", LEFT, MULTIPLICATIVE, divide),
+  BINARY_OPERATOR("mod", LEFT, MULTIPLICATIVE, modulate),
+  BINARY_OPERATOR("+", LEFT, ADDITIVE, add),
+  BINARY_OPERATOR("-", LEFT, ADDITIVE, subtract),
+  BINARY_OPERATOR("<<", LEFT, SHIFTING, shift_left),
+  BINARY_OPERATOR(">>", LEFT, SHIFTING, shift_right),
+  BINARY_OPERATOR("<", LEFT, RELATIONAL, lt),
+  BINARY_OPERATOR(">=", LEFT, RELATIONAL, ge),
+  BINARY_OPERATOR(">", LEFT, RELATIONAL, gt),
+  BINARY_OPERATOR("<=", LEFT, RELATIONAL, le),
+  BINARY_OPERATOR("==", LEFT, RELATIONAL, eq),
+  BINARY_OPERATOR("<>", LEFT, RELATIONAL, ne),
+  BINARY_OPERATOR("and", LEFT, AND, and_),
+  BINARY_OPERATOR("xor", LEFT, XOR, xor_),
+  BINARY_OPERATOR("or", LEFT, OR, or_),
+  BINARY_OPERATOR("=", RIGHT, ASSIGNMENT, assign),
+  BINARY_OPERATOR(",", RIGHT, COMMA, comma),
+};
+
+#undef BINARY_OPERATOR
 
 template<class F>
 shared_ptr<Value> arithmetic

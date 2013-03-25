@@ -1,5 +1,10 @@
+#include "BinaryExpression.h"
 #include "BlockStatement.h"
+#include "BooleanValue.h"
+#include "ExpressionStatement.h"
+#include "IntegerValue.h"
 #include "Parser.h"
+#include "binary.h"
 #include "tokenize.h"
 
 #include <iostream>
@@ -10,14 +15,16 @@ using namespace hap;
 using namespace std;
 
 #define TEST_PARSE(NAME, INPUT, EXPECTED) \
-  test_parse(__FILE__, __LINE__, NAME, INPUT, EXPECTED)
+  test_parse \
+    (__FILE__, __LINE__, \
+     NAME, INPUT, unique_ptr<Statement>(EXPECTED))
 
 void test_parse
   (const string& file,
    const int line,
    const string& name,
    const string& input,
-   const shared_ptr<Statement> expected) {
+   const unique_ptr<Statement> expected) {
   shared_ptr<Statement> actual;
   {
     const shared_ptr<Environment> environment(new Environment());
@@ -40,18 +47,51 @@ void test_parse
 
 void suite_parse() {
   {
-    shared_ptr<Statement> expected(new BlockStatement());
+    const auto expected(new BlockStatement());
     TEST_PARSE
       ("empty program",
        "",
        expected);
   }
   {
-    shared_ptr<BlockStatement> expected(new BlockStatement());
-    expected->push(shared_ptr<Statement>(new BlockStatement()));
+    const auto expected
+      (new BlockStatement{new BlockStatement()});
     TEST_PARSE
       ("empty statement",
        ";",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new BooleanValue(true))});
+    TEST_PARSE
+      ("binary literal expression statement",
+       "true;",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new IntegerValue(1234))});
+    TEST_PARSE
+      ("integer literal expression statement",
+       "1234;",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new BinaryExpression
+         (binary::operators["+"],
+          new IntegerValue(12),
+          new IntegerValue(34)))});
+    TEST_PARSE
+      ("simple arithmetic expression statement",
+       "12+34;",
        expected);
   }
 }

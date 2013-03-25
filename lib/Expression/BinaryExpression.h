@@ -11,6 +11,13 @@ class BinaryExpression : public Expression {
 public:
   BinaryExpression
     (const Operator& operator_,
+     Expression* left,
+     Expression* right)
+    : operator_(operator_),
+      left(left),
+      right(right) {}
+  BinaryExpression
+    (const Operator& operator_,
      std::shared_ptr<Expression> left,
      std::shared_ptr<Expression> right)
     : operator_(operator_),

@@ -3,9 +3,14 @@
 
 #include "Operator.h"
 
+#include <map>
+#include <string>
+
 namespace hap {
 
 namespace binary {
+
+extern std::map<std::string, Operator> operators;
 
 Operator::Binary
   multiply,

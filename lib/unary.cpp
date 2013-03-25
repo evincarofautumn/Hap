@@ -11,6 +11,22 @@ namespace hap {
 
 namespace unary {
 
+#define UNARY_OPERATOR(NAME, IMPLEMENTATION) \
+  make_pair(NAME, Operator \
+    (Operator::UNARY, \
+     NAME, \
+     Operator::RIGHT, \
+     Operator::TIGHTEST, \
+     unary::IMPLEMENTATION)) \
+
+map<string, Operator> operators {
+  UNARY_OPERATOR("+", identity),
+  UNARY_OPERATOR("-", negate),
+  UNARY_OPERATOR("not", not_),
+};
+
+#undef UNARY_OPERATOR
+
 shared_ptr<Value> identity
   (Context& context,
    const shared_ptr<Environment> environment,

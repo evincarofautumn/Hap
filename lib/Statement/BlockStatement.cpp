@@ -10,6 +10,12 @@ using namespace std;
 
 namespace hap {
 
+BlockStatement::BlockStatement
+  (std::initializer_list<Statement*> statements) {
+  for (const auto& statement : statements)
+    push(shared_ptr<Statement>(statement));
+}
+
 bool BlockStatement::equal(const Statement& statement) const {
   if (const auto that
       = dynamic_cast<const BlockStatement*>(&statement)) {

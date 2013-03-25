@@ -10,6 +10,7 @@ namespace hap {
 class BlockStatement : public Statement {
 public:
   BlockStatement() {}
+  BlockStatement(std::initializer_list<Statement*>);
   void push(std::shared_ptr<Statement> statement) {
     statements.push_back(statement);
   }

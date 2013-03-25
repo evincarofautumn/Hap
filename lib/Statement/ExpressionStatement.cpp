@@ -9,6 +9,10 @@ using namespace std;
 namespace hap {
 
 ExpressionStatement::ExpressionStatement
+  (Expression* const expression)
+  : expression(expression) {}
+
+ExpressionStatement::ExpressionStatement
   (shared_ptr<Expression> expression)
   : expression(expression) {}
 

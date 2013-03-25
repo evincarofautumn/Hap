@@ -164,75 +164,31 @@ Parser::accept_undefined_expression(const shared_ptr<Environment>) {
   return shared_ptr<Expression>();
 }
 
-map<string, Operator> binary_operators;
-map<string, Operator> unary_operators;
-
-#define BINARY_OPERATOR(NAME, ASSOCIATIVITY, PRECEDENCE, IMPLEMENTATION) \
-  binary_operators.insert(make_pair(NAME, \
-    Operator(Operator::BINARY, NAME, \
-      Operator::ASSOCIATIVITY, Operator::PRECEDENCE, IMPLEMENTATION)))
-
 bool Parser::accept_binary_operator(Operator& result) {
-  if (binary_operators.empty()) {
-    using namespace binary;
-    BINARY_OPERATOR("*", LEFT, MULTIPLICATIVE, multiply);
-    BINARY_OPERATOR("/", LEFT, MULTIPLICATIVE, divide);
-    BINARY_OPERATOR("mod", LEFT, MULTIPLICATIVE, modulate);
-    BINARY_OPERATOR("+", LEFT, ADDITIVE, add);
-    BINARY_OPERATOR("-", LEFT, ADDITIVE, subtract);
-    BINARY_OPERATOR("<<", LEFT, SHIFTING, shift_left);
-    BINARY_OPERATOR(">>", LEFT, SHIFTING, shift_right);
-    BINARY_OPERATOR("<", LEFT, RELATIONAL, lt);
-    BINARY_OPERATOR(">=", LEFT, RELATIONAL, ge);
-    BINARY_OPERATOR(">", LEFT, RELATIONAL, gt);
-    BINARY_OPERATOR("<=", LEFT, RELATIONAL, le);
-    BINARY_OPERATOR("==", LEFT, RELATIONAL, eq);
-    BINARY_OPERATOR("<>", LEFT, RELATIONAL, ne);
-    BINARY_OPERATOR("and", LEFT, AND, and_);
-    BINARY_OPERATOR("xor", LEFT, XOR, xor_);
-    BINARY_OPERATOR("or", LEFT, OR, or_);
-    BINARY_OPERATOR("=", RIGHT, ASSIGNMENT, assign);
-    BINARY_OPERATOR(",", RIGHT, COMMA, comma);
-  }
   if (at_end() || !(current->type == Token::OPERATOR
       || current->type == Token::IDENTIFIER))
     return false;
   map<string, Operator>::const_iterator operator_
-    (binary_operators.find(current->string));
-  if (operator_ == binary_operators.end())
+    (binary::operators.find(current->string));
+  if (operator_ == binary::operators.end())
     return false;
   ++current;
   result = operator_->second;
   return true;
 }
-
-#undef BINARY_OPERATOR
-
-#define UNARY_OPERATOR(NAME, IMPLEMENTATION) \
-  unary_operators.insert(make_pair(NAME, \
-    Operator(Operator::UNARY, NAME, Operator::RIGHT, Operator::TIGHTEST, \
-      IMPLEMENTATION)))
 
 bool Parser::accept_unary_operator(Operator& result) {
-  if (unary_operators.empty()) {
-    using namespace unary;
-    UNARY_OPERATOR("+", identity);
-    UNARY_OPERATOR("-", negate);
-    UNARY_OPERATOR("not", not_);
-  }
   if (at_end() || !(current->type == Token::OPERATOR
       || current->type == Token::IDENTIFIER))
     return false;
   map<string, Operator>::const_iterator operator_
-    (unary_operators.find(current->string));
-  if (operator_ == unary_operators.end())
+    (unary::operators.find(current->string));
+  if (operator_ == unary::operators.end())
     return false;
   ++current;
   result = operator_->second;
   return true;
 }
-
-#undef UNARY_OPERATOR
 
 void Parser::infix_expression
   (const shared_ptr<Environment> environment,
