@@ -11,7 +11,13 @@ namespace hap {
 
 VarStatement::VarStatement
   (const string& identifier,
-   shared_ptr<Expression> initializer)
+   Expression* const initializer)
+  : identifier(identifier),
+    initializer(initializer) {}
+
+VarStatement::VarStatement
+  (const string& identifier,
+   const shared_ptr<Expression> initializer)
   : identifier(identifier),
     initializer(initializer) {}
 

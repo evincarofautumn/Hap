@@ -6,6 +6,8 @@
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
+#include "UndefinedValue.h"
+#include "VarStatement.h"
 #include "binary.h"
 #include "tokenize.h"
 
@@ -106,6 +108,42 @@ void suite_parse() {
     TEST_PARSE
       ("call expression statement",
        "f();",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new VarStatement
+        ("x",
+         new UndefinedValue())});
+    TEST_PARSE
+      ("variable declaration without initializer",
+       "var x;",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new VarStatement
+        ("x",
+         new IntegerValue(50))});
+    TEST_PARSE
+      ("variable declaration with literal initializer",
+       "var x = 50;",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new VarStatement
+        ("x",
+         new BinaryExpression
+          (binary::operators["+"],
+           new IdentifierExpression("y"),
+           new IdentifierExpression("z")))});
+    TEST_PARSE
+      ("variable declaration with expression initializer",
+       "var x = y + z;",
        expected);
   }
   {

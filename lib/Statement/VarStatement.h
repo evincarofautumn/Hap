@@ -9,6 +9,7 @@ namespace hap {
 
 class VarStatement : public Statement {
 public:
+  VarStatement(const std::string&, Expression*);
   VarStatement(const std::string&, std::shared_ptr<Expression>);
 protected:
   virtual bool equal(const Statement&) const;
