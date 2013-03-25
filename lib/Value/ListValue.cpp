@@ -32,10 +32,8 @@ bool ListValue::less(const Value& that) const {
 
 void ListValue::write(ostream& stream) const {
   stream << "[ ";
-  for (const auto& value : values) {
-    value->write(stream);
-    stream << ", ";
-  }
+  for (const auto& value : values)
+    stream << *value << ", ";
   stream << ']';
 }
 

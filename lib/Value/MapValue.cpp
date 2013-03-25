@@ -34,12 +34,8 @@ bool MapValue::less(const Value& that) const {
 
 void MapValue::write(ostream& stream) const {
   stream << "{ ";
-  for (const auto& value : values) {
-    value.first->write(stream);
-    stream << ": ";
-    value.second->write(stream);
-    stream << ", ";
-  }
+  for (const auto& value : values)
+    stream << *value.first << ": " << *value.second << ", ";
   stream << '}';
 }
 
