@@ -1,5 +1,7 @@
 #include "MapExpression.h"
+
 #include "MapValue.h"
+#include "indirect_equal.h"
 
 #include <ostream>
 
@@ -18,14 +20,22 @@ shared_ptr<Value> MapExpression::eval
   return static_pointer_cast<Value>(map);
 }
 
+bool MapExpression::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const MapExpression*>(&expression)) {
+    return pairs.size() == other->pairs.size()
+      && std::equal
+        (begin(pairs), end(pairs),
+         begin(other->pairs),
+         pair_indirect_equal<Expression, Expression>());
+  }
+  return false;
+}
+
 void MapExpression::write(ostream& stream) const {
   stream << "{ ";
-  for (const auto& pair : pairs) {
-    pair.first->write(stream);
-    stream << ": ";
-    pair.second->write(stream);
-    stream << ", ";
-  }
+  for (const auto& pair : pairs)
+    stream << *pair.first << ": " << *pair.second << ", ";
   stream << '}';
 }
 

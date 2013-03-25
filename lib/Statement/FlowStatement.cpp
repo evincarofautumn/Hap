@@ -20,11 +20,18 @@ FlowStatement::FlowStatement
     expression(expression),
     statement(statement) {}
 
+bool FlowStatement::equal(const Statement& statement) const {
+  if (auto other
+      = dynamic_cast<const FlowStatement*>(&statement)) {
+    return keyword == other->keyword
+      && *expression == *other->expression
+      && *this->statement == *other->statement;
+  }
+  return false;
+}
+
 void FlowStatement::write(ostream& stream) const {
-  stream << keyword << ' ';
-  expression->write(stream);
-  stream << '\n';
-  statement->write(stream);
+  stream << keyword << ' ' << *expression << '\n' << *statement;
 }
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \

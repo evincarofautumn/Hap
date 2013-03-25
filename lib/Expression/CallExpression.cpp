@@ -1,7 +1,10 @@
 #include "CallExpression.h"
+
 #include "FunExpression.h"
 #include "Value.h"
+#include "indirect_equal.h"
 
+#include <algorithm>
 #include <ostream>
 
 using namespace std;
@@ -22,13 +25,22 @@ shared_ptr<Value>CallExpression::eval
   return function->call(context, expressions);
 }
 
-void CallExpression::write(ostream& stream) const {
-  function->write(stream);
-  stream << "(";
-  for (const auto& expression : expressions) {
-    expression->write(stream);
-    stream << ", ";
+bool CallExpression::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const CallExpression*>(&expression)) {
+    return *function == *other->function
+      && expressions.size() == other->expressions.size()
+      && std::equal
+        (begin(expressions), end(expressions),
+         begin(other->expressions), indirect_equal<Expression>());
   }
+  return false;
+}
+
+void CallExpression::write(ostream& stream) const {
+  stream << *function << "(";
+  for (const auto& expression : expressions)
+    stream << *expression << ", ";
   stream << ")";
 }
 

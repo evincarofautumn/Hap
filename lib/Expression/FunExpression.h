@@ -27,9 +27,11 @@ public:
   virtual std::shared_ptr<Value> eval
     (Context&, std::shared_ptr<Environment>) const final override;
   virtual bool less(const Value&) const final override;
-  virtual void write(std::ostream&) const final override;
   std::shared_ptr<Value> call
     (Context&, const std::vector<std::shared_ptr<Expression>>&) const;
+protected:
+  virtual bool equal(const Expression&) const final override;
+  virtual void write(std::ostream&) const final override;
 private:
   FunExpression(const FunExpression&) = default;
   std::string identifier;

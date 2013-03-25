@@ -7,6 +7,10 @@ using namespace std;
 
 namespace hap {
 
+bool NextStatement::equal(const Statement& statement) const {
+  return dynamic_cast<const NextStatement*>(&statement);
+}
+
 void NextStatement::exec(Context&, const shared_ptr<Environment>) const {
   throw flow::Next();
 }

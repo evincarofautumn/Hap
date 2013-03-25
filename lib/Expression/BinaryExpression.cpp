@@ -17,12 +17,17 @@ shared_ptr<Value> BinaryExpression::eval
   throw runtime_error(message.str());
 }
 
+bool BinaryExpression::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const BinaryExpression*>(&expression)) {
+    return *left == *other->left
+      && *right == *other->right;
+  }
+  return false;
+}
+
 void BinaryExpression::write(ostream& stream) const {
-  stream << '(';
-  left->write(stream);
-  stream << ' ' << operator_ << ' ';
-  right->write(stream);
-  stream << ')';
+  stream << '(' << *left << ' ' << operator_ << ' ' << *right << ')';
 }
 
 }

@@ -17,6 +17,8 @@ public:
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
      std::shared_ptr<Environment>);
+protected:
+  virtual bool equal(const Statement&) const;
   virtual void exec
     (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;

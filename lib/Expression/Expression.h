@@ -15,10 +15,12 @@ public:
   virtual ~Expression();
   virtual std::shared_ptr<Value> eval
     (Context&, std::shared_ptr<Environment>) const = 0;
+  friend bool operator==(const Expression&, const Expression&);
+  friend std::ostream& operator<<(std::ostream&, const Expression&);
+protected:
+  virtual bool equal(const Expression&) const = 0;
   virtual void write(std::ostream&) const = 0;
 };
-
-std::ostream& operator<<(std::ostream&, const Expression&);
 
 }
 

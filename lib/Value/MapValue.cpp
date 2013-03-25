@@ -1,10 +1,23 @@
 #include "MapValue.h"
 
+#include "indirect_equal.h"
+
 #include <ostream>
 
 using namespace std;
 
 namespace hap {
+
+bool MapValue::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const MapValue*>(&expression)) {
+    return values.size() == other->values.size()
+      && std::equal
+        (begin(values), end(values),
+         begin(other->values), pair_indirect_equal<Value, Value>());
+  }
+  return false;
+}
 
 MapValue::MapValue(const MapValue& other) {
   for (const auto& value : other.values)

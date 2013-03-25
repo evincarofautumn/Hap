@@ -18,8 +18,10 @@ public:
   virtual std::shared_ptr<Value> eval
     (Context&, std::shared_ptr<Environment>) const final override;
   virtual bool less(const Value&) const final override;
-  virtual void write(std::ostream&) const final override;
   bool value;
+protected:
+  virtual bool equal(const Expression&) const final override;
+  virtual void write(std::ostream&) const final override;
 };
 
 template<>

@@ -13,8 +13,10 @@ public:
     : identifier(identifier) {}
   virtual std::shared_ptr<Value> eval
     (Context&, std::shared_ptr<Environment>) const final override;
-  virtual void write(std::ostream&) const final override;
   std::string identifier;
+protected:
+  virtual bool equal(const Expression&) const final override;
+  virtual void write(std::ostream&) const final override;
 };
 
 }

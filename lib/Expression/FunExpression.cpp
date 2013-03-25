@@ -2,6 +2,7 @@
 
 #include "UndefinedValue.h"
 #include "flow.h"
+#include "indirect_equal.h"
 
 #include <iostream>
 
@@ -28,12 +29,21 @@ bool FunExpression::less(const Value& other) const {
   return Value::less(other);
 }
 
+bool FunExpression::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const FunExpression*>(&expression)) {
+    return identifier == other->identifier
+      && parameters == other->parameters
+      && *body == *other->body;
+  }
+  return false;
+}
+
 void FunExpression::write(ostream& stream) const {
   stream << "\\" << identifier << "(";
   for (const auto& parameter : parameters)
     stream << parameter << ", ";
-  stream << ") ";
-  body->write(stream);
+  stream << ") " << *body;
 }
 
 shared_ptr<Value> FunExpression::call

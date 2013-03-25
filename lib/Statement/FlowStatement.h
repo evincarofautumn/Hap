@@ -13,10 +13,11 @@ public:
     (const std::string&,
      std::shared_ptr<Expression>,
      std::shared_ptr<Statement>);
+protected:
+  virtual bool equal(const Statement&) const;
   virtual void exec
     (Context&, std::shared_ptr<Environment>) const = 0;
   virtual void write(std::ostream&) const final override;
-protected:
   std::string keyword;
   std::shared_ptr<Expression> expression;
   std::shared_ptr<Statement> statement;

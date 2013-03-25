@@ -20,8 +20,10 @@ public:
     return new ListValue(*this);
   }
   virtual bool less(const Value&) const final override;
-  virtual void write(std::ostream&) const final override;
   std::vector<std::shared_ptr<Value>> values;
+protected:
+  virtual bool equal(const Expression&) const final override;
+  virtual void write(std::ostream&) const final override;
 private:
   ListValue(const ListValue&);
 };

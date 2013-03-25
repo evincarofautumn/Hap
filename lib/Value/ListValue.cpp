@@ -1,10 +1,23 @@
 #include "ListValue.h"
 
+#include "indirect_equal.h"
+
 #include <ostream>
 
 using namespace std;
 
 namespace hap {
+
+bool ListValue::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const ListValue*>(&expression)) {
+    return values.size() == other->values.size()
+      && std::equal
+        (begin(values), end(values),
+         begin(other->values), indirect_equal<Value>());
+  }
+  return false;
+}
 
 ListValue::ListValue(const ListValue& other) {
   for (const auto& value : other.values)

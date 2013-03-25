@@ -16,10 +16,16 @@ shared_ptr<Value> UnaryExpression::eval
   throw runtime_error(message.str());
 }
 
+bool UnaryExpression::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const UnaryExpression*>(&expression)) {
+    return *this->expression == *other->expression;
+  }
+  return false;
+}
+
 void UnaryExpression::write(ostream& stream) const {
-  stream << '(' << operator_ << ' ';
-  expression->write(stream);
-  stream << ')';
+  stream << '(' << operator_ << ' ' << *expression << ')';
 }
 
 }

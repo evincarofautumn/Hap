@@ -19,6 +19,16 @@ FunStatement::FunStatement
     body(body),
     local(environment) {}
 
+bool FunStatement::equal(const Statement& statement) const {
+  if (auto other
+      = dynamic_cast<const FunStatement*>(&statement)) {
+    return identifier == other->identifier
+      && parameters == other->parameters
+      && *body == *other->body;
+  }
+  return false;
+}
+
 void FunStatement::exec
   (Context&, const shared_ptr<Environment> environment) const {
   environment->define(identifier, shared_ptr<Value>
@@ -29,8 +39,7 @@ void FunStatement::write(ostream& stream) const {
   stream << "fun " << identifier << "(";
   for (const auto& parameter : parameters)
     stream << parameter << ", ";
-  stream << ") ";
-  body->write(stream);
+  stream << ") " << *body;
 }
 
 }

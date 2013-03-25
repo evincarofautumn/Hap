@@ -23,6 +23,8 @@ public:
     return new MapValue(*this);
   }
   virtual bool less(const Value&) const final override;
+protected:
+  virtual bool equal(const Expression&) const final override;
   virtual void write(std::ostream&) const final override;
 private:
   MapValue(const MapValue&);

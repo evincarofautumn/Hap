@@ -15,6 +15,15 @@ VarStatement::VarStatement
   : identifier(identifier),
     initializer(initializer) {}
 
+bool VarStatement::equal(const Statement& statement) const {
+  if (auto other
+      = dynamic_cast<const VarStatement*>(&statement)) {
+    return identifier == other->identifier
+      && *initializer == *other->initializer;
+  }
+  return false;
+}
+
 void VarStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
   auto value(initializer->eval(context, environment));
@@ -23,10 +32,8 @@ void VarStatement::exec
 
 void VarStatement::write(ostream& stream) const {
   stream << "var " << identifier;
-  if (initializer) {
-    stream << " = ";
-    initializer->write(stream);
-  }
+  if (initializer)
+    stream << " = " << *initializer;
   stream << ";\n";
 }
 

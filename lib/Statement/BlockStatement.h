@@ -13,6 +13,8 @@ public:
   void push(std::shared_ptr<Statement> statement) {
     statements.push_back(statement);
   }
+protected:
+  virtual bool equal(const Statement&) const;
   virtual void exec
     (Context&, std::shared_ptr<Environment>) const final override;
   virtual void write(std::ostream&) const final override;

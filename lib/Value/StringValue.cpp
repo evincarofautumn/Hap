@@ -6,6 +6,14 @@ using namespace std;
 
 namespace hap {
 
+bool StringValue::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const StringValue*>(&expression)) {
+    return value == other->value;
+  }
+  return false;
+}
+
 shared_ptr<Value> StringValue::eval
   (Context&, const shared_ptr<Environment>) const {
   return shared_ptr<Value>(new StringValue(*this));

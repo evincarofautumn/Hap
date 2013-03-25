@@ -6,6 +6,14 @@ using namespace std;
 
 namespace hap {
 
+bool BooleanValue::equal(const Expression& expression) const {
+  if (auto other
+      = dynamic_cast<const BooleanValue*>(&expression)) {
+    return value == other->value;
+  }
+  return false;
+}
+
 shared_ptr<Value> BooleanValue::eval
   (Context&, const shared_ptr<Environment>) const {
   return shared_ptr<Value>(new BooleanValue(*this));
