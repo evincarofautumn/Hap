@@ -25,7 +25,7 @@ Parser::accept_statements(const shared_ptr<Environment> environment) {
   shared_ptr<Environment> local(new Environment(environment));
   while ((statement = accept_statement(local)))
     block->push(statement);
-  return static_pointer_cast<Statement>(move(block));
+  return static_pointer_cast<Statement>(block);
 }
 
 shared_ptr<Statement>
@@ -82,7 +82,7 @@ Parser::accept_expression_statement
   if (!expression)
     return shared_ptr<Statement>();
   expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new ExpressionStatement(move(expression)));
+  return shared_ptr<Statement>(new ExpressionStatement(expression));
 }
 
 shared_ptr<Statement>
@@ -109,8 +109,8 @@ Parser::accept_fun_statement(const shared_ptr<Environment> environment) {
   if (!body)
     expected("statement");
   shared_ptr<Statement> statement
-    (new FunStatement(identifier.string, parameters, move(body), environment));
-  return move(statement);
+    (new FunStatement(identifier.string, parameters, body, environment));
+  return statement;
 }
 
 shared_ptr<Statement>
@@ -139,7 +139,7 @@ Parser::accept_ret_statement(const shared_ptr<Environment> environment) {
     return shared_ptr<Statement>();
   auto expression(accept_expression(environment));
   return expression
-    ? shared_ptr<Statement>(new RetStatement(move(expression)))
+    ? shared_ptr<Statement>(new RetStatement(expression))
     : shared_ptr<Statement>();
 }
 
@@ -149,7 +149,7 @@ Parser::accept_trace_statement(const shared_ptr<Environment> environment) {
     return shared_ptr<Statement>();
   auto expression(accept_expression(environment));
   return expression
-    ? shared_ptr<Statement>(new TraceStatement(move(expression)))
+    ? shared_ptr<Statement>(new TraceStatement(expression))
     : shared_ptr<Statement>();
 }
 
@@ -165,8 +165,8 @@ Parser::accept_var_statement(const shared_ptr<Environment> environment) {
     expected("initializer");
   expect(Token::SEMICOLON);
   shared_ptr<Statement> statement
-    (new VarStatement(identifier.string, move(initializer)));
-  return move(statement);
+    (new VarStatement(identifier.string, initializer));
+  return statement;
 }
 
 shared_ptr<Statement>
