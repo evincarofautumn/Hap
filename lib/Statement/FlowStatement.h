@@ -9,6 +9,7 @@ namespace hap {
 
 class FlowStatement : public Statement {
 public:
+  FlowStatement(const std::string&, Expression*, Statement*);
   FlowStatement
     (const std::string&,
      std::shared_ptr<Expression>,
@@ -26,6 +27,7 @@ protected:
 #define FLOW_STATEMENT(NAME, KEYWORD) \
 class NAME##Statement : public FlowStatement { \
 public: \
+  NAME##Statement(Expression*, Statement*); \
   NAME##Statement \
     (std::shared_ptr<Expression>, \
      std::shared_ptr<Statement>); \

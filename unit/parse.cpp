@@ -3,6 +3,7 @@
 #include "BooleanValue.h"
 #include "CallExpression.h"
 #include "ExpressionStatement.h"
+#include "FlowStatement.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
@@ -168,6 +169,25 @@ void suite_parse() {
        "\tf();\n"
        "\tg();\n"
        "\th();\n"
+       "}\n",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new IfStatement
+        (new CallExpression
+         (new IdentifierExpression("condition"),
+          {new IdentifierExpression("x")}),
+         new BlockStatement
+          {new ExpressionStatement
+           (new CallExpression
+            (new IdentifierExpression("handler"),
+             {new IdentifierExpression("x")}))})});
+    TEST_PARSE
+      ("variable declaration with expression initializer",
+       "if (condition(x)) {\n"
+       "\thandler(x);\n"
        "}\n",
        expected);
   }

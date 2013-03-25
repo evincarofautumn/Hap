@@ -14,6 +14,14 @@ namespace hap {
 
 FlowStatement::FlowStatement
   (const string& keyword,
+   Expression* expression,
+   Statement* statement)
+  : keyword(keyword),
+    expression(expression),
+    statement(statement) {}
+
+FlowStatement::FlowStatement
+  (const string& keyword,
    const shared_ptr<Expression> expression,
    const shared_ptr<Statement> statement)
   : keyword(keyword),
@@ -35,6 +43,10 @@ void FlowStatement::write(ostream& stream) const {
 }
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
+  NAME##Statement::NAME##Statement \
+    (Expression* const expression, \
+     Statement* const statement) \
+    : FlowStatement(KEYWORD, expression, statement) {} \
   NAME##Statement::NAME##Statement \
     (const shared_ptr<Expression> expression, \
      const shared_ptr<Statement> statement) \
