@@ -9,6 +9,7 @@ namespace hap {
 
 class CallExpression : public Expression {
 public:
+  CallExpression(Expression*, std::initializer_list<Expression*>);
   CallExpression
     (std::shared_ptr<Expression>,
      std::vector<std::shared_ptr<Expression>>&&);

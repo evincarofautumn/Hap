@@ -12,6 +12,14 @@ using namespace std;
 namespace hap {
 
 CallExpression::CallExpression
+  (Expression* const function,
+   std::initializer_list<Expression*> expressions)
+  : function(function) {
+  for (const auto& expression : expressions)
+    this->expressions.push_back(shared_ptr<Expression>(expression));
+}
+
+CallExpression::CallExpression
   (shared_ptr<Expression> function,
    vector<shared_ptr<Expression>>&& expressions)
   : function(function),

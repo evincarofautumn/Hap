@@ -1,7 +1,9 @@
 #include "BinaryExpression.h"
 #include "BlockStatement.h"
 #include "BooleanValue.h"
+#include "CallExpression.h"
 #include "ExpressionStatement.h"
+#include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
 #include "binary.h"
@@ -92,6 +94,43 @@ void suite_parse() {
     TEST_PARSE
       ("simple arithmetic expression statement",
        "12+34;",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new CallExpression
+         (new IdentifierExpression("f"),
+          {}))});
+    TEST_PARSE
+      ("call expression statement",
+       "f();",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new BlockStatement
+        {new ExpressionStatement
+         (new CallExpression
+          (new IdentifierExpression("f"),
+           {})),
+        new ExpressionStatement
+         (new CallExpression
+          (new IdentifierExpression("g"),
+           {})),
+        new ExpressionStatement
+         (new CallExpression
+          (new IdentifierExpression("h"),
+           {}))}});
+    TEST_PARSE
+      ("block statement with call expression statements",
+       "{\n"
+       "\tf();\n"
+       "\tg();\n"
+       "\th();\n"
+       "}\n",
        expected);
   }
 }
