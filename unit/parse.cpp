@@ -47,10 +47,8 @@ void suite_parse() {
        expected);
   }
   {
-    shared_ptr<BlockStatement> block(new BlockStatement());
-    block->push(shared_ptr<Statement>(new BlockStatement()));
-    shared_ptr<Statement> expected
-      (static_pointer_cast<Statement>(block));
+    shared_ptr<BlockStatement> expected(new BlockStatement());
+    expected->push(shared_ptr<Statement>(new BlockStatement()));
     TEST_PARSE
       ("empty statement",
        ";",
