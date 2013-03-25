@@ -12,9 +12,9 @@ RetStatement::RetStatement(shared_ptr<Expression> expression)
   : expression(expression) {}
 
 bool RetStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const RetStatement*>(&statement)) {
-    return *expression == *other->expression;
+    return *expression == *that->expression;
   }
   return false;
 }

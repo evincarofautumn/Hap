@@ -25,16 +25,16 @@ shared_ptr<Value> FunExpression::eval
   throw runtime_error("unimplemented fun");
 }
 
-bool FunExpression::less(const Value& other) const {
-  return Value::less(other);
+bool FunExpression::less(const Value& that) const {
+  return Value::less(that);
 }
 
 bool FunExpression::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const FunExpression*>(&expression)) {
-    return identifier == other->identifier
-      && parameters == other->parameters
-      && *body == *other->body;
+    return identifier == that->identifier
+      && parameters == that->parameters
+      && *body == *that->body;
   }
   return false;
 }

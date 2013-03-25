@@ -21,11 +21,11 @@ FlowStatement::FlowStatement
     statement(statement) {}
 
 bool FlowStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const FlowStatement*>(&statement)) {
-    return keyword == other->keyword
-      && *expression == *other->expression
-      && *this->statement == *other->statement;
+    return keyword == that->keyword
+      && *expression == *that->expression
+      && *this->statement == *that->statement;
   }
   return false;
 }

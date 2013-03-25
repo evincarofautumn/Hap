@@ -18,10 +18,10 @@ shared_ptr<Value> BinaryExpression::eval
 }
 
 bool BinaryExpression::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const BinaryExpression*>(&expression)) {
-    return *left == *other->left
-      && *right == *other->right;
+    return *left == *that->left
+      && *right == *that->right;
   }
   return false;
 }

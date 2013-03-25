@@ -26,13 +26,13 @@ shared_ptr<Value>CallExpression::eval
 }
 
 bool CallExpression::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const CallExpression*>(&expression)) {
-    return *function == *other->function
-      && expressions.size() == other->expressions.size()
+    return *function == *that->function
+      && expressions.size() == that->expressions.size()
       && std::equal
         (begin(expressions), end(expressions),
-         begin(other->expressions), indirect_equal<Expression>());
+         begin(that->expressions), indirect_equal<Expression>());
   }
   return false;
 }

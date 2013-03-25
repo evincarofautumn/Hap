@@ -13,9 +13,9 @@ AtomicStatement::AtomicStatement
   : statement(statement) {}
 
 bool AtomicStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const AtomicStatement*>(&statement)) {
-    return *this->statement == *other->statement;
+    return *this->statement == *that->statement;
   }
   return false;
 }

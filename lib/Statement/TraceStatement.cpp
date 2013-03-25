@@ -11,9 +11,9 @@ TraceStatement::TraceStatement(shared_ptr<Expression> expression)
   : expression(expression) {}
 
 bool TraceStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const TraceStatement*>(&statement)) {
-    return *expression == *other->expression;
+    return *expression == *that->expression;
   }
   return false;
 }

@@ -15,8 +15,8 @@ shared_ptr<Value> UndefinedValue::eval
   return shared_ptr<Value>(new UndefinedValue(*this));
 }
 
-bool UndefinedValue::less(const Value& other) const {
-  return Value::less(other);
+bool UndefinedValue::less(const Value& that) const {
+  return Value::less(that);
 }
 
 void UndefinedValue::write(ostream& stream) const {

@@ -20,11 +20,11 @@ FunStatement::FunStatement
     local(environment) {}
 
 bool FunStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const FunStatement*>(&statement)) {
-    return identifier == other->identifier
-      && parameters == other->parameters
-      && *body == *other->body;
+    return identifier == that->identifier
+      && parameters == that->parameters
+      && *body == *that->body;
   }
   return false;
 }

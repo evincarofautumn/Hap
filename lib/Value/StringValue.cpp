@@ -7,9 +7,9 @@ using namespace std;
 namespace hap {
 
 bool StringValue::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const StringValue*>(&expression)) {
-    return value == other->value;
+    return value == that->value;
   }
   return false;
 }
@@ -19,10 +19,10 @@ shared_ptr<Value> StringValue::eval
   return shared_ptr<Value>(new StringValue(*this));
 }
 
-bool StringValue::less(const Value& other) const {
-  return Value::less(other)
-    || (other.type() == Value::STRING
-      && value < static_cast<const StringValue&>(other).value);
+bool StringValue::less(const Value& that) const {
+  return Value::less(that)
+    || (that.type() == Value::STRING
+      && value < static_cast<const StringValue&>(that).value);
 }
 
 void StringValue::write(ostream& stream) const {

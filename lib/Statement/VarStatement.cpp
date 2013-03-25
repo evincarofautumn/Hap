@@ -16,10 +16,10 @@ VarStatement::VarStatement
     initializer(initializer) {}
 
 bool VarStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const VarStatement*>(&statement)) {
-    return identifier == other->identifier
-      && *initializer == *other->initializer;
+    return identifier == that->identifier
+      && *initializer == *that->initializer;
   }
   return false;
 }

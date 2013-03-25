@@ -14,9 +14,9 @@ shared_ptr<Value> IdentifierExpression::eval
 
 bool IdentifierExpression::equal
   (const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const IdentifierExpression*>(&expression)) {
-    return identifier == other->identifier;
+    return identifier == that->identifier;
   }
   return false;
 }

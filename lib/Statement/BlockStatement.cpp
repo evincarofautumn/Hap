@@ -11,12 +11,12 @@ using namespace std;
 namespace hap {
 
 bool BlockStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const BlockStatement*>(&statement)) {
-    return statements.size() == other->statements.size()
+    return statements.size() == that->statements.size()
       && std::equal
         (begin(statements), end(statements),
-         begin(other->statements), indirect_equal<Statement>());
+         begin(that->statements), indirect_equal<Statement>());
   }
   return false;
 }

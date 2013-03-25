@@ -21,12 +21,12 @@ shared_ptr<Value> MapExpression::eval
 }
 
 bool MapExpression::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const MapExpression*>(&expression)) {
-    return pairs.size() == other->pairs.size()
+    return pairs.size() == that->pairs.size()
       && std::equal
         (begin(pairs), end(pairs),
-         begin(other->pairs),
+         begin(that->pairs),
          pair_indirect_equal<Expression, Expression>());
   }
   return false;

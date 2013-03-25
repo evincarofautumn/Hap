@@ -17,8 +17,8 @@ void Value::assert_type(Type expected) const {
   throw runtime_error(message.str());
 }
 
-bool Value::less(const Value& other) const {
-  return type() < other.type();
+bool Value::less(const Value& that) const {
+  return type() < that.type();
 }
 
 ostream& operator<<(ostream& stream, const Value::Type& type) {

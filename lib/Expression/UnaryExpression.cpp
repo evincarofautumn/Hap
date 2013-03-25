@@ -17,9 +17,9 @@ shared_ptr<Value> UnaryExpression::eval
 }
 
 bool UnaryExpression::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const UnaryExpression*>(&expression)) {
-    return *this->expression == *other->expression;
+    return *this->expression == *that->expression;
   }
   return false;
 }

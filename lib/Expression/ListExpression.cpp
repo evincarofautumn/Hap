@@ -18,12 +18,12 @@ shared_ptr<Value> ListExpression::eval
 }
 
 bool ListExpression::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const ListExpression*>(&expression)) {
-    return expressions.size() == other->expressions.size()
+    return expressions.size() == that->expressions.size()
       && std::equal
         (begin(expressions), end(expressions),
-         begin(other->expressions), indirect_equal<Expression>());
+         begin(that->expressions), indirect_equal<Expression>());
   }
   return false;
 }

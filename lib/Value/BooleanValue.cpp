@@ -7,9 +7,9 @@ using namespace std;
 namespace hap {
 
 bool BooleanValue::equal(const Expression& expression) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const BooleanValue*>(&expression)) {
-    return value == other->value;
+    return value == that->value;
   }
   return false;
 }
@@ -19,10 +19,10 @@ shared_ptr<Value> BooleanValue::eval
   return shared_ptr<Value>(new BooleanValue(*this));
 }
 
-bool BooleanValue::less(const Value& other) const {
-  return Value::less(other)
-    || (other.type() == Value::BOOLEAN
-      && value < static_cast<const BooleanValue&>(other).value);
+bool BooleanValue::less(const Value& that) const {
+  return Value::less(that)
+    || (that.type() == Value::BOOLEAN
+      && value < static_cast<const BooleanValue&>(that).value);
 }
 
 void BooleanValue::write(ostream& stream) const {

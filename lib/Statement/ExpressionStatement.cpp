@@ -13,9 +13,9 @@ ExpressionStatement::ExpressionStatement
   : expression(expression) {}
 
 bool ExpressionStatement::equal(const Statement& statement) const {
-  if (auto other
+  if (const auto that
       = dynamic_cast<const ExpressionStatement*>(&statement)) {
-    return *expression == *other->expression;
+    return *expression == *that->expression;
   }
   return false;
 }
