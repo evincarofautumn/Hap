@@ -18,10 +18,8 @@ void test_tokenize
    const vector<Token>& expected) {
   istringstream stream(input);
   const auto actual(tokenize(stream));
-  if (actual == expected) {
-    cout << "Unit test '" << name << "' passed.\n";
+  if (actual == expected)
     return;
-  }
   ostringstream message;
   message
     << file << ":" << line

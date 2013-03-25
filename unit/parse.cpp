@@ -26,10 +26,8 @@ void test_parse
     Parser parser(tokens, environment);
     actual = parser.accept_program();
   }
-  if (*actual == *expected) {
-    cout << "Unit test '" << name << "' passed.\n";
+  if (*actual == *expected)
     return;
-  }
   ostringstream message;
   message
     << file << ":" << line

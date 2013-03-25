@@ -55,8 +55,6 @@ function run_test {
     exit 1
   fi
 
-  echo "Test '$test_name' passed."
-
   set -e -E
 
 }
