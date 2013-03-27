@@ -59,6 +59,7 @@ void suite_parse() {
        "",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement{new BlockStatement()});
@@ -67,6 +68,7 @@ void suite_parse() {
        ";",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -77,6 +79,7 @@ void suite_parse() {
        "true;",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -87,6 +90,7 @@ void suite_parse() {
        "1234;",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -100,6 +104,7 @@ void suite_parse() {
        "12+34;",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -112,6 +117,7 @@ void suite_parse() {
        "f();",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -125,6 +131,7 @@ void suite_parse() {
        "f(x, y);",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -140,6 +147,7 @@ void suite_parse() {
        "(f(x, y))[z];",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -155,6 +163,7 @@ void suite_parse() {
        "f[z](x, y);",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -167,6 +176,7 @@ void suite_parse() {
        "things[index];",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -178,6 +188,7 @@ void suite_parse() {
        "var x;",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -189,6 +200,7 @@ void suite_parse() {
        "var x = 50;",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -203,6 +215,7 @@ void suite_parse() {
        "var x = y + z;",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
@@ -228,6 +241,7 @@ void suite_parse() {
        "}\n",
        expected);
   }
+
   {
     const auto expected
       (new BlockStatement
