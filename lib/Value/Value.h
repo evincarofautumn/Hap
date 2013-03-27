@@ -54,7 +54,6 @@ std::shared_ptr<typename value_traits<T>::type> atomic_eval_as
   return result;
 }
 
-
 std::ostream& operator<<(std::ostream&, const Value::Type&);
 bool operator<(const Value&, const Value&);
 

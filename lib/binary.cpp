@@ -14,6 +14,7 @@
 using namespace std;
 
 namespace hap {
+
 namespace binary {
 
 #define BINARY_OPERATOR(NAME, ASSOCIATIVITY, PRECEDENCE, IMPLEMENTATION) \
