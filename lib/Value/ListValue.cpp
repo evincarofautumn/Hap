@@ -4,6 +4,7 @@
 #include "indirect_equal.h"
 
 #include <ostream>
+#include <sstream>
 
 using namespace std;
 
@@ -25,9 +26,25 @@ ListValue::ListValue(const ListValue& that) {
     values.push_back(shared_ptr<Value>(value->copy()));
 }
 
-std::shared_ptr<Value> ListValue::at(const int index) const {
-  if (index < 0 || index >= values.size())
-    return shared_ptr<Value>(new UndefinedValue());
+const shared_ptr<Value>& ListValue::operator[](const int index) const {
+  if (index < 0 || index >= values.size()) {
+    ostringstream message;
+    message
+      << "list subscript out of range ("
+      << index << "/" << values.size() << ")";
+    throw runtime_error(message.str());
+  }
+  return values[index];
+}
+
+shared_ptr<Value>& ListValue::operator[](const int index) {
+  if (index < 0 || index >= values.size()) {
+    ostringstream message;
+    message
+      << "list subscript out of range ("
+      << index << "/" << values.size() << ")";
+    throw runtime_error(message.str());
+  }
   return values[index];
 }
 

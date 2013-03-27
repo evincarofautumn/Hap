@@ -4,6 +4,8 @@
 #include "Environment.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
+#include "ListValue.h"
+#include "SubscriptExpression.h"
 
 #include <functional>
 
@@ -228,9 +230,20 @@ shared_ptr<Value> assign
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
   if (const auto left_identifier
-      = dynamic_cast<const IdentifierExpression*>(left.get())) {
-    auto value(right->eval(context, environment));
+    = dynamic_cast<const IdentifierExpression*>(left.get())) {
+    const auto value(right->eval(context, environment));
     (*environment)[left_identifier->identifier] = value;
+    return value;
+  } else if (const auto subscript
+    = dynamic_cast<const SubscriptExpression*>(left.get())) {
+    const auto value(right->eval(context, environment));
+    const auto list
+      (eval_as<Value::LIST>
+       (subscript->expression, context, environment));
+    const auto index
+      (eval_as<Value::INTEGER>
+       (subscript->subscript, context, environment));
+    (*list)[index->value] = value;
     return value;
   }
   throw runtime_error("non-lvalue in assignment");

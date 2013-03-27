@@ -25,7 +25,7 @@ shared_ptr<Value> SubscriptExpression::eval
   (Context& context, const shared_ptr<Environment> environment) const {
   const auto value(eval_as<Value::LIST>(expression, context, environment));
   const auto index(eval_as<Value::INTEGER>(subscript, context, environment));
-  return value->at(index->value);
+  return (*value)[index->value];
 }
 
 bool SubscriptExpression::equal(const Expression& expression) const {
