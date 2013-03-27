@@ -1,0 +1,7 @@
+var list = ["a", "b", "c"];
+trace list;
+trace list[0];
+trace list[1];
+trace list[2];
+trace list[3];
+trace list[-1];

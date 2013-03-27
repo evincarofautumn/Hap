@@ -12,6 +12,7 @@
 #include "Operator.h"
 #include "RetStatement.h"
 #include "StringValue.h"
+#include "SubscriptExpression.h"
 #include "UnaryExpression.h"
 #include "UndefinedValue.h"
 #include "binary.h"
@@ -52,7 +53,13 @@ Parser::accept_value_expression(const shared_ptr<Environment> environment) {
      &Parser::accept_undefined_expression));
   if (!value)
     return shared_ptr<Expression>();
-  return accept_call_expression(environment, value);
+  decltype(value) previous;
+  do {
+    previous = value;
+    value = accept_call_suffix(environment, value);
+    value = accept_subscript_suffix(environment, value);
+  } while (value != previous);
+  return value;
 }
 
 shared_ptr<Expression>
@@ -65,7 +72,7 @@ Parser::accept_boolean_expression(const shared_ptr<Environment>) {
 }
 
 shared_ptr<Expression>
-Parser::accept_call_expression
+Parser::accept_call_suffix
   (const shared_ptr<Environment> environment,
    shared_ptr<Expression> value) {
   if (!accept(Token::LEFT_PARENTHESIS))
@@ -86,6 +93,20 @@ Parser::accept_call_expression
   expect(Token::RIGHT_PARENTHESIS);
   return shared_ptr<Expression>
     (new CallExpression(value, move(arguments)));
+}
+
+shared_ptr<Expression>
+Parser::accept_subscript_suffix
+  (const shared_ptr<Environment> environment,
+   shared_ptr<Expression> value) {
+  if (!accept(Token::LEFT_BRACKET))
+    return value;
+  const auto index(accept_expression(environment));
+  if (!index)
+    expected("expression");
+  expect(Token::RIGHT_BRACKET);
+  return shared_ptr<Expression>
+    (new SubscriptExpression(value, index));
 }
 
 shared_ptr<Expression>
@@ -217,7 +238,7 @@ void Parser::infix_subexpression
     operators.pop();
     auto value(operands.top());
     operands.pop();
-    operands.push(accept_call_expression(environment, value));
+    operands.push(accept_call_suffix(environment, value));
   } else if (accept(Token::LEFT_BRACKET)) {
     shared_ptr<ListExpression> list(new ListExpression());
     operators.push(Operator());

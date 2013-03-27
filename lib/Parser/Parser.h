@@ -16,15 +16,30 @@ class Statement;
 
 class Parser {
 private:
-  typedef std::shared_ptr<Statement> AcceptStatement
-    (std::shared_ptr<Environment>);
   typedef std::shared_ptr<Expression> AcceptExpression
     (std::shared_ptr<Environment>);
   typedef bool AcceptOperator(Operator&);
+  typedef std::shared_ptr<Statement> AcceptStatement
+    (std::shared_ptr<Environment>);
+  typedef std::shared_ptr<Expression> AcceptSuffix
+    (std::shared_ptr<Environment>, std::shared_ptr<Expression>);
 public:
   Parser(const std::vector<Token>&, std::shared_ptr<Environment>);
   std::shared_ptr<Statement> accept_program();
 private:
+  AcceptExpression
+    accept_expression,
+    accept_value_expression,
+    // ----
+    accept_boolean_expression,
+    accept_identifier_expression,
+    accept_integer_expression,
+    accept_lambda_expression,
+    accept_string_expression,
+    accept_undefined_expression;
+  AcceptOperator
+    accept_binary_operator,
+    accept_unary_operator;
   AcceptStatement
     accept_statement,
     accept_statements,
@@ -44,21 +59,9 @@ private:
     accept_while_statement,
     // ----
     accept_expression_statement;
-  AcceptExpression
-    accept_expression,
-    accept_value_expression,
-    // ----
-    accept_boolean_expression,
-    accept_identifier_expression,
-    accept_integer_expression,
-    accept_lambda_expression,
-    accept_string_expression,
-    accept_undefined_expression;
-  std::shared_ptr<Expression> accept_call_expression
-    (std::shared_ptr<Environment>, std::shared_ptr<Expression>);
-  AcceptOperator
-    accept_binary_operator,
-    accept_unary_operator;
+  AcceptSuffix
+    accept_call_suffix,
+    accept_subscript_suffix;
   template<class T, class First, class... Rest>
   typename std::shared_ptr<T> first
     (const std::shared_ptr<Environment> environment,

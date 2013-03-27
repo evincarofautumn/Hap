@@ -13,6 +13,7 @@ public:
   void push(std::shared_ptr<Value> value) {
     values.push_back(value);
   }
+  std::shared_ptr<Value> at(int) const;
   virtual Value::Type type() const final override {
     return Type::LIST;
   }

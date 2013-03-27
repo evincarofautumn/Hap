@@ -1,5 +1,6 @@
 #include "ListValue.h"
 
+#include "UndefinedValue.h"
 #include "indirect_equal.h"
 
 #include <ostream>
@@ -22,6 +23,12 @@ bool ListValue::equal(const Expression& expression) const {
 ListValue::ListValue(const ListValue& that) {
   for (const auto& value : that.values)
     values.push_back(shared_ptr<Value>(value->copy()));
+}
+
+std::shared_ptr<Value> ListValue::at(const int index) const {
+  if (index < 0 || index >= values.size())
+    return shared_ptr<Value>(new UndefinedValue());
+  return values[index];
 }
 
 bool ListValue::less(const Value& that) const {

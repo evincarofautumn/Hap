@@ -7,6 +7,7 @@
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
+#include "SubscriptExpression.h"
 #include "UndefinedValue.h"
 #include "VarStatement.h"
 #include "binary.h"
@@ -109,6 +110,21 @@ void suite_parse() {
     TEST_PARSE
       ("call expression statement",
        "f();",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new SubscriptExpression
+         (new IdentifierExpression("things"),
+          new IdentifierExpression("index")))});
+    TEST_PARSE
+      ("subscript expression statement",
+       "things[index];",
        expected);
   }
   {
