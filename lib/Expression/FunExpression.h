@@ -19,7 +19,7 @@ public:
      std::shared_ptr<Statement>,
      std::shared_ptr<Environment>);
   virtual Value::Type type() const final override {
-    return Type::FUNCTION;
+    return FUNCTION;
   }
   virtual FunExpression* copy() const final override {
     return new FunExpression(*this);

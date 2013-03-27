@@ -12,7 +12,7 @@ public:
   StringValue(const std::string& value)
     : value(value) {}
   virtual Value::Type type() const final override {
-    return Type::STRING;
+    return STRING;
   }
   virtual StringValue* copy() const final override {
     return new StringValue(*this);
@@ -27,7 +27,7 @@ protected:
 };
 
 template<>
-struct value_traits<Value::Type::STRING> {
+struct value_traits<Value::STRING> {
   typedef StringValue type;
 };
 

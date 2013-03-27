@@ -15,7 +15,7 @@ public:
   }
   std::shared_ptr<Value> at(int) const;
   virtual Value::Type type() const final override {
-    return Type::LIST;
+    return LIST;
   }
   virtual ListValue* copy() const final override {
     return new ListValue(*this);
@@ -30,7 +30,7 @@ private:
 };
 
 template<>
-struct value_traits<Value::Type::LIST> {
+struct value_traits<Value::LIST> {
   typedef ListValue type;
 };
 

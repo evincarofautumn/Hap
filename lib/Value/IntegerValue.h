@@ -10,7 +10,7 @@ public:
   IntegerValue(int value)
     : value(value) {}
   virtual Value::Type type() const final override {
-    return Type::INTEGER;
+    return INTEGER;
   }
   virtual IntegerValue* copy() const final override {
     return new IntegerValue(*this);
@@ -25,7 +25,7 @@ protected:
 };
 
 template<>
-struct value_traits<Value::Type::INTEGER> {
+struct value_traits<Value::INTEGER> {
   typedef IntegerValue type;
 };
 

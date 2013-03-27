@@ -17,7 +17,7 @@ public:
     values.insert(std::make_pair(key, value));
   }
   virtual Value::Type type() const final override {
-    return Type::MAP;
+    return MAP;
   }
   virtual MapValue* copy() const final override {
     return new MapValue(*this);
@@ -35,7 +35,7 @@ private:
 };
 
 template<>
-struct value_traits<Value::Type::MAP> {
+struct value_traits<Value::MAP> {
   typedef MapValue type;
 };
 

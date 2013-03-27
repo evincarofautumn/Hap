@@ -9,7 +9,7 @@ class UndefinedValue : public Value {
 public:
   UndefinedValue() = default;
   virtual Value::Type type() const final override {
-    return Type::UNDEFINED;
+    return UNDEFINED;
   }
   virtual UndefinedValue* copy() const final override {
     return new UndefinedValue(*this);
@@ -25,7 +25,7 @@ private:
 };
 
 template<>
-struct value_traits<Value::Type::UNDEFINED> {
+struct value_traits<Value::UNDEFINED> {
   typedef UndefinedValue type;
 };
 

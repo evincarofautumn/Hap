@@ -10,7 +10,7 @@ public:
   BooleanValue(bool value)
     : value(value) {}
   virtual Value::Type type() const final override {
-    return Type::BOOLEAN;
+    return BOOLEAN;
   }
   virtual BooleanValue* copy() const final override {
     return new BooleanValue(*this);
@@ -25,7 +25,7 @@ protected:
 };
 
 template<>
-struct value_traits<Value::Type::BOOLEAN> {
+struct value_traits<Value::BOOLEAN> {
   typedef BooleanValue type;
 };
 
