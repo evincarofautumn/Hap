@@ -25,12 +25,11 @@ CallExpression::CallExpression
   : function(function),
     expressions(expressions) {}
 
-shared_ptr<Value>CallExpression::eval
+shared_ptr<Value> CallExpression::eval
   (Context& context, const shared_ptr<Environment> environment) const {
-  auto value(function->eval(context, environment));
-  value->assert_type(Value::FUNCTION);
-  const auto function(static_pointer_cast<FunExpression>(value));
-  return function->call(context, expressions);
+  const auto value
+    (eval_as<Value::FUNCTION>(function, context, environment));
+  return value->call(context, expressions);
 }
 
 bool CallExpression::equal(const Expression& expression) const {

@@ -40,6 +40,11 @@ private:
   std::shared_ptr<Environment> environment;
 };
 
+template<>
+struct value_traits<Value::FUNCTION> {
+  typedef FunExpression type;
+};
+
 }
 
 #endif

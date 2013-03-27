@@ -108,13 +108,23 @@ void suite_parse() {
          (new IdentifierExpression("f"),
           {}))});
     TEST_PARSE
-      ("call expression statement",
+      ("call expression statement with no arguments",
        "f();",
        expected);
   }
   {
     const auto expected
       (new BlockStatement
+       {new ExpressionStatement
+        (new CallExpression
+         (new IdentifierExpression("f"),
+          {new IdentifierExpression("x"),
+           new IdentifierExpression("y")}))});
+    TEST_PARSE
+      ("call expression statement with arguments",
+       "f(x, y);",
+       expected);
+  }
   {
     const auto expected
       (new BlockStatement
