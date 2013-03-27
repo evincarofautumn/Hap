@@ -60,6 +60,8 @@ private:
     // ----
     accept_expression_statement;
   AcceptSuffix
+    accept_suffix,
+    // ----
     accept_call_suffix,
     accept_subscript_suffix;
   template<class T, class First, class... Rest>

@@ -130,6 +130,36 @@ void suite_parse() {
       (new BlockStatement
        {new ExpressionStatement
         (new SubscriptExpression
+         (new CallExpression
+          (new IdentifierExpression("f"),
+           {new IdentifierExpression("x"),
+            new IdentifierExpression("y")}),
+          new IdentifierExpression("z")))});
+    TEST_PARSE
+      ("subscripted parenthesized call expression statement",
+       "(f(x, y))[z];",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new CallExpression
+         (new SubscriptExpression
+          (new IdentifierExpression("f"),
+           new IdentifierExpression("z")),
+          {new IdentifierExpression("x"),
+            new IdentifierExpression("y")}))});
+    TEST_PARSE
+      ("called subscript expression statement",
+       "f[z](x, y);",
+       expected);
+  }
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new SubscriptExpression
          (new IdentifierExpression("things"),
           new IdentifierExpression("index")))});
     TEST_PARSE

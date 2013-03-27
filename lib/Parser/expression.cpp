@@ -53,13 +53,19 @@ Parser::accept_value_expression(const shared_ptr<Environment> environment) {
      &Parser::accept_undefined_expression));
   if (!value)
     return shared_ptr<Expression>();
-  decltype(value) previous;
+  return accept_suffix(environment, value);
+}
+
+shared_ptr<Expression> Parser::accept_suffix
+  (const shared_ptr<Environment> environment,
+   shared_ptr<Expression> current) {
+  decltype(current) previous;
   do {
-    previous = value;
-    value = accept_call_suffix(environment, value);
-    value = accept_subscript_suffix(environment, value);
-  } while (value != previous);
-  return value;
+    previous = current;
+    current = accept_call_suffix(environment, current);
+    current = accept_subscript_suffix(environment, current);
+  } while (current != previous);
+  return current;
 }
 
 shared_ptr<Expression>
@@ -238,7 +244,7 @@ void Parser::infix_subexpression
     operators.pop();
     auto value(operands.top());
     operands.pop();
-    operands.push(accept_call_suffix(environment, value));
+    operands.push(accept_suffix(environment, value));
   } else if (accept(Token::LEFT_BRACKET)) {
     shared_ptr<ListExpression> list(new ListExpression());
     operators.push(Operator());
