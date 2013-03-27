@@ -1,0 +1,9 @@
+fun make_trigger() {
+  var reference = [false];
+  when (reference[0])
+    trace "trigger";
+  ret reference;
+}
+
+var reference = make_trigger();
+reference[0] = true;
