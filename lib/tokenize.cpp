@@ -19,24 +19,24 @@ enum State {
   STRING,
 };
 
+const map<char, Token::Type> single_character_tokens {
+  make_pair('(', Token::LEFT_PARENTHESIS),
+  make_pair(')', Token::RIGHT_PARENTHESIS),
+  make_pair(',', Token::COMMA),
+  make_pair('.', Token::DOT),
+  make_pair(':', Token::COLON),
+  make_pair(';', Token::SEMICOLON),
+  make_pair('[', Token::LEFT_BRACKET),
+  make_pair(']', Token::RIGHT_BRACKET),
+  make_pair('{', Token::LEFT_BRACE),
+  make_pair('}', Token::RIGHT_BRACE),
+};
+
 vector<Token> tokenize(istream& stream) {
   vector<Token> tokens;
   string token;
   int character = 0;
   const string operator_characters = "!$%&*+-./<=>?@\\^|~";
-  map<char, Token::Type> single_character_tokens;
-  {
-    auto& _ = single_character_tokens;
-    _['('] = Token::LEFT_PARENTHESIS;
-    _[')'] = Token::RIGHT_PARENTHESIS;
-    _['{'] = Token::LEFT_BRACE;
-    _['}'] = Token::RIGHT_BRACE;
-    _['['] = Token::LEFT_BRACKET;
-    _[']'] = Token::RIGHT_BRACKET;
-    _[','] = Token::COMMA;
-    _[';'] = Token::SEMICOLON;
-    _[':'] = Token::COLON;
-  }
   State state = NORMAL;
   bool need = true;
   while (character != EOF) {

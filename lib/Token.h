@@ -9,6 +9,7 @@ namespace hap {
 struct Token {
   enum Type {
     UNDEFINED,
+    DOT,
     COLON,
     COMMA,
     IDENTIFIER,

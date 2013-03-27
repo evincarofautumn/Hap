@@ -5,6 +5,8 @@
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "ListValue.h"
+#include "MapValue.h"
+#include "StringValue.h"
 #include "SubscriptExpression.h"
 
 #include <functional>

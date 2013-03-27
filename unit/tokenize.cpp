@@ -292,7 +292,9 @@ void suite_tokenize() {
     expected.push_back(Token(Token::COMMA, ","));
     expected.push_back(Token(Token::OPERATOR, "-"));
     expected.push_back(Token(Token::SEMICOLON, ";"));
-    expected.push_back(Token(Token::OPERATOR, "..."));
+    expected.push_back(Token(Token::DOT, "."));
+    expected.push_back(Token(Token::DOT, "."));
+    expected.push_back(Token(Token::DOT, "."));
     expected.push_back(Token(Token::COLON, ":"));
     expected.push_back(Token(Token::OPERATOR, "?"));
     TEST_TOKENIZE

@@ -3,6 +3,7 @@
 #include "BinaryExpression.h"
 #include "BooleanValue.h"
 #include "CallExpression.h"
+#include "DotExpression.h"
 #include "FunExpression.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
@@ -62,6 +63,7 @@ shared_ptr<Expression> Parser::accept_suffix
   decltype(current) previous;
   do {
     previous = current;
+    current = accept_dot_suffix(environment, current);
     current = accept_call_suffix(environment, current);
     current = accept_subscript_suffix(environment, current);
   } while (current != previous);
@@ -77,8 +79,19 @@ Parser::accept_boolean_expression(const shared_ptr<Environment>) {
   return shared_ptr<Expression>();
 }
 
-shared_ptr<Expression>
-Parser::accept_call_suffix
+shared_ptr<Expression> Parser::accept_dot_suffix
+  (const shared_ptr<Environment> environment,
+   shared_ptr<Expression> value) {
+  if (!accept(Token::DOT))
+    return value;
+  Token token;
+  if (!accept(Token::IDENTIFIER, token))
+    expected("identifier");
+  return shared_ptr<Expression>
+    (new DotExpression(value, token.string));
+}
+
+shared_ptr<Expression> Parser::accept_call_suffix
   (const shared_ptr<Environment> environment,
    shared_ptr<Expression> value) {
   if (!accept(Token::LEFT_PARENTHESIS))

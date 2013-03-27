@@ -11,6 +11,8 @@ namespace hap {
 class MapValue : public Value {
 public:
   MapValue() {}
+  const std::shared_ptr<Value>& operator[](std::shared_ptr<Value>) const;
+  std::shared_ptr<Value>& operator[](std::shared_ptr<Value>);
   void insert
     (const std::shared_ptr<Value> key,
      const std::shared_ptr<Value> value) {

@@ -1,0 +1,8 @@
+var map = { a: "a", "b": "b", 0: "zero" };
+trace map.a;
+trace map["a"];
+trace map.b;
+trace map["b"];
+trace map[0];
+var zero = 0;
+trace map[zero];

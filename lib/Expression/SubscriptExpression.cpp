@@ -2,9 +2,11 @@
 
 #include "IntegerValue.h"
 #include "ListValue.h"
+#include "MapValue.h"
 #include "Value.h"
 
 #include <ostream>
+#include <sstream>
 
 using namespace std;
 
@@ -23,9 +25,17 @@ SubscriptExpression::SubscriptExpression
 
 shared_ptr<Value> SubscriptExpression::eval
   (Context& context, const shared_ptr<Environment> environment) const {
-  const auto value(eval_as<Value::LIST>(expression, context, environment));
-  const auto index(eval_as<Value::INTEGER>(subscript, context, environment));
-  return (*value)[index->value];
+  const auto value(expression->eval(context, environment));
+  const auto key(subscript->eval(context, environment));
+  if (const auto list = dynamic_cast<const ListValue*>(value.get())) {
+    key->assert_type(Value::INTEGER);
+    return (*list)[static_cast<const IntegerValue*>(key.get())->value];
+  }
+  if (const auto map = dynamic_cast<MapValue*>(value.get()))
+    return (*map)[key];
+  ostringstream message;
+  message << "expected list or map but got " << value->type();
+  throw runtime_error(message.str());
 }
 
 bool SubscriptExpression::equal(const Expression& expression) const {
