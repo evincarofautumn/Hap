@@ -239,14 +239,17 @@ shared_ptr<Value> assign
     return value;
   } else if (const auto subscript
     = dynamic_cast<const SubscriptExpression*>(left.get())) {
+    const auto container(subscript->expression->eval(context, environment));
+    const auto key(subscript->subscript->eval(context, environment));
     const auto value(right->eval(context, environment));
-    const auto list
-      (eval_as<Value::LIST>
-       (subscript->expression, context, environment));
-    const auto index
-      (eval_as<Value::INTEGER>
-       (subscript->subscript, context, environment));
-    (*list)[index->value] = value;
+    if (const auto list
+      = dynamic_cast<ListValue*>(container.get())) {
+      key->assert_type(Value::INTEGER);
+      (*list)[static_cast<const IntegerValue*>(key.get())->value] = value;
+    } else if (const auto map
+      = dynamic_cast<MapValue*>(container.get())) {
+      (*map)[key] = value;
+    }
     return value;
   }
   throw runtime_error("non-lvalue in assignment");

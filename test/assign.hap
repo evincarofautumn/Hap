@@ -8,3 +8,19 @@ x = false;
 trace x;
 x = undefined;
 trace x;
+
+var xs = [1, 2, 3];
+xs[0] = "one";
+xs[1] = "two";
+xs[2] = "three";
+trace xs[0];
+trace xs[1];
+trace xs[2];
+
+var ps = {one: 1, two: 2, three: 3};
+ps["one"] = "one";
+ps["two"] = "two";
+ps["three"] = "three";
+trace ps.one;
+trace ps.two;
+trace ps.three;
