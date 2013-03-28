@@ -1,6 +1,7 @@
 #include "binary.h"
 
 #include "BooleanValue.h"
+#include "DotExpression.h"
 #include "Environment.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
@@ -236,6 +237,12 @@ shared_ptr<Value> assign
     = dynamic_cast<const IdentifierExpression*>(left.get())) {
     const auto value(right->eval(context, environment));
     (*environment)[left_identifier->identifier] = value;
+    return value;
+  } else if (const auto dot
+    = dynamic_cast<const DotExpression*>(left.get())) {
+    const auto map(eval_as<Value::MAP>(dot->expression, context, environment));
+    const auto value(right->eval(context, environment));
+    (*map)[shared_ptr<Value>(new StringValue(dot->key))] = value;
     return value;
   } else if (const auto subscript
     = dynamic_cast<const SubscriptExpression*>(left.get())) {

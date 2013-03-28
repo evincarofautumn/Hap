@@ -3,12 +3,15 @@
 
 #include "Expression.h"
 
+#include "binary.h"
+
 #include <string>
 
 namespace hap {
 
 class DotExpression : public Expression {
 public:
+  friend Operator::Binary binary::assign;
   DotExpression(Expression*, const std::string&);
   DotExpression(std::shared_ptr<Expression>, const std::string&);
   virtual std::shared_ptr<Value> eval
