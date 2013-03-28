@@ -56,7 +56,14 @@ true</code></pre></td>
 
 [1, 2, 3, 4, 5]
 
-["this", "that", "and", "the", "other", "thing"]
+[
+  "this",
+  "that",
+  "and",
+  "the",
+  "other",
+  "thing",
+]
 
 [ [ +cos(x), -sin(x) ],
   [ +sin(x), +cos(x) ] ]
@@ -69,9 +76,20 @@ true</code></pre></td>
 
 { "one": 1, "two": 2, "three": 3 }
 
-[ { en: "one",   fr: "un"    },
-  { en: "two",   fr: "deux"  },
-  { en: "three", fr: "trois" } ]</code></pre></td>
+[
+  {
+    en: "one",
+    fr: "un",
+  },
+  {
+    en: "two",
+    fr: "deux",
+  },
+  {
+    en: "three",
+    fr: "trois",
+  },
+]</code></pre></td>
 </tr>
 </table>
 
