@@ -39,7 +39,7 @@ bool FlowStatement::equal(const Statement& statement) const {
 }
 
 void FlowStatement::write(ostream& stream) const {
-  stream << keyword << ' ' << *expression << '\n' << *statement;
+  stream << keyword << " (" << *expression << ")\n" << *statement;
 }
 
 #define FLOW_STATEMENT(NAME, KEYWORD) \
