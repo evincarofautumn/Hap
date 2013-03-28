@@ -4,6 +4,7 @@
 #include "CallExpression.h"
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
+#include "ForStatement.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
@@ -259,6 +260,32 @@ void suite_parse() {
        "if (condition(x)) {\n"
        "\thandler(x);\n"
        "}\n",
+       expected);
+  }
+
+  {
+    const auto expected
+      (new BlockStatement
+       {new ForStatement
+        (new VarStatement
+         ("x",
+          new IntegerValue(0)),
+         new BinaryExpression
+          (binary::operators["<"],
+           new IdentifierExpression("x"),
+           new IntegerValue(10)),
+         new BinaryExpression
+          (binary::operators["="],
+           new IdentifierExpression("x"),
+           new BinaryExpression
+            (binary::operators["+"],
+             new IdentifierExpression("x"),
+             new IntegerValue(1))),
+         new BlockStatement
+          {})});
+    TEST_PARSE
+      ("for loop",
+       "for (var x = 0; x < 10; x = x + 1) {}",
        expected);
   }
 }

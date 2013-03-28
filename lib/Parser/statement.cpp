@@ -5,6 +5,7 @@
 #include "Expression.h"
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
+#include "ForStatement.h"
 #include "FunExpression.h"
 #include "FunStatement.h"
 #include "LastStatement.h"
@@ -35,6 +36,7 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
      &Parser::accept_atomic_statement,
      &Parser::accept_block_statement,
      &Parser::accept_empty_statement,
+     &Parser::accept_for_statement,
      &Parser::accept_fun_statement,
      &Parser::accept_if_statement,
      &Parser::accept_last_statement,
@@ -83,6 +85,29 @@ Parser::accept_expression_statement
     return shared_ptr<Statement>();
   expect(Token::SEMICOLON);
   return shared_ptr<Statement>(new ExpressionStatement(expression));
+}
+
+shared_ptr<Statement> Parser::accept_for_statement
+  (const shared_ptr<Environment> environment) {
+  if (!accept(Token(Token::IDENTIFIER, "for")))
+    return shared_ptr<Statement>();
+  expect(Token::LEFT_PARENTHESIS);
+  const auto initializer(accept_statement(environment));
+  if (!initializer)
+    expected("for loop initializer");
+  const auto condition(accept_expression(environment));
+  if (!condition)
+    expected("for loop condition");
+  expect(Token::SEMICOLON);
+  const auto step(accept_expression(environment));
+  if (!step)
+    expected("for loop step");
+  expect(Token::RIGHT_PARENTHESIS);
+  const auto body(accept_statement(environment));
+  if (!body)
+    expected("statement");
+  return shared_ptr<Statement>
+    (new ForStatement(initializer, condition, step, body));
 }
 
 shared_ptr<Statement>
