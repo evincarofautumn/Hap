@@ -25,7 +25,7 @@ Hello, sweet world!
 Goodbye, cruel world!
 ```
 
-*Synchronous* flow control statements such as `if` and `while` are evaluated immediately. If the condition is true *when the statement is reached*, then the body is evaluated immediately, before proceeding to subsequent statements.
+*Synchronous* flow control statements such as `if`, `while`, and `for` are evaluated immediately. If the condition is true *when the statement is reached*, then the body is evaluated immediately, before proceeding to subsequent statements.
 
 *Asynchronous* flow control statements such as `when` are evaluated concurrently. The flow of control proceeds to subsequent statements immediately; only when the conditional actually becomes true is the body evaluated.
 
@@ -98,6 +98,14 @@ var NAME = EXPR;</code></pre></td>
 <td><pre><code>{ STAT... }</code></pre></td>
 <td>Synchronous. Evaluates a block of statements as a unit. Introduces a new lexical scope.</td>
 </tr>
+<tr>
+<td><pre><code>next</code></pre></td>
+<td>Jumps to the next iteration of the current loop.</td>
+</tr>
+<tr>
+<td><pre><code>last</code></pre></td>
+<td>Exits the current loop.</td>
+</tr>
 </table>
 
 ## Flow Control
@@ -132,5 +140,17 @@ var NAME = EXPR;</code></pre></td>
 <td>Synchronous</td>
 <td>Repeatedly</td>
 <td>As long as <code>EXPR</code> remains true; never if <code>EXPR</code> is already false.</td>
+</tr>
+<tr>
+<td><pre><code>for (INIT; COND; STEP) STAT</code></pre></td>
+<td>Synchronous</td>
+<td>Repeatedly</td>
+<td><p>Equivalent to:
+<pre><code>INIT;
+while (COND) {
+  STAT;
+  STEP;
+}</code></pre>
+<p>Except that variables declared in <code>INIT</code> are local to the loop, and <code>STEP</code> is evaluated even when the <code>next</code> statement is used.</td>
 </tr>
 </table>
