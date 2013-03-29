@@ -30,7 +30,8 @@ FunValue::FunValue
 
 shared_ptr<Value> FunValue::eval
   (Context&, const shared_ptr<Environment> environment) const {
-  return shared_ptr<Value>(new FunValue(*this));
+  return shared_ptr<Value>
+    (new FunValue(identifier, parameters, body, environment));
 }
 
 bool FunValue::less(const Value& that) const {
