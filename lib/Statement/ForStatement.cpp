@@ -44,15 +44,27 @@ bool ForStatement::equal(const Statement& statement) const {
 void ForStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
   const auto local(shared_ptr<Environment>(new Environment(environment)));
-  for (initializer->execute(context, local);
-    eval_as<Value::BOOLEAN>(condition, context, local)->value;
-    step->eval(context, local)) try {
+  initializer->execute(context, local);
+
+  condition:
+  if (!eval_as<Value::BOOLEAN>(condition, context, local)->value)
+    goto end;
+
+  body:
+  try {
     body->execute(context, local);
   } catch (const flow::Last&) {
-    break;
+    goto end;
   } catch (const flow::Next&) {
-    continue;
+    goto condition;
+  } catch (const flow::Redo&) {
+    goto body;
   }
+  step->eval(context, local);
+  goto condition;
+
+  end:
+  return;
 }
 
 void ForStatement::write(ostream& stream) const {

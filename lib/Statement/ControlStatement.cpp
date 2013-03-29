@@ -28,6 +28,7 @@ void NAME##Statement::exec(Context&, const shared_ptr<Environment>) const { \
 CONTROL_STATEMENT(Exit)
 CONTROL_STATEMENT(Next)
 CONTROL_STATEMENT(Last)
+CONTROL_STATEMENT(Redo)
 
 #undef CONTROL_STATEMENT
 
@@ -36,6 +37,7 @@ ostream& operator<<(ostream& stream, ControlStatement::Control control) {
   case ControlStatement::EXIT: return stream << "exit";
   case ControlStatement::NEXT: return stream << "next";
   case ControlStatement::LAST: return stream << "last";
+  case ControlStatement::REDO: return stream << "redo";
   }
 }
 

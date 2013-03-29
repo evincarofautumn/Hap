@@ -13,6 +13,7 @@ public:
     EXIT,
     LAST,
     NEXT,
+    REDO,
   };
   ControlStatement(Control control)
     : control(control) {}
@@ -37,6 +38,7 @@ public: \
 CONTROL_STATEMENT(Exit, EXIT)
 CONTROL_STATEMENT(Last, LAST)
 CONTROL_STATEMENT(Next, NEXT)
+CONTROL_STATEMENT(Redo, REDO)
 
 #undef CONTROL_STATEMENT
 

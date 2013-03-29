@@ -322,6 +322,16 @@ void suite_parse() {
   {
     const auto expected
       (new BlockStatement
+       {new RedoStatement()});
+    TEST_PARSE
+      ("redo statement",
+       "redo;",
+       expected);
+  }
+
+  {
+    const auto expected
+      (new BlockStatement
        {new ExpressionStatement
         (new FunValue
          ("lambda",

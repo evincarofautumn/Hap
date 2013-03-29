@@ -77,17 +77,24 @@ void WheneverStatement::exec
 
 void WhileStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
-  while (true) {
-    if (!eval_as<Value::BOOLEAN>(expression, context, environment)->value)
-      break;
-    try {
-      statement->execute(context, environment);
-    } catch (const flow::Last&) {
-      break;
-    } catch (const flow::Next&) {
-      continue;
-    }
+  condition:
+  if (!eval_as<Value::BOOLEAN>(expression, context, environment)->value)
+    goto end;
+
+  body:
+  try {
+    statement->execute(context, environment);
+  } catch (const flow::Last&) {
+    goto end;
+  } catch (const flow::Next&) {
+    goto condition;
+  } catch (const flow::Redo&) {
+    goto body;
   }
+  goto condition;
+
+  end:
+  return;
 }
 
 }

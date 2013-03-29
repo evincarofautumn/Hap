@@ -17,6 +17,8 @@ struct Last {};
 
 struct Next {};
 
+struct Redo {};
+
 struct Return {
   Return(std::shared_ptr<Value> value)
     : value(value) {}

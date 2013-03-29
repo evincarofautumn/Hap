@@ -1,0 +1,8 @@
+var seen_three = false;
+for (var i = 1; i < 6; i = i + 1) {
+  trace i;
+  if (i == 3 and not seen_three) {
+    seen_three = true;
+    redo;
+  }
+}

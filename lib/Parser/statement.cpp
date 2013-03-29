@@ -41,6 +41,7 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
      &Parser::accept_if_statement,
      &Parser::accept_last_statement,
      &Parser::accept_next_statement,
+     &Parser::accept_redo_statement,
      &Parser::accept_ret_statement,
      &Parser::accept_trace_statement,
      &Parser::accept_var_statement,
@@ -156,6 +157,11 @@ Parser::accept_last_statement(const shared_ptr<Environment> environment) {
 shared_ptr<Statement>
 Parser::accept_next_statement(const shared_ptr<Environment> environment) {
   return accept_control_statement<NextStatement>(environment, "next");
+}
+
+shared_ptr<Statement>
+Parser::accept_redo_statement(const shared_ptr<Environment> environment) {
+  return accept_control_statement<RedoStatement>(environment, "redo");
 }
 
 shared_ptr<Statement>
