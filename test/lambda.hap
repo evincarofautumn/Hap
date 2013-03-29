@@ -1,0 +1,15 @@
+var anonymous_add_statement = lam(x, y) {
+  ret x + y;
+};
+trace anonymous_add_statement(0, 1);
+
+var anonymous_add_expression = lam(x, y): x + y;
+trace anonymous_add_expression(1, 2);
+
+var named_add_statement = lam add_statement(x, y) {
+  ret x + y;
+};
+trace named_add_statement(2, 3);
+
+var named_add_expression = lam add_expression(x, y): x + y;
+trace named_add_expression(3, 4);
