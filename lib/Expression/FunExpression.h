@@ -15,6 +15,10 @@ class FunExpression : public Value {
 public:
   FunExpression
     (const std::string&,
+     std::initializer_list<std::string>,
+     Statement*);
+  FunExpression
+    (const std::string&,
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
      std::shared_ptr<Environment>);

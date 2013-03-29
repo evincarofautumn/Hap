@@ -47,9 +47,9 @@ Parser::accept_value_expression(const shared_ptr<Environment> environment) {
   auto value(first<Expression>
     (environment,
      &Parser::accept_boolean_expression,
+     &Parser::accept_lambda_expression,
      &Parser::accept_identifier_expression,
      &Parser::accept_integer_expression,
-     &Parser::accept_lambda_expression,
      &Parser::accept_string_expression,
      &Parser::accept_undefined_expression));
   if (!value)
@@ -150,7 +150,7 @@ Parser::accept_integer_expression(const shared_ptr<Environment> environment) {
 
 shared_ptr<Expression>
 Parser::accept_lambda_expression(const shared_ptr<Environment> environment) {
-  if (!accept(Token(Token::OPERATOR, "\\")))
+  if (!accept(Token(Token::IDENTIFIER, "lam")))
     return shared_ptr<Expression>();
   Token identifier(Token::IDENTIFIER, "lambda");
   accept(Token::IDENTIFIER, identifier);

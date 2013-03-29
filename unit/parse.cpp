@@ -284,6 +284,25 @@ void suite_parse() {
        expected);
   }
 
+
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExpressionStatement
+        (new FunExpression
+         ("lambda",
+          {"x", "y"},
+          new RetStatement
+           (new BinaryExpression
+            (binary::operators["+"],
+             new IdentifierExpression("x"),
+             new IdentifierExpression("y")))))});
+    TEST_PARSE
+      ("anonymous lambda with expression",
+       "(lam (x, y): x + y);",
+       expected);
+  }
+
   {
     const auto expected
       (new BlockStatement

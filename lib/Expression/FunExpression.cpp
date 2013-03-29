@@ -11,6 +11,14 @@ using namespace std;
 namespace hap {
 
 FunExpression::FunExpression
+  (const std::string& identifier,
+   std::initializer_list<std::string> parameters,
+   Statement* body)
+  : identifier(identifier),
+    parameters(parameters),
+    body(body) {}
+
+FunExpression::FunExpression
   (const string& identifier,
    const vector<string>& parameters,
    shared_ptr<Statement> body,
@@ -22,7 +30,7 @@ FunExpression::FunExpression
 
 shared_ptr<Value> FunExpression::eval
   (Context&, const shared_ptr<Environment> environment) const {
-  throw runtime_error("unimplemented fun");
+  return shared_ptr<Value>(new FunExpression(*this));
 }
 
 bool FunExpression::less(const Value& that) const {
@@ -40,7 +48,7 @@ bool FunExpression::equal(const Expression& expression) const {
 }
 
 void FunExpression::write(ostream& stream) const {
-  stream << "\\" << identifier << "(";
+  stream << "lam " << identifier << "(";
   for (const auto& parameter : parameters)
     stream << parameter << ", ";
   stream << ") " << *body;
