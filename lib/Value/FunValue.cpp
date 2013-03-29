@@ -1,4 +1,4 @@
-#include "FunExpression.h"
+#include "FunValue.h"
 
 #include "UndefinedValue.h"
 #include "flow.h"
@@ -10,7 +10,7 @@ using namespace std;
 
 namespace hap {
 
-FunExpression::FunExpression
+FunValue::FunValue
   (const std::string& identifier,
    std::initializer_list<std::string> parameters,
    Statement* body)
@@ -18,7 +18,7 @@ FunExpression::FunExpression
     parameters(parameters),
     body(body) {}
 
-FunExpression::FunExpression
+FunValue::FunValue
   (const string& identifier,
    const vector<string>& parameters,
    shared_ptr<Statement> body,
@@ -28,18 +28,18 @@ FunExpression::FunExpression
     body(body),
     environment(environment) {}
 
-shared_ptr<Value> FunExpression::eval
+shared_ptr<Value> FunValue::eval
   (Context&, const shared_ptr<Environment> environment) const {
-  return shared_ptr<Value>(new FunExpression(*this));
+  return shared_ptr<Value>(new FunValue(*this));
 }
 
-bool FunExpression::less(const Value& that) const {
+bool FunValue::less(const Value& that) const {
   return Value::less(that);
 }
 
-bool FunExpression::equal(const Expression& expression) const {
+bool FunValue::equal(const Expression& expression) const {
   if (const auto that
-      = dynamic_cast<const FunExpression*>(&expression)) {
+      = dynamic_cast<const FunValue*>(&expression)) {
     return identifier == that->identifier
       && parameters == that->parameters
       && *body == *that->body;
@@ -47,14 +47,14 @@ bool FunExpression::equal(const Expression& expression) const {
   return false;
 }
 
-void FunExpression::write(ostream& stream) const {
+void FunValue::write(ostream& stream) const {
   stream << "lam " << identifier << "(";
   for (const auto& parameter : parameters)
     stream << parameter << ", ";
   stream << ") " << *body;
 }
 
-shared_ptr<Value> FunExpression::call
+shared_ptr<Value> FunValue::call
   (Context& context, const vector<shared_ptr<Expression>>& arguments) const {
   shared_ptr<Environment> local(new Environment(environment));
   auto parameter(parameters.begin());

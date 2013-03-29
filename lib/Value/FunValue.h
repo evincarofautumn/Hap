@@ -11,13 +11,13 @@
 
 namespace hap {
 
-class FunExpression : public Value {
+class FunValue : public Value {
 public:
-  FunExpression
+  FunValue
     (const std::string&,
      std::initializer_list<std::string>,
      Statement*);
-  FunExpression
+  FunValue
     (const std::string&,
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
@@ -25,8 +25,8 @@ public:
   virtual Value::Type type() const final override {
     return FUNCTION;
   }
-  virtual FunExpression* copy() const final override {
-    return new FunExpression(*this);
+  virtual FunValue* copy() const final override {
+    return new FunValue(*this);
   }
   virtual std::shared_ptr<Value> eval
     (Context&, std::shared_ptr<Environment>) const final override;
@@ -37,7 +37,7 @@ protected:
   virtual bool equal(const Expression&) const final override;
   virtual void write(std::ostream&) const final override;
 private:
-  FunExpression(const FunExpression&) = default;
+  FunValue(const FunValue&) = default;
   std::string identifier;
   std::vector<std::string> parameters;
   std::shared_ptr<Statement> body;
@@ -46,7 +46,7 @@ private:
 
 template<>
 struct value_traits<Value::FUNCTION> {
-  typedef FunExpression type;
+  typedef FunValue type;
 };
 
 }

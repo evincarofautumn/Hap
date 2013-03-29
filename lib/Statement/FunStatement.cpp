@@ -1,6 +1,6 @@
 #include "FunStatement.h"
 
-#include "FunExpression.h"
+#include "FunValue.h"
 #include "UndefinedValue.h"
 
 #include <ostream>
@@ -40,7 +40,7 @@ bool FunStatement::equal(const Statement& statement) const {
 void FunStatement::exec
   (Context&, const shared_ptr<Environment> environment) const {
   environment->define(identifier, shared_ptr<Value>
-    (new FunExpression(identifier, parameters, body, local)));
+    (new FunValue(identifier, parameters, body, local)));
 }
 
 void FunStatement::write(ostream& stream) const {

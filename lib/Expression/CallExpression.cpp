@@ -1,6 +1,6 @@
 #include "CallExpression.h"
 
-#include "FunExpression.h"
+#include "FunValue.h"
 #include "Value.h"
 #include "indirect_equal.h"
 

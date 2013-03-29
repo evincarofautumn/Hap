@@ -5,8 +5,8 @@
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
 #include "ForStatement.h"
-#include "FunExpression.h"
 #include "FunStatement.h"
+#include "FunValue.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
@@ -293,7 +293,7 @@ void suite_parse() {
     const auto expected
       (new BlockStatement
        {new ExpressionStatement
-        (new FunExpression
+        (new FunValue
          ("lambda",
           {"x", "y"},
           new RetStatement

@@ -4,7 +4,7 @@
 #include "BooleanValue.h"
 #include "CallExpression.h"
 #include "DotExpression.h"
-#include "FunExpression.h"
+#include "FunValue.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "ListExpression.h"
@@ -181,7 +181,7 @@ Parser::accept_lambda_expression(const shared_ptr<Environment> environment) {
     expected("colon or block");
   }
   return shared_ptr<Expression>
-    (new FunExpression
+    (new FunValue
      (identifier.string,
       parameters,
       body,
