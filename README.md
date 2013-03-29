@@ -15,7 +15,7 @@ when (health <= 0) {
 print("Hello, sweet world!");
 
 while (true)
-  --health;
+  health = health - 1;
 ```
 
 Hap code reads much like code in other imperative languages. Its syntax is reminiscent of JavaScript. However, note the use of `when`: this is an *asynchronous conditional*. The above code prints:
