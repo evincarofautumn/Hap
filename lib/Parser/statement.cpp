@@ -81,10 +81,7 @@ Parser::accept_empty_statement(const shared_ptr<Environment>) {
 
 shared_ptr<Statement>
 Parser::accept_exit_statement(const shared_ptr<Environment> environment) {
-  if (!accept(Token(Token::IDENTIFIER, "exit")))
-    return shared_ptr<Statement>();
-  expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new ExitStatement());
+  return accept_control_statement<ExitStatement>(environment, "exit");
 }
 
 shared_ptr<Statement>
@@ -150,24 +147,17 @@ Parser::accept_fun_statement(const shared_ptr<Environment> environment) {
 
 shared_ptr<Statement>
 Parser::accept_if_statement(const shared_ptr<Environment> environment) {
-  return accept_flow_statement<IfStatement>
-    (environment, "if");
+  return accept_flow_statement<IfStatement>(environment, "if");
 }
 
 shared_ptr<Statement>
 Parser::accept_last_statement(const shared_ptr<Environment> environment) {
-  if (!accept(Token(Token::IDENTIFIER, "last")))
-    return shared_ptr<Statement>();
-  expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new LastStatement());
+  return accept_control_statement<LastStatement>(environment, "last");
 }
 
 shared_ptr<Statement>
 Parser::accept_next_statement(const shared_ptr<Environment> environment) {
-  if (!accept(Token(Token::IDENTIFIER, "next")))
-    return shared_ptr<Statement>();
-  expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new NextStatement());
+  return accept_control_statement<NextStatement>(environment, "next");
 }
 
 shared_ptr<Statement>
@@ -212,20 +202,17 @@ Parser::accept_var_statement(const shared_ptr<Environment> environment) {
 
 shared_ptr<Statement>
 Parser::accept_when_statement(const shared_ptr<Environment> environment) {
-  return accept_flow_statement<WhenStatement>
-    (environment, "when");
+  return accept_flow_statement<WhenStatement>(environment, "when");
 }
 
 shared_ptr<Statement>
 Parser::accept_whenever_statement(const shared_ptr<Environment> environment) {
-  return accept_flow_statement<WheneverStatement>
-    (environment, "whenever");
+  return accept_flow_statement<WheneverStatement>(environment, "whenever");
 }
 
 shared_ptr<Statement>
 Parser::accept_while_statement(const shared_ptr<Environment> environment) {
-  return accept_flow_statement<WhileStatement>
-    (environment, "while");
+  return accept_flow_statement<WhileStatement>(environment, "while");
 }
 
 }

@@ -115,8 +115,22 @@ private:
   template<class FlowStatement>
   std::shared_ptr<Statement>
   accept_flow_statement(std::shared_ptr<Environment>, const std::string&);
+  template<class ControlStatement>
+  std::shared_ptr<Statement>
+  accept_control_statement(std::shared_ptr<Environment>, const std::string&);
   std::shared_ptr<Environment> global;
 };
+
+template<class StatementType>
+std::shared_ptr<Statement>
+Parser::accept_control_statement
+  (const std::shared_ptr<Environment> environment,
+   const std::string& keyword) {
+  if (!accept(Token(Token::IDENTIFIER, keyword)))
+    return std::shared_ptr<Statement>();
+  expect(Token::SEMICOLON);
+  return std::shared_ptr<Statement>(new StatementType());
+}
 
 template<class StatementType>
 std::shared_ptr<Statement>
