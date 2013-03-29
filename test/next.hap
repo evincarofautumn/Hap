@@ -1,0 +1,12 @@
+for (var i = 0; i < 10; i = i + 1) {
+  if (i mod 2 == 0)
+    next;
+  trace i;
+}
+
+var i = 0;
+while ((i = i + 1) < 10) {
+  if (i mod 2 == 0)
+    next;
+  trace i;
+}

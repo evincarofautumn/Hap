@@ -56,7 +56,6 @@ void ForStatement::exec
   } catch (const flow::Last&) {
     goto end;
   } catch (const flow::Next&) {
-    goto condition;
   } catch (const flow::Redo&) {
     goto body;
   }
