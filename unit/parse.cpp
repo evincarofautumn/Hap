@@ -35,23 +35,27 @@ void test_parse
    const string& name,
    const string& input,
    const unique_ptr<Statement> expected) {
+  ostringstream message;
+  message
+    << file << ":" << line
+    << ": Unit test '" << name << "' failed:\n"
+    << "Expected:\n" << *expected;
   shared_ptr<Statement> actual;
   {
     const shared_ptr<Environment> environment(new Environment());
     istringstream stream(input);
     const auto tokens(tokenize(stream));
     Parser parser(tokens, environment);
-    actual = parser.accept_program();
+    try {
+      actual = parser.accept_program();
+      if (actual)
+        message << "Actual:\n" << *actual << '\n';
+    } catch (const exception& failure) {
+      message << "Failure:\n" << failure.what() << '\n';
+    }
   }
-  if (*actual == *expected)
+  if (actual && *actual == *expected)
     return;
-  ostringstream message;
-  message
-    << file << ":" << line
-    << ": Unit test '" << name << "' failed:\n"
-    << "Expected:\n" << *expected
-    << "Actual:\n" << *actual
-    << '\n';
   throw runtime_error(message.str());
 }
 
