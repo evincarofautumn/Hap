@@ -9,6 +9,8 @@
 #include "FunValue.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
+#include "LastStatement.h"
+#include "NextStatement.h"
 #include "Parser.h"
 #include "RetStatement.h"
 #include "SubscriptExpression.h"
@@ -288,6 +290,25 @@ void suite_parse() {
        expected);
   }
 
+  {
+    const auto expected
+      (new BlockStatement
+       {new NextStatement()});
+    TEST_PARSE
+      ("next statement",
+       "next;",
+       expected);
+  }
+
+  {
+    const auto expected
+      (new BlockStatement
+       {new LastStatement()});
+    TEST_PARSE
+      ("last statement",
+       "last;",
+       expected);
+  }
 
   {
     const auto expected

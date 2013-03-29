@@ -146,16 +146,18 @@ Parser::accept_if_statement(const shared_ptr<Environment> environment) {
 
 shared_ptr<Statement>
 Parser::accept_last_statement(const shared_ptr<Environment> environment) {
-  return accept(Token(Token::IDENTIFIER, "last"))
-    ? shared_ptr<Statement>(new LastStatement())
-    : shared_ptr<Statement>();
+  if (!accept(Token(Token::IDENTIFIER, "last")))
+    return shared_ptr<Statement>();
+  expect(Token::SEMICOLON);
+  return shared_ptr<Statement>(new LastStatement());
 }
 
 shared_ptr<Statement>
 Parser::accept_next_statement(const shared_ptr<Environment> environment) {
-  return accept(Token(Token::IDENTIFIER, "next"))
-    ? shared_ptr<Statement>(new NextStatement())
-    : shared_ptr<Statement>();
+  if (!accept(Token(Token::IDENTIFIER, "next")))
+    return shared_ptr<Statement>();
+  expect(Token::SEMICOLON);
+  return shared_ptr<Statement>(new NextStatement());
 }
 
 shared_ptr<Statement>
