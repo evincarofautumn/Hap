@@ -27,4 +27,18 @@ shared_ptr<Value>& Environment::operator[](const string& name) {
   return existing->second;
 }
 
+ostream& operator<<
+  (ostream& stream, const Environment& environment) {
+  stream << "Environment@" << &environment << "{\n";
+  for (const auto& pair : environment.variables)
+    stream << pair.first << " = " << pair.second << "\n";
+  stream << "}, parent ";
+  if (const auto parent = environment.parent.lock()) {
+    stream << *parent;
+  } else {
+    stream << "null";
+  }
+  return stream << "\n";
+}
+
 }
