@@ -14,6 +14,10 @@ class FunStatement : public Statement {
 public:
   FunStatement
     (const std::string&,
+     std::initializer_list<std::string>,
+     Statement*);
+  FunStatement
+    (const std::string&,
      const std::vector<std::string>&,
      std::shared_ptr<Statement>,
      std::shared_ptr<Environment>);

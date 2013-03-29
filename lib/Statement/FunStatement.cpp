@@ -10,6 +10,14 @@ using namespace std;
 namespace hap {
 
 FunStatement::FunStatement
+  (const std::string& identifier,
+   std::initializer_list<std::string> parameters,
+   Statement* const body)
+  : identifier(identifier),
+    parameters(parameters),
+    body(body) {}
+
+FunStatement::FunStatement
   (const string& identifier,
    const vector<string>& parameters,
    const shared_ptr<Statement> body,

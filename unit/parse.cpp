@@ -5,9 +5,12 @@
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
 #include "ForStatement.h"
+#include "FunExpression.h"
+#include "FunStatement.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
 #include "Parser.h"
+#include "RetStatement.h"
 #include "SubscriptExpression.h"
 #include "UndefinedValue.h"
 #include "VarStatement.h"
@@ -260,6 +263,24 @@ void suite_parse() {
        "if (condition(x)) {\n"
        "\thandler(x);\n"
        "}\n",
+       expected);
+  }
+
+  {
+    const auto expected
+      (new BlockStatement
+       {new FunStatement
+        ("f",
+         {"x", "y"},
+         new RetStatement
+          (new BinaryExpression
+           (binary::operators["+"],
+            new IdentifierExpression("x"),
+            new IdentifierExpression("y"))))});
+    TEST_PARSE
+      ("function declaration",
+       "fun f(x, y)\n"
+       "  ret x + y;",
        expected);
   }
 

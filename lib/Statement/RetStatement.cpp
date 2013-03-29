@@ -8,7 +8,10 @@ using namespace std;
 
 namespace hap {
 
-RetStatement::RetStatement(shared_ptr<Expression> expression)
+RetStatement::RetStatement(Expression* const expression)
+  : expression(expression) {}
+
+RetStatement::RetStatement(const shared_ptr<Expression> expression)
   : expression(expression) {}
 
 bool RetStatement::equal(const Statement& statement) const {

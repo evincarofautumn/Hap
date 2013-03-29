@@ -7,6 +7,7 @@ namespace hap {
 
 class RetStatement : public Statement {
 public:
+  RetStatement(Expression*);
   RetStatement(std::shared_ptr<Expression>);
 protected:
   virtual bool equal(const Statement&) const;
