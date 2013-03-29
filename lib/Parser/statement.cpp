@@ -163,9 +163,13 @@ Parser::accept_ret_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "ret")))
     return shared_ptr<Statement>();
   auto expression(accept_expression(environment));
-  return expression
-    ? shared_ptr<Statement>(new RetStatement(expression))
-    : shared_ptr<Statement>();
+  expect(Token::SEMICOLON);
+  if (!expression)
+    return shared_ptr<Statement>
+      (new RetStatement
+        (shared_ptr<Expression>
+          (new UndefinedValue())));
+  return shared_ptr<Statement>(new RetStatement(expression));
 }
 
 shared_ptr<Statement>
