@@ -4,7 +4,7 @@
 #include "flow.h"
 #include "indirect_equal.h"
 
-#include <iostream>
+#include <ostream>
 
 using namespace std;
 
