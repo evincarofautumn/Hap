@@ -1,0 +1,11 @@
+var health = 100;
+
+when (health <= 0) {
+  trace "Goodbye, cruel world!";
+  exit;
+}
+
+trace "Hello, sweet world!";
+
+while (true)
+  health = health - 1;

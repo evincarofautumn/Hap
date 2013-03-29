@@ -2,6 +2,7 @@
 
 #include "AtomicStatement.h"
 #include "BlockStatement.h"
+#include "ExitStatement.h"
 #include "Expression.h"
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
@@ -36,6 +37,7 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
      &Parser::accept_atomic_statement,
      &Parser::accept_block_statement,
      &Parser::accept_empty_statement,
+     &Parser::accept_exit_statement,
      &Parser::accept_for_statement,
      &Parser::accept_fun_statement,
      &Parser::accept_if_statement,
@@ -75,6 +77,14 @@ Parser::accept_empty_statement(const shared_ptr<Environment>) {
   return accept(Token::SEMICOLON)
     ? shared_ptr<Statement>(new BlockStatement())
     : shared_ptr<Statement>();
+}
+
+shared_ptr<Statement>
+Parser::accept_exit_statement(const shared_ptr<Environment> environment) {
+  if (!accept(Token(Token::IDENTIFIER, "exit")))
+    return shared_ptr<Statement>();
+  expect(Token::SEMICOLON);
+  return shared_ptr<Statement>(new ExitStatement());
 }
 
 shared_ptr<Statement>

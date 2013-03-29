@@ -9,7 +9,7 @@ var health = 100;
 
 when (health <= 0) {
   print("Goodbye, cruel world!");
-  exit();
+  exit;
 }
 
 print("Hello, sweet world!");

@@ -11,6 +11,8 @@ class Value;
 
 namespace flow {
 
+struct Exit {};
+
 struct Last {};
 
 struct Next {};

@@ -2,6 +2,7 @@
 #include "BlockStatement.h"
 #include "BooleanValue.h"
 #include "CallExpression.h"
+#include "ExitStatement.h"
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
 #include "ForStatement.h"
@@ -307,6 +308,16 @@ void suite_parse() {
     TEST_PARSE
       ("last statement",
        "last;",
+       expected);
+  }
+
+  {
+    const auto expected
+      (new BlockStatement
+       {new ExitStatement()});
+    TEST_PARSE
+      ("exit statement",
+       "exit;",
        expected);
   }
 
