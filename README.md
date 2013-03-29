@@ -117,12 +117,12 @@ var NAME = EXPR;</code></pre></td>
 <td>Synchronous. Evaluates a block of statements as a unit. Introduces a new lexical scope.</td>
 </tr>
 <tr>
-<td><pre><code>next</code></pre></td>
-<td>Jumps to the next iteration of the current loop.</td>
-</tr>
-<tr>
 <td><pre><code>last</code></pre></td>
 <td>Exits the current loop.</td>
+</tr>
+<tr>
+<td><pre><code>next</code></pre></td>
+<td>Jumps to the next iteration of the current loop, re-evaluating the loop condition.</td>
 </tr>
 </table>
 
