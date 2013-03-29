@@ -1,0 +1,31 @@
+fun multiply(x)
+  ret lam (y): x * y;
+
+trace multiply(5)(10);
+
+fun make_counter(x) {
+  ret lam() {
+    x = x + 1;
+    ret x;
+  };
+}
+
+var counter = make_counter(0);
+trace counter();
+trace counter();
+trace counter();
+
+fun make_cycler(start, end) {
+  var current = start;
+  whenever (current > end)
+    current = start;
+  ret lam() {
+    var previous = current;
+    current = current + 1;
+    ret previous;
+  };
+}
+
+var cycler = make_cycler(0, 2);
+for (var i = 0; i < 6; i = i + 1)
+  trace cycler();
