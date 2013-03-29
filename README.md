@@ -124,6 +124,10 @@ var NAME = EXPR;</code></pre></td>
 <td><pre><code>next</code></pre></td>
 <td>Jumps to the next iteration of the current loop, re-evaluating the loop condition.</td>
 </tr>
+<tr>
+<td><pre><code>redo</code></pre></td>
+<td>Redoes the current iteration of the current loop, without re-evaluating the loop condition (or step, in the case of <code>for</code>).</td>
+</tr>
 </table>
 
 ## Flow Control
