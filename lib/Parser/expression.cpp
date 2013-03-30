@@ -142,7 +142,7 @@ Parser::accept_integer_expression(const shared_ptr<Environment> environment) {
   if (!accept(Token::INTEGER, token))
     return shared_ptr<Expression>();
   istringstream stream(token.string);
-  int value = 0;
+  int32_t value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid integer");
   return shared_ptr<Expression>(new IntegerValue(value));
