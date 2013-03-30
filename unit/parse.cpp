@@ -3,6 +3,7 @@
 #include "BooleanValue.h"
 #include "CallExpression.h"
 #include "ControlStatement.h"
+#include "DelStatement.h"
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
 #include "ForStatement.h"
@@ -222,6 +223,16 @@ void suite_parse() {
     TEST_PARSE
       ("variable declaration with expression initializer",
        "var x = y + z;",
+       expected);
+  }
+
+  {
+    const auto expected
+      (new BlockStatement
+       {new DelStatement("x")});
+    TEST_PARSE
+      ("variable deletion",
+       "del x;",
        expected);
   }
 
