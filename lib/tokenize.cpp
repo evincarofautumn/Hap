@@ -17,6 +17,7 @@ enum State {
   INTEGER,
   OPERATOR,
   STRING,
+  ESCAPE,
 };
 
 const map<char, Token::Type> single_character_tokens {
@@ -128,11 +129,58 @@ vector<Token> tokenize(istream& stream) {
     case STRING:
       if (character == EOF)
         throw runtime_error("EOF in string.");
-      token += character;
-      if (character == '"') {
+      switch (character) {
+      case '"':
+        token += character;
         tokens.push_back(Token(Token::STRING, token));
         state = NORMAL;
+        break;
+      case '\\':
+        state = ESCAPE;
+        break;
+      default:
+        token += character;
       }
+      break;
+    case ESCAPE:
+      if (character == EOF)
+        throw runtime_error("EOF in string escape.");
+      switch (character) {
+      case '\\':
+        token += '\\';
+        break;
+      case '"':
+        token += '"';
+        break;
+      case 'a':
+        token += '\a';
+        break;
+      case 'b':
+        token += '\b';
+        break;
+      case 'f':
+        token += '\f';
+        break;
+      case 'n':
+        token += '\n';
+        break;
+      case 'r':
+        token += '\r';
+        break;
+      case 't':
+        token += '\t';
+        break;
+      case 'v':
+        token += '\v';
+        break;
+      default:
+        {
+          ostringstream message;
+          message << "invalid escape '\\" << character << "'";
+          throw runtime_error(message.str());
+        }
+      }
+      state = STRING;
       break;
     }
   }

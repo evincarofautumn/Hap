@@ -176,6 +176,15 @@ void suite_tokenize() {
 
   {
     vector<Token> expected;
+    expected.push_back(Token(Token::STRING, "\"\a\b\f\n\r\t\v\"\\\""));
+    TEST_TOKENIZE
+      ("string literal with escapes",
+       "\"\\a\\b\\f\\n\\r\\t\\v\\\"\\\\\"",
+       expected);
+  }
+
+  {
+    vector<Token> expected;
     expected.push_back(Token(Token::INTEGER, "0"));
     TEST_TOKENIZE
       ("zero",
