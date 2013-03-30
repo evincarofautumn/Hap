@@ -46,6 +46,7 @@ private:
     // ----
     accept_atomic_statement,
     accept_block_statement,
+    accept_del_statement,
     accept_empty_statement,
     accept_exit_statement,
     accept_for_statement,

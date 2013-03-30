@@ -3,6 +3,7 @@
 #include "AtomicStatement.h"
 #include "BlockStatement.h"
 #include "ControlStatement.h"
+#include "DelStatement.h"
 #include "Expression.h"
 #include "ExpressionStatement.h"
 #include "FlowStatement.h"
@@ -34,6 +35,7 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
     (environment,
      &Parser::accept_atomic_statement,
      &Parser::accept_block_statement,
+     &Parser::accept_del_statement,
      &Parser::accept_empty_statement,
      &Parser::accept_exit_statement,
      &Parser::accept_for_statement,
@@ -69,6 +71,16 @@ Parser::accept_block_statement(const shared_ptr<Environment> environment) {
   shared_ptr<Statement> block(accept_statements(environment));
   expect(Token::RIGHT_BRACE);
   return block;
+}
+
+shared_ptr<Statement>
+Parser::accept_del_statement(const shared_ptr<Environment> environment) {
+  if (!accept(Token(Token::IDENTIFIER, "del")))
+    return shared_ptr<Statement>();
+  Token identifier;
+  expect(Token::IDENTIFIER, identifier);
+  expect(Token::SEMICOLON);
+  return shared_ptr<Statement>(new DelStatement(identifier.string));
 }
 
 shared_ptr<Statement>

@@ -13,6 +13,7 @@ class Environment {
 public:
   Environment(std::weak_ptr<Environment> = std::weak_ptr<Environment>());
   void define(const std::string&, std::shared_ptr<Value>);
+  void undefine(const std::string&);
   std::shared_ptr<Value>& operator[](const std::string&);
   friend std::ostream& operator<<(std::ostream&, const Environment&);
 private:

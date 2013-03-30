@@ -15,12 +15,21 @@ void Environment::define(const string& name, shared_ptr<Value> value) {
   variables[name] = value;
 }
 
+void Environment::undefine(const std::string& name) {
+  const auto existing(variables.find(name));
+  if (existing == variables.end()) {
+    if (const auto held_parent = parent.lock())
+      held_parent->undefine(name);
+  } else {
+    variables.erase(existing);
+  }
+}
+
 shared_ptr<Value>& Environment::operator[](const string& name) {
   const auto existing(variables.find(name));
   if (existing == variables.end()) {
-    if (const auto held_parent = parent.lock()) {
+    if (const auto held_parent = parent.lock())
       return (*held_parent)[name];
-    }
     variables[name].reset(new UndefinedValue());
     return variables[name];
   }
