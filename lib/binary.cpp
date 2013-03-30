@@ -44,7 +44,6 @@ map<string, Operator> operators {
   BINARY_OPERATOR("xor", LEFT, XOR, xor_),
   BINARY_OPERATOR("or", LEFT, OR, or_),
   BINARY_OPERATOR("=", RIGHT, ASSIGNMENT, assign),
-  BINARY_OPERATOR(",", RIGHT, COMMA, comma),
 };
 
 #undef BINARY_OPERATOR
@@ -260,14 +259,6 @@ shared_ptr<Value> assign
     return value;
   }
   throw runtime_error("non-lvalue in assignment");
-}
-
-shared_ptr<Value> comma
-  (Context& context,
-   const shared_ptr<Environment> environment,
-   const shared_ptr<const Expression>& left,
-   const shared_ptr<const Expression>& right) {
-  throw runtime_error("unimplemented ,");
 }
 
 }

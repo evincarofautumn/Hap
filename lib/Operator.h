@@ -32,7 +32,6 @@ public:
     RIGHT
   };
   enum Precedence {
-    COMMA,
     ASSIGNMENT,
     OR,
     XOR,
