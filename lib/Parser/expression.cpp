@@ -4,6 +4,7 @@
 #include "BooleanValue.h"
 #include "CallExpression.h"
 #include "DotExpression.h"
+#include "FloatValue.h"
 #include "FunValue.h"
 #include "IdentifierExpression.h"
 #include "IntegerValue.h"
@@ -48,6 +49,7 @@ Parser::accept_value_expression(const shared_ptr<Environment> environment) {
     (environment,
      &Parser::accept_boolean_expression,
      &Parser::accept_lambda_expression,
+     &Parser::accept_float_expression,
      &Parser::accept_identifier_expression,
      &Parser::accept_integer_expression,
      &Parser::accept_string_expression,
@@ -126,6 +128,18 @@ Parser::accept_subscript_suffix
   expect(Token::RIGHT_BRACKET);
   return shared_ptr<Expression>
     (new SubscriptExpression(value, index));
+}
+
+shared_ptr<Expression>
+Parser::accept_float_expression(const shared_ptr<Environment> environment) {
+  Token token;
+  if (!accept(Token::FLOAT, token))
+    return shared_ptr<Expression>();
+  istringstream stream(token.string);
+  double value = 0;
+  if (!(stream >> value))
+    throw runtime_error("invalid float");
+  return shared_ptr<Expression>(new FloatValue(value));
 }
 
 shared_ptr<Expression>

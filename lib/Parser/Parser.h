@@ -32,6 +32,7 @@ private:
     accept_value_expression,
     // ----
     accept_boolean_expression,
+    accept_float_expression,
     accept_identifier_expression,
     accept_integer_expression,
     accept_lambda_expression,

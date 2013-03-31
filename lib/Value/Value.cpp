@@ -25,6 +25,7 @@ ostream& operator<<(ostream& stream, const Value::Type& type) {
   switch (type) {
   case Value::UNDEFINED: return stream << "undefined";
   case Value::BOOLEAN: return stream << "boolean";
+  case Value::FLOAT: return stream << "float";
   case Value::FUNCTION: return stream << "function";
   case Value::INTEGER: return stream << "integer";
   case Value::LIST: return stream << "list";

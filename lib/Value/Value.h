@@ -11,6 +11,7 @@ public:
   enum Type {
     UNDEFINED,
     BOOLEAN,
+    FLOAT,
     FUNCTION,
     INTEGER,
     LIST,
