@@ -1,13 +1,9 @@
 #include "Parser.h"
 
 #include "BinaryExpression.h"
-#include "BooleanValue.h"
 #include "CallExpression.h"
 #include "DotExpression.h"
-#include "FloatValue.h"
-#include "FunValue.h"
 #include "IdentifierExpression.h"
-#include "IntegerValue.h"
 #include "ListExpression.h"
 #include "MapExpression.h"
 #include "Operator.h"
@@ -16,11 +12,8 @@
 #include "StringValue.h"
 #include "SubscriptExpression.h"
 #include "UnaryExpression.h"
-#include "UndefinedValue.h"
 #include "binary.h"
 #include "unary.h"
-
-#include <sstream>
 
 using namespace std;
 
@@ -47,13 +40,13 @@ shared_ptr<Expression>
 Parser::accept_value_expression(const shared_ptr<Environment> environment) {
   auto value(first<Expression>
     (environment,
-     &Parser::accept_boolean_expression,
-     &Parser::accept_lambda_expression,
-     &Parser::accept_float_expression,
-     &Parser::accept_identifier_expression,
-     &Parser::accept_integer_expression,
-     &Parser::accept_string_expression,
-     &Parser::accept_undefined_expression));
+     &Parser::accept_boolean_value,
+     &Parser::accept_float_value,
+     &Parser::accept_fun_value,
+     &Parser::accept_integer_value,
+     &Parser::accept_string_value,
+     &Parser::accept_undefined_value,
+     &Parser::accept_identifier_expression));
   if (!value)
     return shared_ptr<Expression>();
   return accept_suffix(environment, value);
@@ -70,15 +63,6 @@ shared_ptr<Expression> Parser::accept_suffix
     current = accept_subscript_suffix(environment, current);
   } while (current != previous);
   return current;
-}
-
-shared_ptr<Expression>
-Parser::accept_boolean_expression(const shared_ptr<Environment>) {
-  if (accept(Token(Token::IDENTIFIER, "true")))
-    return shared_ptr<Expression>(new BooleanValue(true));
-  if (accept(Token(Token::IDENTIFIER, "false")))
-    return shared_ptr<Expression>(new BooleanValue(false));
-  return shared_ptr<Expression>();
 }
 
 shared_ptr<Expression> Parser::accept_dot_suffix
@@ -131,91 +115,11 @@ Parser::accept_subscript_suffix
 }
 
 shared_ptr<Expression>
-Parser::accept_float_expression(const shared_ptr<Environment> environment) {
-  Token token;
-  if (!accept(Token::FLOAT, token))
-    return shared_ptr<Expression>();
-  istringstream stream(token.string);
-  double value = 0;
-  if (!(stream >> value))
-    throw runtime_error("invalid float");
-  return shared_ptr<Expression>(new FloatValue(value));
-}
-
-shared_ptr<Expression>
 Parser::accept_identifier_expression(const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
     return shared_ptr<Expression>();
   return shared_ptr<Expression>(new IdentifierExpression(token.string));
-}
-
-shared_ptr<Expression>
-Parser::accept_integer_expression(const shared_ptr<Environment> environment) {
-  Token token;
-  if (!accept(Token::INTEGER, token))
-    return shared_ptr<Expression>();
-  istringstream stream(token.string);
-  int32_t value = 0;
-  if (!(stream >> value))
-    throw runtime_error("invalid integer");
-  return shared_ptr<Expression>(new IntegerValue(value));
-}
-
-shared_ptr<Expression>
-Parser::accept_lambda_expression(const shared_ptr<Environment> environment) {
-  if (!accept(Token(Token::IDENTIFIER, "lam")))
-    return shared_ptr<Expression>();
-  Token identifier(Token::IDENTIFIER, "lambda");
-  accept(Token::IDENTIFIER, identifier);
-  vector<string> parameters;
-  expect(Token::LEFT_PARENTHESIS);
-  if (!peek(Token::RIGHT_PARENTHESIS)) {
-    while (true) {
-      if (peek(Token::RIGHT_PARENTHESIS))
-        break;
-      Token parameter;
-      expect(Token::IDENTIFIER, parameter);
-      parameters.push_back(parameter.string);
-      if (!accept(Token::COMMA))
-        break;
-    }
-  }
-  expect(Token::RIGHT_PARENTHESIS);
-  shared_ptr<Statement> body;
-  if (accept(Token::COLON)) {
-    auto expression(accept_expression(environment));
-    if (!expression)
-      expected("expression");
-    body.reset(new RetStatement(expression));
-  } else if (accept(Token::LEFT_BRACE)) {
-    body = accept_statements(environment);
-    expect(Token::RIGHT_BRACE);
-  } else {
-    expected("colon or block");
-  }
-  return shared_ptr<Expression>
-    (new FunValue
-     (identifier.string,
-      parameters,
-      body,
-      environment));
-}
-
-shared_ptr<Expression>
-Parser::accept_string_expression(const shared_ptr<Environment>) {
-  Token token;
-  if (!accept(Token::STRING, token))
-    return shared_ptr<Expression>();
-  token.string.pop_back();
-  return shared_ptr<Expression>(new StringValue(token.string.substr(1)));
-}
-
-shared_ptr<Expression>
-Parser::accept_undefined_expression(const shared_ptr<Environment>) {
-  if (accept(Token(Token::IDENTIFIER, "undefined")))
-    return shared_ptr<Expression>(new UndefinedValue());
-  return shared_ptr<Expression>();
 }
 
 bool Parser::accept_binary_operator(Operator& result) {
