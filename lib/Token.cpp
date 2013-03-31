@@ -19,6 +19,7 @@ ostream& operator<<(ostream& stream, const Token::Type& type) {
   case Token::COMMA: return stream << "comma";
   case Token::IDENTIFIER: return stream << "identifier";
   case Token::INTEGER: return stream << "integer";
+  case Token::FLOAT: return stream << "float";
   case Token::LEFT_BRACE: return stream << "left brace";
   case Token::LEFT_BRACKET: return stream << "left bracket";
   case Token::LEFT_PARENTHESIS: return stream << "left parenthesis";

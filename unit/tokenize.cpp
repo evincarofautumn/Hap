@@ -212,6 +212,33 @@ void suite_tokenize() {
 
   {
     vector<Token> expected;
+    expected.push_back(Token(Token::FLOAT, "0.0"));
+    TEST_TOKENIZE
+      ("floating-point zero",
+       "0.0",
+       expected);
+  }
+
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::FLOAT, "1.0"));
+    TEST_TOKENIZE
+      ("floating-point one",
+       "1.0",
+       expected);
+  }
+
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::FLOAT, "1234.5678"));
+    TEST_TOKENIZE
+      ("floating-point number",
+       "1234.5678",
+       expected);
+  }
+
+  {
+    vector<Token> expected;
     expected.push_back(Token(Token::IDENTIFIER, "_"));
     TEST_TOKENIZE
       ("underscore",
@@ -339,6 +366,16 @@ void suite_tokenize() {
     TEST_TOKENIZE
       ("integer followed by identifier",
        "123abc",
+       expected);
+  }
+
+  {
+    vector<Token> expected;
+    expected.push_back(Token(Token::FLOAT, "0.5"));
+    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    TEST_TOKENIZE
+      ("float followed by identifier",
+       "0.5abc",
        expected);
   }
 }

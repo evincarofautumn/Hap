@@ -12,6 +12,7 @@ struct Token {
     DOT,
     COLON,
     COMMA,
+    FLOAT,
     IDENTIFIER,
     INTEGER,
     LEFT_BRACE,

@@ -13,6 +13,7 @@ namespace hap {
 enum State {
   NORMAL,
   COMMENT,
+  FLOAT,
   IDENTIFIER,
   INTEGER,
   OPERATOR,
@@ -97,6 +98,15 @@ vector<Token> tokenize(istream& stream) {
       if (character == '\n' || character == EOF)
         state = NORMAL;
       break;
+    case FLOAT:
+      if (isdigit(character)) {
+        token += character;
+      } else {
+        tokens.push_back(Token(Token::FLOAT, token));
+        state = NORMAL;
+        need = false;
+      }
+      break;
     case IDENTIFIER:
       if (character == '_'
           || isalpha(character)
@@ -111,6 +121,9 @@ vector<Token> tokenize(istream& stream) {
     case INTEGER:
       if (isdigit(character)) {
         token += character;
+      } else if (character == '.') {
+        token += character;
+        state = FLOAT;
       } else {
         tokens.push_back(Token(Token::INTEGER, token));
         state = NORMAL;
