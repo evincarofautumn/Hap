@@ -76,8 +76,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::LEFT_PARENTHESIS, "("));
+    vector<Token> expected{Token(Token::LEFT_PARENTHESIS, "(")};
     TEST_TOKENIZE
       ("left parenthesis",
        "(",
@@ -85,8 +84,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::RIGHT_PARENTHESIS, ")"));
+    vector<Token> expected{Token(Token::RIGHT_PARENTHESIS, ")")};
     TEST_TOKENIZE
       ("right parenthesis",
        ")",
@@ -94,8 +92,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::LEFT_BRACE, "{"));
+    vector<Token> expected{Token(Token::LEFT_BRACE, "{")};
     TEST_TOKENIZE
       ("left brace",
        "{",
@@ -103,8 +100,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::RIGHT_BRACE, "}"));
+    vector<Token> expected{Token(Token::RIGHT_BRACE, "}")};
     TEST_TOKENIZE
       ("right brace",
        "}",
@@ -112,8 +108,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::LEFT_BRACKET, "["));
+    vector<Token> expected{Token(Token::LEFT_BRACKET, "[")};
     TEST_TOKENIZE
       ("left bracket",
        "[",
@@ -121,8 +116,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::RIGHT_BRACKET, "]"));
+    vector<Token> expected{Token(Token::RIGHT_BRACKET, "]")};
     TEST_TOKENIZE
       ("right bracket",
        "]",
@@ -130,8 +124,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::COMMA, ","));
+    vector<Token> expected{Token(Token::COMMA, ",")};
     TEST_TOKENIZE
       ("comma",
        ",",
@@ -139,8 +132,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::SEMICOLON, ";"));
+    vector<Token> expected{Token(Token::SEMICOLON, ";")};
     TEST_TOKENIZE
       ("semicolon",
        ";",
@@ -148,8 +140,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::COLON, ":"));
+    vector<Token> expected{Token(Token::COLON, ":")};
     TEST_TOKENIZE
       ("colon",
        ":",
@@ -157,8 +148,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::STRING, "\"\""));
+    vector<Token> expected{Token(Token::STRING, "\"\"")};
     TEST_TOKENIZE
       ("empty string literal",
        "\"\"",
@@ -166,8 +156,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::STRING, "\"test\""));
+    vector<Token> expected{Token(Token::STRING, "\"test\"")};
     TEST_TOKENIZE
       ("string literal",
        "\"test\"",
@@ -175,8 +164,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::STRING, "\"\a\b\f\n\r\t\v\"\\\""));
+    vector<Token> expected{Token(Token::STRING, "\"\a\b\f\n\r\t\v\"\\\"")};
     TEST_TOKENIZE
       ("string literal with escapes",
        "\"\\a\\b\\f\\n\\r\\t\\v\\\"\\\\\"",
@@ -184,8 +172,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::INTEGER, "0"));
+    vector<Token> expected{Token(Token::INTEGER, "0")};
     TEST_TOKENIZE
       ("zero",
        "0",
@@ -193,8 +180,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::INTEGER, "1"));
+    vector<Token> expected{Token(Token::INTEGER, "1")};
     TEST_TOKENIZE
       ("single-digit integer",
        "1",
@@ -202,8 +188,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::INTEGER, "12345"));
+    vector<Token> expected{Token(Token::INTEGER, "12345")};
     TEST_TOKENIZE
       ("multiple-digit integer",
        "12345",
@@ -211,8 +196,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::FLOAT, "0.0"));
+    vector<Token> expected{Token(Token::FLOAT, "0.0")};
     TEST_TOKENIZE
       ("floating-point zero",
        "0.0",
@@ -220,8 +204,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::FLOAT, "1.0"));
+    vector<Token> expected{Token(Token::FLOAT, "1.0")};
     TEST_TOKENIZE
       ("floating-point one",
        "1.0",
@@ -229,8 +212,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::FLOAT, "1234.5678"));
+    vector<Token> expected{Token(Token::FLOAT, "1234.5678")};
     TEST_TOKENIZE
       ("floating-point number",
        "1234.5678",
@@ -238,8 +220,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "_"));
+    vector<Token> expected{Token(Token::IDENTIFIER, "_")};
     TEST_TOKENIZE
       ("underscore",
        "_",
@@ -247,8 +228,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    vector<Token> expected{Token(Token::IDENTIFIER, "abc")};
     TEST_TOKENIZE
       ("lowercase alphabetic identifier",
        "abc",
@@ -256,8 +236,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "abc123"));
+    vector<Token> expected{Token(Token::IDENTIFIER, "abc123")};
     TEST_TOKENIZE
       ("lowercase alphanumeric identifier",
        "abc123",
@@ -265,8 +244,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "Abc123"));
+    vector<Token> expected{Token(Token::IDENTIFIER, "Abc123")};
     TEST_TOKENIZE
       ("mixed-case alphanumeric identifier",
        "Abc123",
@@ -274,8 +252,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "abc_123"));
+    vector<Token> expected{Token(Token::IDENTIFIER, "abc_123")};
     TEST_TOKENIZE
       ("alphanumeric identifier with underscores",
        "abc_123",
@@ -283,12 +260,12 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "abc"));
-    expected.push_back(Token(Token::IDENTIFIER, "_123"));
-    expected.push_back(Token(Token::IDENTIFIER, "abc_123"));
-    expected.push_back(Token(Token::IDENTIFIER, "Abc123"));
-    expected.push_back(Token(Token::IDENTIFIER, "ABC"));
+    vector<Token> expected
+      {Token(Token::IDENTIFIER, "abc"),
+       Token(Token::IDENTIFIER, "_123"),
+       Token(Token::IDENTIFIER, "abc_123"),
+       Token(Token::IDENTIFIER, "Abc123"),
+       Token(Token::IDENTIFIER, "ABC")};
     TEST_TOKENIZE
       ("whitespace-separated identifiers",
        "abc _123\tabc_123\n Abc123\n\tABC",
@@ -296,8 +273,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::OPERATOR, "+"));
+    vector<Token> expected{Token(Token::OPERATOR, "+")};
     TEST_TOKENIZE
       ("single-character operator",
        "+",
@@ -305,8 +281,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::OPERATOR, "!!!"));
+    vector<Token> expected{Token(Token::OPERATOR, "!!!")};
     TEST_TOKENIZE
       ("multi-character operator",
        "!!!",
@@ -314,8 +289,7 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::OPERATOR, "!$%&*+-./<=>?@\\^|~"));
+    vector<Token> expected{Token(Token::OPERATOR, "!$%&*+-./<=>?@\\^|~")};
     TEST_TOKENIZE
       ("all operator characters",
        "!$%&*+-./<=>?@\\^|~",
@@ -323,16 +297,16 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::OPERATOR, "+"));
-    expected.push_back(Token(Token::COMMA, ","));
-    expected.push_back(Token(Token::OPERATOR, "-"));
-    expected.push_back(Token(Token::SEMICOLON, ";"));
-    expected.push_back(Token(Token::DOT, "."));
-    expected.push_back(Token(Token::DOT, "."));
-    expected.push_back(Token(Token::DOT, "."));
-    expected.push_back(Token(Token::COLON, ":"));
-    expected.push_back(Token(Token::OPERATOR, "?"));
+    vector<Token> expected
+      {Token(Token::OPERATOR, "+"),
+       Token(Token::COMMA, ","),
+       Token(Token::OPERATOR, "-"),
+       Token(Token::SEMICOLON, ";"),
+       Token(Token::DOT, "."),
+       Token(Token::DOT, "."),
+       Token(Token::DOT, "."),
+       Token(Token::COLON, ":"),
+       Token(Token::OPERATOR, "?")};
     TEST_TOKENIZE
       ("mixed operators and single-character tokens",
        "+,-;...:?",
@@ -340,9 +314,9 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::IDENTIFIER, "abc"));
-    expected.push_back(Token(Token::STRING, "\"abc\""));
+    vector<Token> expected
+      {Token(Token::IDENTIFIER, "abc"),
+       Token(Token::STRING, "\"abc\"")};
     TEST_TOKENIZE
       ("identifier followed by string literal",
        "abc\"abc\"",
@@ -350,9 +324,9 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::STRING, "\"abc\""));
-    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    vector<Token> expected
+      {Token(Token::STRING, "\"abc\""),
+       Token(Token::IDENTIFIER, "abc")};
     TEST_TOKENIZE
       ("string literal followed by identifier",
        "\"abc\"abc",
@@ -360,9 +334,9 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::INTEGER, "123"));
-    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    vector<Token> expected
+      {Token(Token::INTEGER, "123"),
+       Token(Token::IDENTIFIER, "abc")};
     TEST_TOKENIZE
       ("integer followed by identifier",
        "123abc",
@@ -370,9 +344,9 @@ void suite_tokenize() {
   }
 
   {
-    vector<Token> expected;
-    expected.push_back(Token(Token::FLOAT, "0.5"));
-    expected.push_back(Token(Token::IDENTIFIER, "abc"));
+    vector<Token> expected
+      {Token(Token::FLOAT, "0.5"),
+       Token(Token::IDENTIFIER, "abc")};
     TEST_TOKENIZE
       ("float followed by identifier",
        "0.5abc",
