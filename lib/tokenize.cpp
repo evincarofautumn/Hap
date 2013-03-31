@@ -17,7 +17,7 @@ enum State {
   INTEGER,
   OPERATOR,
   STRING,
-  ESCAPE,
+  STRING_ESCAPE,
 };
 
 const map<char, Token::Type> single_character_tokens {
@@ -136,13 +136,13 @@ vector<Token> tokenize(istream& stream) {
         state = NORMAL;
         break;
       case '\\':
-        state = ESCAPE;
+        state = STRING_ESCAPE;
         break;
       default:
         token += character;
       }
       break;
-    case ESCAPE:
+    case STRING_ESCAPE:
       if (character == EOF)
         throw runtime_error("EOF in string escape.");
       switch (character) {
