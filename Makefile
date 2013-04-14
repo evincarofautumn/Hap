@@ -84,3 +84,4 @@ endef
 
 $(call DEPENDS_ON_MAKEFILE,hap)
 $(foreach OBJECT,$(HAP_OBJECTS),$(eval $(call DEPENDS_ON_MAKEFILE,$(OBJECT))))
+$(foreach OBJECT,$(UNIT_OBJECTS),$(eval $(call DEPENDS_ON_MAKEFILE,$(OBJECT))))
