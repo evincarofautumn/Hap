@@ -1,0 +1,131 @@
+program ::= statement*
+
+statement ::= atomic-statement
+            | block-statement
+            | del-statement
+            | empty-statement
+            | exit-statement
+            | for-statement
+            | fun-statement
+            | if-statement
+            | last-statement
+            | next-statement
+            | redo-statement
+            | ret-statement
+            | trace-statement
+            | var-statement
+            | when-statement
+            | whenever-statement
+            | while-statement
+            | expression-statement
+
+atomic-statement ::= "atomic" statement ";"
+
+block-statement ::= "{" statement* "}"
+
+del-statement ::= "del" identifier ";"
+
+empty-statement ::= ";"
+
+exit-statement ::= "exit" ";"
+
+for-statement ::= "for"
+                  "("
+                  statement
+                  expression
+                  ";"
+                  expression
+                  ")"
+                  statement
+
+fun-statement ::= "fun"
+                  identifier
+                  "("
+                  list(identifier)
+                  ")"
+                  statement
+
+if-statement ::= "if" "(" expression ")" statement
+
+last-statement ::= "last" ";"
+
+next-statement ::= "next" ";"
+
+redo-statement ::= "redo" ";"
+
+ret-statement ::= "ret" expression? ";"
+
+trace-statement ::= "trace" expression ";"
+
+var-statement ::= "var" identifier ("=" expression)? ";"
+
+when-statement ::= "when" "(" expression ")" statement
+
+whenever-statement ::= "whenever" "(" expression ")" statement
+
+while-statement ::= "while" "(" expression ")" statement
+
+expression-statement ::= expression ";"
+
+expression ::= value
+             | expression suffix*
+             | expression binary-operator expression
+             | unary-operator expression
+
+value ::= boolean-value
+        | float-value
+        | fun-value
+        | integer-value
+        | string-value
+        | undefined-value
+        | identifier-expression
+
+boolean-value ::= "false" | "true"
+
+float-value ::= ...
+
+fun-value ::= "lam" identifier? "(" list(identifier) ")"
+              (":" expression | "{" statement* "}")
+
+integer-value ::= ...
+
+string-value ::= ...
+
+undefined-value ::= "undefined"
+
+identifier-expression ::= identifier
+
+suffix ::= call-suffix
+         | dot-suffix
+         | subscript-suffix
+
+call-suffix ::= "(" list(expression) ")"
+
+dot-suffix ::= "." identifier
+
+subscript-suffix ::= "[" expression "]"
+
+unary-operator ::= "+"
+                 | "-"
+                 | "not"
+                 
+binary-operator ::= "*"
+                  | "/"
+                  | "mod"
+                  | "+"
+                  | "-"
+                  | "<<"
+                  | ">>"
+                  | "<"
+                  | ">="
+                  | ">"
+                  | "<="
+                  | "=="
+                  | "<>"
+                  | "and"
+                  | "xor"
+                  | "or"
+                  | "="
+                  | ","
+
+list(x) ::= (x ("," x)*)?
