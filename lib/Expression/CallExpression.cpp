@@ -2,7 +2,7 @@
 
 #include "FunValue.h"
 #include "Value.h"
-#include "indirect_equal.h"
+#include "indirect_compare.h"
 
 #include <algorithm>
 #include <ostream>

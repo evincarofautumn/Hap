@@ -2,7 +2,7 @@
 
 #include "UndefinedValue.h"
 #include "flow.h"
-#include "indirect_equal.h"
+#include "indirect_compare.h"
 
 #include <ostream>
 

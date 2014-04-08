@@ -1,7 +1,7 @@
 #include "MapValue.h"
 
 #include "UndefinedValue.h"
-#include "indirect_equal.h"
+#include "indirect_compare.h"
 
 #include <ostream>
 

@@ -1,7 +1,7 @@
 #include "ListExpression.h"
 
 #include "ListValue.h"
-#include "indirect_equal.h"
+#include "indirect_compare.h"
 
 #include <ostream>
 
