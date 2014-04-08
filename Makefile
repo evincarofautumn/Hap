@@ -8,13 +8,14 @@ CXXFLAGS+=-std=c++11 -stdlib=libc++ $(INCFLAGS) $(WARNFLAGS)
 
 CPPFLAGS+=-MD -MP
 
-HAP=./bin/hap
+BIN=./bin
+HAP=$(BIN)/hap
 HAP_SOURCE_PATHS=hap $(LIB_PATHS)
 HAP_SOURCES=$(wildcard $(addsuffix /*.cpp,$(HAP_SOURCE_PATHS)))
 HAP_OBJECTS=$(HAP_SOURCES:%.cpp=%.o)
 HAP_DEPS=$(HAP_SOURCES:%.cpp=%.d)
 
-UNIT=./bin/hap-unit
+UNIT=$(BIN)/hap-unit
 UNIT_SOURCE_PATHS=unit $(LIB_PATHS)
 UNIT_SOURCES=$(wildcard $(addsuffix /*.cpp,$(UNIT_SOURCE_PATHS)))
 UNIT_OBJECTS=$(UNIT_SOURCES:%.cpp=%.o)
@@ -48,6 +49,7 @@ clean-test :
 build : $(HAP)
 
 $(HAP) : $(HAP_OBJECTS)
+	mkdir -p $(BIN)
 	$(CXX) -o $@ $(LDFLAGS) $(HAP_OBJECTS)
 
 .PHONY : unit-test
