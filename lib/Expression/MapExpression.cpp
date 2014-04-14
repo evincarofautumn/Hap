@@ -11,7 +11,7 @@ namespace hap {
 
 shared_ptr<Value> MapExpression::eval
   (Context& context, const shared_ptr<Environment> environment) const {
-  shared_ptr<MapValue> map(new MapValue());
+  const auto map = make_shared<MapValue>();
   for (const auto& pair : pairs) {
     auto key(pair.first->eval(context, environment));
     auto value(pair.second->eval(context, environment));

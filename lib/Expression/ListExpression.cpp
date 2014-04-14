@@ -11,7 +11,7 @@ namespace hap {
 
 shared_ptr<Value> ListExpression::eval
   (Context& context, const shared_ptr<Environment> environment) const {
-  shared_ptr<ListValue> list(new ListValue());
+  const auto list = make_shared<ListValue>();
   for (const auto& expression : expressions)
     list->push(expression->eval(context, environment));
   return static_pointer_cast<Value>(list);

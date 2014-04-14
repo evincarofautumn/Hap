@@ -58,9 +58,9 @@ shared_ptr<Value> integer_arithmetic
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  return shared_ptr<Value>(new IntegerValue(function
+  return make_shared<IntegerValue>(function
     (eval_as<Value::INTEGER>(left, context, environment)->value,
-     eval_as<Value::INTEGER>(right, context, environment)->value)));
+     eval_as<Value::INTEGER>(right, context, environment)->value));
 }
 
 template
@@ -91,13 +91,13 @@ shared_ptr<Value> arithmetic
   case Value::INTEGER:
     switch (right_type) {
     case Value::INTEGER:
-      return shared_ptr<Value>(new IntegerType(integer_function
+      return make_shared<IntegerType>(integer_function
         (static_cast<const IntegerValue*>(left_value.get())->value,
-         static_cast<const IntegerValue*>(right_value.get())->value)));
+         static_cast<const IntegerValue*>(right_value.get())->value));
     case Value::FLOAT:
-      return shared_ptr<Value>(new FloatType(float_function
+      return make_shared<FloatType>(float_function
         (double(static_cast<const IntegerValue*>(left_value.get())->value),
-         static_cast<const FloatValue*>(right_value.get())->value)));
+         static_cast<const FloatValue*>(right_value.get())->value));
     default:
       fail(right_type);
     }
@@ -105,13 +105,13 @@ shared_ptr<Value> arithmetic
   case Value::FLOAT:
     switch (right_type) {
     case Value::INTEGER:
-      return shared_ptr<Value>(new FloatType(float_function
+      return make_shared<FloatType>(float_function
         (static_cast<const FloatValue*>(left_value.get())->value,
-         double(static_cast<const IntegerValue*>(right_value.get())->value))));
+         double(static_cast<const IntegerValue*>(right_value.get())->value)));
     case Value::FLOAT:
-      return shared_ptr<Value>(new FloatType(float_function
+      return make_shared<FloatType>(float_function
         (static_cast<const FloatValue*>(left_value.get())->value,
-         static_cast<const FloatValue*>(right_value.get())->value)));
+         static_cast<const FloatValue*>(right_value.get())->value));
     default:
       fail(right_type);
     }
@@ -283,10 +283,9 @@ shared_ptr<Value> and_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  return shared_ptr<Value>
-    (new BooleanValue
-     (eval_as<Value::BOOLEAN>(left, context, environment)->value
-      && eval_as<Value::BOOLEAN>(right, context, environment)->value));
+  return make_shared<BooleanValue>
+    (eval_as<Value::BOOLEAN>(left, context, environment)->value
+     && eval_as<Value::BOOLEAN>(right, context, environment)->value);
 }
 
 shared_ptr<Value> xor_
@@ -294,10 +293,9 @@ shared_ptr<Value> xor_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  return shared_ptr<Value>
-    (new BooleanValue
-     (eval_as<Value::BOOLEAN>(left, context, environment)->value
-      != eval_as<Value::BOOLEAN>(right, context, environment)->value));
+  return make_shared<BooleanValue>
+    (eval_as<Value::BOOLEAN>(left, context, environment)->value
+     != eval_as<Value::BOOLEAN>(right, context, environment)->value);
 }
 
 shared_ptr<Value> or_
@@ -305,10 +303,9 @@ shared_ptr<Value> or_
    const shared_ptr<Environment> environment,
    const shared_ptr<const Expression>& left,
    const shared_ptr<const Expression>& right) {
-  return shared_ptr<Value>
-    (new BooleanValue
-     (eval_as<Value::BOOLEAN>(left, context, environment)->value
-      || eval_as<Value::BOOLEAN>(right, context, environment)->value));
+  return make_shared<BooleanValue>
+    (eval_as<Value::BOOLEAN>(left, context, environment)->value
+     || eval_as<Value::BOOLEAN>(right, context, environment)->value);
 }
 
 shared_ptr<Value> assign
@@ -325,7 +322,7 @@ shared_ptr<Value> assign
     = dynamic_cast<const DotExpression*>(left.get())) {
     const auto map(eval_as<Value::MAP>(dot->expression, context, environment));
     const auto value(right->eval(context, environment));
-    (*map)[shared_ptr<Value>(new StringValue(dot->key))] = value;
+    (*map)[make_shared<StringValue>(dot->key)] = value;
     return value;
   } else if (const auto subscript
     = dynamic_cast<const SubscriptExpression*>(left.get())) {

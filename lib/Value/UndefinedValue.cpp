@@ -12,7 +12,7 @@ bool UndefinedValue::equal(const Expression& expression) const {
 
 shared_ptr<Value> UndefinedValue::eval
   (Context&, const shared_ptr<Environment>) const {
-  return shared_ptr<Value>(new UndefinedValue(*this));
+  return make_shared<UndefinedValue>(*this);
 }
 
 bool UndefinedValue::less(const Value& that) const {

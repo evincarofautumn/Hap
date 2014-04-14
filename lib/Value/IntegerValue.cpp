@@ -16,7 +16,7 @@ bool IntegerValue::equal(const Expression& expression) const {
 
 shared_ptr<Value> IntegerValue::eval
   (Context&, const shared_ptr<Environment>) const {
-  return shared_ptr<Value>(new IntegerValue(*this));
+  return make_shared<IntegerValue>(*this);
 }
 
 bool IntegerValue::less(const Value& that) const {

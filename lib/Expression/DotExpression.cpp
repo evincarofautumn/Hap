@@ -24,7 +24,7 @@ DotExpression::DotExpression
 shared_ptr<Value> DotExpression::eval
   (Context& context, const shared_ptr<Environment> environment) const {
   const auto map(eval_as<Value::MAP>(expression, context, environment));
-  return (*map)[shared_ptr<Value>(new StringValue(key))];
+  return (*map)[make_shared<StringValue>(key)];
 }
 
 bool DotExpression::equal(const Expression& expression) const {

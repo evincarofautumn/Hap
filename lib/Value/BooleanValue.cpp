@@ -16,7 +16,7 @@ bool BooleanValue::equal(const Expression& expression) const {
 
 shared_ptr<Value> BooleanValue::eval
   (Context&, const shared_ptr<Environment>) const {
-  return shared_ptr<Value>(new BooleanValue(*this));
+  return make_shared<BooleanValue>(*this);
 }
 
 bool BooleanValue::less(const Value& that) const {

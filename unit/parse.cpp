@@ -44,7 +44,7 @@ void test_parse
     << "Expected:\n" << *expected;
   shared_ptr<Statement> actual;
   {
-    const shared_ptr<Environment> environment(new Environment());
+    const auto environment = make_shared<Environment>();
     istringstream stream(input);
     const auto tokens(tokenize(stream));
     Parser parser(tokens, environment);

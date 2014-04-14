@@ -32,7 +32,7 @@ shared_ptr<Expression> Parser::accept_expression
     infix_expression(environment, operators, operands);
     return operands.top();
   } catch (const not_an_expression&) {
-    return shared_ptr<Expression>();
+    return nullptr;
   }
 }
 
@@ -48,7 +48,7 @@ Parser::accept_value_expression(const shared_ptr<Environment> environment) {
      &Parser::accept_undefined_value,
      &Parser::accept_identifier_expression));
   if (!value)
-    return shared_ptr<Expression>();
+    return nullptr;
   return accept_suffix(environment, value);
 }
 
@@ -73,8 +73,7 @@ shared_ptr<Expression> Parser::accept_dot_suffix
   Token token;
   if (!accept(Token::IDENTIFIER, token))
     expected("identifier");
-  return shared_ptr<Expression>
-    (new DotExpression(value, token.string));
+  return make_shared<DotExpression>(value, token.string);
 }
 
 shared_ptr<Expression> Parser::accept_call_suffix
@@ -96,8 +95,7 @@ shared_ptr<Expression> Parser::accept_call_suffix
     }
   }
   expect(Token::RIGHT_PARENTHESIS);
-  return shared_ptr<Expression>
-    (new CallExpression(value, move(arguments)));
+  return make_shared<CallExpression>(value, move(arguments));
 }
 
 shared_ptr<Expression>
@@ -110,16 +108,15 @@ Parser::accept_subscript_suffix
   if (!index)
     expected("expression");
   expect(Token::RIGHT_BRACKET);
-  return shared_ptr<Expression>
-    (new SubscriptExpression(value, index));
+  return make_shared<SubscriptExpression>(value, index);
 }
 
 shared_ptr<Expression>
 Parser::accept_identifier_expression(const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::IDENTIFIER, token))
-    return shared_ptr<Expression>();
-  return shared_ptr<Expression>(new IdentifierExpression(token.string));
+    return nullptr;
+  return make_shared<IdentifierExpression>(token.string);
 }
 
 bool Parser::accept_binary_operator(Operator& result) {
@@ -177,7 +174,7 @@ void Parser::infix_subexpression
     operands.pop();
     operands.push(accept_suffix(environment, value));
   } else if (accept(Token::LEFT_BRACKET)) {
-    shared_ptr<ListExpression> list(new ListExpression());
+    const auto list = make_shared<ListExpression>();
     operators.push(Operator());
     if (!peek(Token::RIGHT_BRACKET)) {
       while (true) {
@@ -194,7 +191,7 @@ void Parser::infix_subexpression
     operators.pop();
     operands.push(static_pointer_cast<Expression>(list));
   } else if (accept(Token::LEFT_BRACE)) {
-    shared_ptr<MapExpression> map(new MapExpression());
+    const auto map = make_shared<MapExpression>();
     operators.push(Operator());
     if (!peek(Token::RIGHT_BRACE)) {
       while (true) {
@@ -241,15 +238,13 @@ void Parser::pop_operator
     operands.pop();
     shared_ptr<Expression> a(operands.top());
     operands.pop();
-    operands.push(shared_ptr<Expression>
-      (new BinaryExpression(operator_, a, b)));
+    operands.push(make_shared<BinaryExpression>(operator_, a, b));
   } else if (operators.top().arity == Operator::UNARY) {
     Operator operator_(operators.top());
     operators.pop();
     shared_ptr<Expression> a(operands.top());
     operands.pop();
-    operands.push(shared_ptr<Expression>
-      (new UnaryExpression(operator_, a)));
+    operands.push(make_shared<UnaryExpression>(operator_, a));
   } else {
     throw runtime_error("error parsing expression");
   }

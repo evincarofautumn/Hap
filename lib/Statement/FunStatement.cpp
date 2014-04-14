@@ -39,8 +39,8 @@ bool FunStatement::equal(const Statement& statement) const {
 
 void FunStatement::exec
   (Context&, const shared_ptr<Environment> environment) const {
-  environment->define(identifier, shared_ptr<Value>
-    (new FunValue(identifier, parameters, body, local)));
+  environment->define
+    (identifier, make_shared<FunValue>(identifier, parameters, body, local));
 }
 
 void FunStatement::write(ostream& stream) const {

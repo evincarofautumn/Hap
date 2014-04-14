@@ -43,7 +43,7 @@ bool ForStatement::equal(const Statement& statement) const {
 
 void ForStatement::exec
   (Context& context, const shared_ptr<Environment> environment) const {
-  const auto local(shared_ptr<Environment>(new Environment(environment)));
+  const auto local = make_shared<Environment>(environment);
   initializer->execute(context, local);
 
   condition:

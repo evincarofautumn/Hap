@@ -17,7 +17,7 @@ bool FloatValue::equal(const Expression& expression) const {
 
 shared_ptr<Value> FloatValue::eval
   (Context&, const shared_ptr<Environment>) const {
-  return shared_ptr<Value>(new FloatValue(*this));
+  return make_shared<FloatValue>(*this);
 }
 
 bool FloatValue::less(const Value& that) const {

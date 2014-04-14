@@ -30,8 +30,7 @@ FunValue::FunValue
 
 shared_ptr<Value> FunValue::eval
   (Context&, const shared_ptr<Environment> environment) const {
-  return shared_ptr<Value>
-    (new FunValue(identifier, parameters, body, environment));
+  return make_shared<FunValue>(identifier, parameters, body, environment);
 }
 
 bool FunValue::less(const Value& that) const {
@@ -57,7 +56,7 @@ void FunValue::write(ostream& stream) const {
 
 shared_ptr<Value> FunValue::call
   (Context& context, const vector<shared_ptr<Expression>>& arguments) const {
-  shared_ptr<Environment> local(new Environment(environment));
+  const auto local = make_shared<Environment>(environment);
   auto parameter(parameters.begin());
   for (const auto& argument : arguments) {
     auto value(argument->eval(context, environment));
@@ -68,7 +67,7 @@ shared_ptr<Value> FunValue::call
   } catch (flow::Return& result) {
     return result.value;
   }
-  return shared_ptr<Value>(new UndefinedValue());
+  return make_shared<UndefinedValue>();
 }
 
 }

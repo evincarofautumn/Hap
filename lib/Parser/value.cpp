@@ -18,28 +18,28 @@ namespace hap {
 shared_ptr<Expression> Parser::accept_boolean_value
   (const shared_ptr<Environment>) {
   if (accept(Token(Token::IDENTIFIER, "true")))
-    return shared_ptr<Expression>(new BooleanValue(true));
+    return make_shared<BooleanValue>(true);
   if (accept(Token(Token::IDENTIFIER, "false")))
-    return shared_ptr<Expression>(new BooleanValue(false));
-  return shared_ptr<Expression>();
+    return make_shared<BooleanValue>(false);
+  return nullptr;
 }
 
 shared_ptr<Expression> Parser::accept_float_value
   (const shared_ptr<Environment> environment) {
   Token token;
   if (!accept(Token::FLOAT, token))
-    return shared_ptr<Expression>();
+    return nullptr;
   istringstream stream(token.string);
   double value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid float");
-  return shared_ptr<Expression>(new FloatValue(value));
+  return make_shared<FloatValue>(value);
 }
 
 shared_ptr<Expression> Parser::accept_fun_value
   (const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "lam")))
-    return shared_ptr<Expression>();
+    return nullptr;
   Token identifier(Token::IDENTIFIER, "lambda");
   accept(Token::IDENTIFIER, identifier);
   vector<string> parameters;
@@ -68,40 +68,36 @@ shared_ptr<Expression> Parser::accept_fun_value
   } else {
     expected("colon or block");
   }
-  return shared_ptr<Expression>
-    (new FunValue
-     (identifier.string,
-      parameters,
-      body,
-      environment));
+  return make_shared<FunValue>
+    (identifier.string, parameters, body, environment);
 }
 
 shared_ptr<Expression> Parser::accept_integer_value
   (const shared_ptr<Environment> environment) {
   Token token;
   if (!accept(Token::INTEGER, token))
-    return shared_ptr<Expression>();
+    return nullptr;
   istringstream stream(token.string);
   int32_t value = 0;
   if (!(stream >> value))
     throw runtime_error("invalid integer");
-  return shared_ptr<Expression>(new IntegerValue(value));
+  return make_shared<IntegerValue>(value);
 }
 
 shared_ptr<Expression> Parser::accept_string_value
   (const shared_ptr<Environment>) {
   Token token;
   if (!accept(Token::STRING, token))
-    return shared_ptr<Expression>();
+    return nullptr;
   token.string.pop_back();
-  return shared_ptr<Expression>(new StringValue(token.string.substr(1)));
+  return make_shared<StringValue>(token.string.substr(1));
 }
 
 shared_ptr<Expression> Parser::accept_undefined_value
   (const shared_ptr<Environment>) {
   if (accept(Token(Token::IDENTIFIER, "undefined")))
-    return shared_ptr<Expression>(new UndefinedValue());
-  return shared_ptr<Expression>();
+    return make_shared<UndefinedValue>();
+  return nullptr;
 }
 
 }

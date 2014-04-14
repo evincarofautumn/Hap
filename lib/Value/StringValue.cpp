@@ -16,7 +16,7 @@ bool StringValue::equal(const Expression& expression) const {
 
 shared_ptr<Value> StringValue::eval
   (Context&, const shared_ptr<Environment>) const {
-  return shared_ptr<Value>(new StringValue(*this));
+  return make_shared<StringValue>(*this);
 }
 
 bool StringValue::less(const Value& that) const {

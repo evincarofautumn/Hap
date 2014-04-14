@@ -21,9 +21,9 @@ namespace hap {
 
 shared_ptr<Statement>
 Parser::accept_statements(const shared_ptr<Environment> environment) {
-  shared_ptr<BlockStatement> block(new BlockStatement());
+  const auto block = make_shared<BlockStatement>();
   shared_ptr<Statement> statement;
-  shared_ptr<Environment> local(new Environment(environment));
+  const auto local = make_shared<Environment>(environment);
   while ((statement = accept_statement(local)))
     block->push(statement);
   return static_pointer_cast<Statement>(block);
@@ -57,17 +57,17 @@ Parser::accept_statement(const shared_ptr<Environment> environment) {
 shared_ptr<Statement>
 Parser::accept_atomic_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "atomic")))
-    return shared_ptr<Statement>();
+    return nullptr;
   auto statement(accept_statement(environment));
   if (!statement)
     expected("statement");
-  return shared_ptr<Statement>(new AtomicStatement(statement));
+  return make_shared<AtomicStatement>(statement);
 }
 
 shared_ptr<Statement>
 Parser::accept_block_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token::LEFT_BRACE))
-    return shared_ptr<Statement>();
+    return nullptr;
   shared_ptr<Statement> block(accept_statements(environment));
   expect(Token::RIGHT_BRACE);
   return block;
@@ -76,18 +76,16 @@ Parser::accept_block_statement(const shared_ptr<Environment> environment) {
 shared_ptr<Statement>
 Parser::accept_del_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "del")))
-    return shared_ptr<Statement>();
+    return nullptr;
   Token identifier;
   expect(Token::IDENTIFIER, identifier);
   expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new DelStatement(identifier.string));
+  return make_shared<DelStatement>(identifier.string);
 }
 
 shared_ptr<Statement>
 Parser::accept_empty_statement(const shared_ptr<Environment>) {
-  return accept(Token::SEMICOLON)
-    ? shared_ptr<Statement>(new BlockStatement())
-    : shared_ptr<Statement>();
+  return accept(Token::SEMICOLON) ? make_shared<BlockStatement>() : nullptr;
 }
 
 shared_ptr<Statement>
@@ -100,15 +98,15 @@ Parser::accept_expression_statement
   (const shared_ptr<Environment> environment) {
   auto expression(accept_expression(environment));
   if (!expression)
-    return shared_ptr<Statement>();
+    return nullptr;
   expect(Token::SEMICOLON);
-  return shared_ptr<Statement>(new ExpressionStatement(expression));
+  return make_shared<ExpressionStatement>(expression);
 }
 
 shared_ptr<Statement> Parser::accept_for_statement
   (const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "for")))
-    return shared_ptr<Statement>();
+    return nullptr;
   expect(Token::LEFT_PARENTHESIS);
   const auto initializer(accept_statement(environment));
   if (!initializer)
@@ -124,14 +122,13 @@ shared_ptr<Statement> Parser::accept_for_statement
   const auto body(accept_statement(environment));
   if (!body)
     expected("statement");
-  return shared_ptr<Statement>
-    (new ForStatement(initializer, condition, step, body));
+  return make_shared<ForStatement>(initializer, condition, step, body);
 }
 
 shared_ptr<Statement>
 Parser::accept_fun_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "fun")))
-    return shared_ptr<Statement>();
+    return nullptr;
   Token identifier;
   expect(Token::IDENTIFIER, identifier);
   vector<string> parameters;
@@ -151,9 +148,8 @@ Parser::accept_fun_statement(const shared_ptr<Environment> environment) {
   shared_ptr<Statement> body(accept_statement(environment));
   if (!body)
     expected("statement");
-  shared_ptr<Statement> statement
-    (new FunStatement(identifier.string, parameters, body, environment));
-  return statement;
+  return make_shared<FunStatement>
+    (identifier.string, parameters, body, environment);
 }
 
 shared_ptr<Statement>
@@ -179,41 +175,35 @@ Parser::accept_redo_statement(const shared_ptr<Environment> environment) {
 shared_ptr<Statement>
 Parser::accept_ret_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "ret")))
-    return shared_ptr<Statement>();
+    return nullptr;
   auto expression(accept_expression(environment));
   expect(Token::SEMICOLON);
   if (!expression)
-    return shared_ptr<Statement>
-      (new RetStatement
-        (shared_ptr<Expression>
-          (new UndefinedValue())));
-  return shared_ptr<Statement>(new RetStatement(expression));
+    return make_shared<RetStatement>
+      (make_shared<UndefinedValue>());
+  return make_shared<RetStatement>(expression);
 }
 
 shared_ptr<Statement>
 Parser::accept_trace_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "trace")))
-    return shared_ptr<Statement>();
+    return nullptr;
   auto expression(accept_expression(environment));
-  return expression
-    ? shared_ptr<Statement>(new TraceStatement(expression))
-    : shared_ptr<Statement>();
+  return expression ? make_shared<TraceStatement>(expression) : nullptr;
 }
 
 shared_ptr<Statement>
 Parser::accept_var_statement(const shared_ptr<Environment> environment) {
   if (!accept(Token(Token::IDENTIFIER, "var")))
-    return shared_ptr<Statement>();
+    return nullptr;
   Token identifier;
   expect(Token::IDENTIFIER, identifier);
-  shared_ptr<Expression> initializer(new UndefinedValue());
+  shared_ptr<Expression> initializer = make_shared<UndefinedValue>();
   if (accept(Token(Token::OPERATOR, "="))
       && !(initializer = accept_expression(environment)))
     expected("initializer");
   expect(Token::SEMICOLON);
-  shared_ptr<Statement> statement
-    (new VarStatement(identifier.string, initializer));
-  return statement;
+  return make_shared<VarStatement>(identifier.string, initializer);
 }
 
 shared_ptr<Statement>

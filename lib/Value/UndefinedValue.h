@@ -8,6 +8,7 @@ namespace hap {
 class UndefinedValue : public Value {
 public:
   UndefinedValue() = default;
+  UndefinedValue(const UndefinedValue&) = default;
   virtual Value::Type type() const final override {
     return UNDEFINED;
   }
@@ -20,8 +21,6 @@ public:
 protected:
   virtual bool equal(const Expression&) const final override;
   virtual void write(std::ostream&) const final override;
-private:
-  UndefinedValue(const UndefinedValue&) = default;
 };
 
 template<>

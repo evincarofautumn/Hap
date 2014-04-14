@@ -130,9 +130,9 @@ Parser::accept_control_statement
   (const std::shared_ptr<Environment> environment,
    const std::string& keyword) {
   if (!accept(Token(Token::IDENTIFIER, keyword)))
-    return std::shared_ptr<Statement>();
+    return nullptr;
   expect(Token::SEMICOLON);
-  return std::shared_ptr<Statement>(new StatementType());
+  return std::make_shared<StatementType>();
 }
 
 template<class StatementType>
@@ -142,7 +142,7 @@ Parser::accept_flow_statement
    const std::string& keyword) {
   using namespace std;
   if (!accept(Token(Token::IDENTIFIER, keyword)))
-    return shared_ptr<Statement>();
+    return nullptr;
   shared_ptr<Expression> expression;
   expect(Token::LEFT_PARENTHESIS);
   if (!(expression = accept_expression(environment)))
@@ -151,8 +151,7 @@ Parser::accept_flow_statement
   shared_ptr<Statement> statement;
   if (!(statement = accept_statement(environment)))
     expected("statement");
-  return shared_ptr<Statement>
-    (new StatementType(expression, statement));
+  return make_shared<StatementType>(expression, statement);
 }
 
 }

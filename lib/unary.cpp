@@ -57,8 +57,7 @@ shared_ptr<Value> logical
   auto a(expression->eval(context, environment));
   a->assert_type(Value::BOOLEAN);
   auto b(static_pointer_cast<BooleanValue>(a));
-  return shared_ptr<Value>
-    (new BooleanValue(function(b->value)));
+  return make_shared<BooleanValue>(function(b->value));
 }
 
 shared_ptr<Value> not_
