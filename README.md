@@ -2,6 +2,8 @@
 
 **Hap** is a dynamically typed, asynchronous, imperative programming language.
 
+**This is the original C++ prototype, which is no longer maintained; it’s superseded by [the new Haskell implementation of Hap](https://github.com/evincarofautumn/hap-hs), which has an improved performance model and a graphical mode.**
+
 Here is a simple example of Hap&rsquo;s syntax and semantics:
 
 ```
